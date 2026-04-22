@@ -48,16 +48,25 @@ Everything is one Next.js app. API routes call Claude directly. Session state is
 - `@anthropic-ai/sdk` with prompt caching on system + template blocks
 - Client-side session state (no DB for POC)
 
-### Model mapping
+### Four specialized Claude calls (each doing one job well)
 
-| Call | Model |
-|---|---|
-| Conductor | `claude-opus-4-7` |
-| Extraction | `claude-haiku-4-5-20251001` |
-| Meta-noticing (Thu) | `claude-opus-4-7` |
-| Takeaway (Thu) | `claude-opus-4-7` |
+| Call | Model | Runs | Cached blocks | Returns |
+|---|---|---|---|---|
+| **Conductor** | `claude-opus-4-7` | every Host turn | system (persona + objectives + rules) | JSON: `{reasoning, move_type, move_target, next_utterance}` |
+| **Extraction** | `claude-haiku-4-5-20251001` | every Host turn, in parallel with Conductor | system (objectives + schemas) | full live-insight state (non-fatal on failure: prior state is preserved) |
+| **Meta-Noticing** | `claude-opus-4-7` | every Host turn (coming Thu) | system (notice types + hints) | JSON array of candidate notices with `transcript_anchors`, `why_cross_turn`, `strength`, `suggested_deploy_language` |
+| **Takeaway Synthesis** | `claude-opus-4-7` | once at session end | system (artifact tone + sections) | markdown for the participant's reflective artifact |
 
-Isolated in [src/lib/models.ts](src/lib/models.ts) — one edit to swap.
+Model IDs are isolated in [src/lib/models.ts](src/lib/models.ts) — one edit to swap. **Prompt caching** is on for every system block (stable within a session), so turn-over-turn cost drops to cache rates after turn 1.
+
+### Why four calls, not one
+
+A single "do-everything" prompt would be easier to build but worse on every dimension. Each of these has different temperature discipline, different output format, different failure modes we care about:
+
+- **Meta-noticing needs to be conservative.** A combined prompt rewards noticing (it's the visible differentiator) and will over-fire. Isolating it as observation-only lets us tune for precision — and enforce the hard rule that a notice must cite at least two turn indices *and* not plausibly fire on either in isolation.
+- **Extraction needs to be mechanical.** Creative Claude is bad Claude for structured schema fill. Separate call = different model (Haiku for speed/cost) + different prompt discipline + non-fatal if it chokes, so the chat keeps flowing.
+- **The Conductor's job is strategic**, not observational. Separating noticing out lets the Conductor focus on the decision (next move) and the rendering (next question).
+- **Takeaway is a different tone entirely** — reflective, for the participant, not inquisitive. Isolating it lets us hold it to different forbidden-language rules.
 
 ---
 

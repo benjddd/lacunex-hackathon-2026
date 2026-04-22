@@ -12,15 +12,21 @@ All times **IST**. Every session: read this file, act on imminent gates.
 - **EOD gate (22:00 IST):** Next.js scaffold + Anthropic SDK wired + Founder template in repo + conductor loop running text-only on hand-typed turns + split-screen UI skeleton + extraction visible in dashboard. If we don't have end-to-end loop running, stop; debug before bed, don't start new features.
 
 ### Thu 2026-04-23
-- **17:30 IST:** Open Anthropic live stream for Managed Agents talk (starts 18:00 IST / 11:00 EST).
-- **18:00 IST:** Watch Michael Cohen Managed Agents talk. Notes on: (a) APIs we can actually use, (b) realistic time budget for post-session research agent, (c) tooling/auth steps.
-- **EOD gate (22:00 IST):** Meta-noticing layer running. Takeaway synthesis generating. **Dry-run on a real topic — if the meta-notices don't genuinely surprise us, iteration continues before any new feature.** Host natural-language template authoring started IF meta-noticing is solid.
-- **Prompt-freeze gate:** prompts should be ~stable by end of Thu. Further tweaks only with regression check.
+- **08:00–09:00 IST:** **60-min competitor scan** — Outset.ai, Listen Labs, Wondering, Versive. Confirm specific moat lines that survive honest comparison. Rewrite anti-positioning in README/summary against what actually differentiates.
+- **09:00–18:00 IST:** **Meta-noticing ONLY.** No other features. Iterate prompt against synthetic-adversary runs (`npm run sim` with unfocused_founder, evasive_pm, overconfident_researcher personas). Kill rule: a notice only counts if it cites ≥2 turn indices AND would not fire on either turn in isolation.
+- **17:30 IST:** Open Anthropic live stream for Managed Agents talk.
+- **18:00 IST:** Watch Michael Cohen Managed Agents talk. Notes on (a) concrete 3-hour implementation path, (b) auth/access/setup friction, (c) realistic scope for post-session research agent.
+- **22:00 IST — Thu close gate:**
+  - Meta-noticing gate: if no genuinely surprising notice has emerged on a real transcript, **cut meta-noticing from the demo's peak beats** and re-anchor on dashboard + takeaway. Do not ship a canned peak.
+  - **Managed Agents go/no-go** (moved earlier from Fri 20:00): default no; flip to yes only if the Cohen talk revealed a concrete 3-hour path.
+  - Demo subject decided (and participant notified if it's someone else).
 
 ### Fri 2026-04-24
-- **14:00 IST:** Voice stack go/no-go. Only proceed if text path is polished. If no: cut cleanly, don't limp with half-working voice.
-- **20:00 IST:** Prize C (Managed Agents) go/no-go based on Thu talk. Only proceed if Thu was clean.
-- **EOD gate (22:00 IST):** Deployed to Vercel. 2–3 stub templates visible in selector (for range demo). README first draft. Voice + Managed Agents either shipped or cleanly deferred.
+- **Voice is CUT** (D23). Not relitigated.
+- **If Managed Agents = GO:** morning and early afternoon on the research-agent work, on a short-lived branch (`feat/managed-agents`). Merge only if pristine by Fri 18:00 IST.
+- **If Managed Agents = NO GO:** morning on Post-Incident Witness Interview brief (authored fresh), afternoon on Cohort Discovery brief (stretch) OR polish of the single working brief.
+- **18:00 IST:** Vercel deploy (save-session + takeaway port: either client-side download or Vercel KV OR hidden-in-prod).
+- **EOD gate (22:00 IST):** Deployed, working, at least one brief pristine. Architecture section in README complete with 4 calls + models + caching boundary. **If anything is half-wired, cut it now — a flawless single brief beats two brittle ones.**
 
 ### Sat 2026-04-25
 - **10:00 IST:** Start recording demo interview. Confirm demo subject before first take. Participant should NOT see the questions in advance.

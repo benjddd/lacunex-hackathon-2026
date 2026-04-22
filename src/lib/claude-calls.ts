@@ -17,8 +17,11 @@ import type {
   Turn,
 } from "./types";
 
-const CONDUCTOR_MAX_TOKENS = 600;
-const EXTRACTION_MAX_TOKENS = 2000;
+// Kept generous — truncation mid-JSON produces a parse error and kills the turn.
+// If a turn's output exceeds these, bump them. See "Unterminated string in JSON"
+// errors in the dev log as the canonical signal.
+const CONDUCTOR_MAX_TOKENS = 1200;
+const EXTRACTION_MAX_TOKENS = 6000;
 
 function textFromMessage(content: Array<{ type: string; text?: string }>): string {
   for (const block of content) {

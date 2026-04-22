@@ -45,10 +45,21 @@ export async function POST(req: Request) {
     Math.round((Date.now() - startedAt.getTime()) / 60000)
   );
 
+  // Conductor is required — if it fails the turn cannot continue. Extraction is
+  // a nice-to-have — if it fails we keep the old dashboard state and let the
+  // chat proceed. This keeps a long interview resilient to occasional extraction
+  // truncation or schema hiccups.
+  const hasParticipantTurn = transcript.some((t) => t.role === "participant");
+  const extractionPromise = hasParticipantTurn
+    ? callExtraction({ template, transcript, currentState: extraction })
+        .catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn("[/api/turn] extraction failed, preserving prior state:", msg);
+          return extraction;
+        })
+    : Promise.resolve(extraction);
+
   try {
-    // Conductor decides the next interviewer utterance synchronously because
-    // the UI needs it immediately. Extraction runs in parallel — it updates
-    // the dashboard but doesn't block the chat response.
     const [decision, newExtraction] = await Promise.all([
       callConductor({
         template,
@@ -60,10 +71,7 @@ export async function POST(req: Request) {
         deployedNoticesCount: body.deployedNoticesCount ?? 0,
         lastNoticeTurn: body.lastNoticeTurn ?? null,
       }),
-      // Only run extraction if there's a participant turn to extract from.
-      transcript.some((t) => t.role === "participant")
-        ? callExtraction({ template, transcript, currentState: extraction })
-        : Promise.resolve(extraction),
+      extractionPromise,
     ]);
 
     return NextResponse.json({
@@ -79,7 +87,7 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[/api/turn] error:", msg);
+    console.error("[/api/turn] conductor error:", msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatPane } from "@/components/ChatPane";
 import { DashboardPane } from "@/components/DashboardPane";
@@ -36,6 +37,7 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [sessionClosed, setSessionClosed] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [savedSessionId, setSavedSessionId] = useState<string | null>(null);
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
@@ -122,6 +124,34 @@ export default function Home() {
     if (takeawayMarkdown) return;
     setTakeawayGenerating(true);
     setTakeawayError(null);
+
+    // Save first (if we haven't already) so the takeaway can be paired with a
+    // session file on disk. Both failures are non-fatal for the takeaway flow.
+    let sessionIdForPairing = savedSessionId;
+    if (!sessionIdForPairing) {
+      try {
+        const saveRes = await fetch("/api/save-session", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            templateId: TEMPLATE.template_id,
+            transcript,
+            extraction,
+            activeObjectiveId,
+            startedAtIso: startedAt.current,
+            note: "ended-in-ui",
+          }),
+        });
+        const saveData = (await saveRes.json()) as { sessionId?: string };
+        if (saveRes.ok && saveData.sessionId) {
+          sessionIdForPairing = saveData.sessionId;
+          setSavedSessionId(sessionIdForPairing);
+        }
+      } catch {
+        // Pairing best-effort only; takeaway still generates without it.
+      }
+    }
+
     try {
       const res = await fetch("/api/takeaway", {
         method: "POST",
@@ -130,6 +160,7 @@ export default function Home() {
           templateId: TEMPLATE.template_id,
           transcript,
           extraction,
+          sessionId: sessionIdForPairing,
         }),
       });
       const data = (await res.json()) as { markdown?: string; error?: string };
@@ -141,7 +172,7 @@ export default function Home() {
     } finally {
       setTakeawayGenerating(false);
     }
-  }, [transcript, extraction, takeawayMarkdown]);
+  }, [transcript, extraction, activeObjectiveId, savedSessionId, takeawayMarkdown]);
 
   const handleSave = useCallback(async () => {
     setSaveStatus("saving…");
@@ -159,11 +190,13 @@ export default function Home() {
       });
       const data = (await res.json()) as {
         ok?: boolean;
+        sessionId?: string;
         path?: string;
         turns?: number;
         error?: string;
       };
       if (!res.ok || !data.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+      if (data.sessionId) setSavedSessionId(data.sessionId);
       setSaveStatus(`saved · ${data.path} · ${data.turns} turns`);
       setTimeout(() => setSaveStatus(null), 8000);
     } catch (err) {
@@ -187,6 +220,12 @@ export default function Home() {
           {saveStatus && (
             <span className="text-[11px] text-stone-500">{saveStatus}</span>
           )}
+          <Link
+            href="/sessions"
+            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+          >
+            Past sessions
+          </Link>
           <button
             type="button"
             onClick={handleSave}

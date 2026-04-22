@@ -24,11 +24,13 @@ export async function POST(req: Request) {
 
   const now = new Date();
   const stamp = now.toISOString().replace(/[:.]/g, "-");
-  const filename = `session-${stamp}.json`;
+  const sessionId = stamp; // stable handle used to pair takeaways later
+  const filename = `session-${sessionId}.json`;
   const dir = path.join(process.cwd(), "transcripts");
   const filepath = path.join(dir, filename);
 
   const payload = {
+    session_id: sessionId,
     saved_at: now.toISOString(),
     template_id: body.templateId,
     started_at: body.startedAtIso ?? null,
@@ -50,6 +52,7 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     ok: true,
+    sessionId,
     path: `transcripts/${filename}`,
     turns: body.transcript.length,
   });

@@ -23,21 +23,21 @@ All times **IST**. Every session: read this file, act on imminent gates.
 - **EOD gate (22:00 IST):** Deployed to Vercel. 2–3 stub templates visible in selector (for range demo). README first draft. Voice + Managed Agents either shipped or cleanly deferred.
 
 ### Sat 2026-04-25
-- **10:00 IST:** Start recording demo interview. Confirm demo subject before first take.
-- **EOD gate (22:00 IST):** ~2 min of raw interview footage captured (≥3 takes). Rough cut drafted. Pitch framing finalized.
+- **10:00 IST:** Start recording demo interview. Confirm demo subject before first take. Participant should NOT see the questions in advance.
+- **EOD gate (22:00 IST):** ~2 min of raw interview footage captured (≥3 takes). Rough cut drafted. **Video length tracked — 3:00 is the hard cap for submission.** Pitch framing finalized.
 
 ### Sun 2026-04-26
-- **20:00 IST (T-7h):** Final video cut. README and written description polished. GitHub repo clean.
+- **20:00 IST (T-7h):** Final video cut (≤ 3:00). **Written summary polished to 100–200 words.** README clean. GitHub repo clean.
 - **Mon 2026-04-27 00:00 IST (T-3h):** Be submitting by 02:00 IST, not 02:55.
 - **Mon 2026-04-27 02:00 IST (T-1h):** Submit now.
 
 ### Mon 2026-04-27
-- **03:00 IST (= 20:00 EST Sun):** Deadline.
-- Rest of day: R1 judging starts async — no actions needed from us.
+- **03:00 IST (= Sun 20:00 EST):** Deadline.
+- Rest of day: **Stage 1 judging** (async). Judges score every submission against weighted criteria; top 6 advance.
 
 ### Tue 2026-04-28
-- **19:00 IST (= 12:00 EST):** Finalist announcement + R2 live judging.
-- **19:45 IST (= 12:45 EST):** Top 3 announced + closing.
+- **19:00 IST (= 12:00 EST):** **Stage 2 live round.** Top-6 **pre-recorded** demos played; judges deliberate. *There is no live demo — our 3-min recorded video is what gets played.*
+- **20:45 IST (= 13:45 EST):** Top 3 + special-prize winners announced + closing.
 
 ---
 

@@ -30,7 +30,18 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | Required artefacts | 3-min demo video (YouTube/Loom/similar) + public GitHub repo + written description |
 | Open-source rule | **Every component** (backend, frontend, models, prompts) must be OSS under an approved license |
 | Originality rule | **Built entirely during the hackathon** — no pre-existing code/content |
-| Judging rounds | R1 async Apr 27 → R2 live Apr 28 12:00 EST → winners 12:45 EST |
+| Judging rounds | **Stage 1** async Apr 26–27 (top 6 advance). **Stage 2** live Apr 28 12:00 EST (top-6 **pre-recorded demos played**, judges deliberate). Top 3 + special-prize winners announced 13:45 EST. |
+
+### Stage 1 judging criteria (weights matter)
+
+| Criterion | Weight | What it actually asks |
+|---|---|---|
+| **Impact** | **30%** | Real-world potential. Who benefits, how much it matters, could this actually become something people use, **does it fit a listed problem statement**. |
+| **Demo** | **25%** | Is the demo working and impressive; holds up; **genuinely cool to watch**. |
+| **Opus 4.7 Use** | **25%** | Creative use **beyond basic integration**; surfaces capabilities that surprised even the judges. |
+| **Depth & Execution** | **20%** | Pushed past the first idea; sound engineering; real craft, not a quick hack. |
+
+⚠️ **Problem-statements list from the hackathon rules is not in hand yet.** The Impact criterion explicitly asks for fit to a listed problem statement — surface this ASAP so we can frame the pitch to match.
 
 ### Special prizes we're targeting
 
@@ -113,13 +124,13 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 ## 7. Submission checklist
 
-- [ ] Public GitHub repo with README, LICENSE (MIT), install + run instructions
-- [ ] Written project description (problem, what it does, why Claude specifically)
-- [ ] 3-min demo video on YouTube/Loom/similar
-- [ ] All code in repo authored after Tue 2026-04-21 12:30 EST (git log will show this)
-- [ ] All components open source (no proprietary binaries bundled)
-- [ ] Submission form filled on CV platform (link pending)
-- [ ] Verify video length within hackathon spec
+- [x] Public GitHub repo with README, LICENSE (MIT), install + run instructions (live at github.com/Attius-Digital-Art/captainsubtext)
+- [ ] **Written summary: 100–200 words** (tight — draft in INTERNAL.md, final version on the submission form)
+- [ ] **3-min demo video maximum** (hard cap). Pre-recorded video is what Stage 2 plays — there is no live demo.
+- [x] All code in repo authored after Tue 2026-04-21 12:30 EST (git log shows it)
+- [x] All components open source (MIT, no proprietary binaries)
+- [ ] Submission form filled on CV platform (link pending — Q10)
+- [ ] Verify video length ≤ 3:00 before submit
 
 ---
 
@@ -140,4 +151,6 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 ## 9. Current status
 
-**Phase:** Repo baseline. Git initialized. `.gitignore`, `CLAUDE.md`, `INTERNAL.md`, `PROJECT.md` in place. Next.js scaffold pending outcome of remaining questions.
+**Phase:** Day 1 gate met. Repo public at [github.com/Attius-Digital-Art/captainsubtext](https://github.com/Attius-Digital-Art/captainsubtext). Next.js app scaffolded, Anthropic SDK wired, Founder Product Ideation template authored, Conductor + Extraction prompts live, two-panel UI running. End-to-end smoke test passed — conductor made a genuinely adaptive move on the first fuzzy participant turn (resisted the obvious "narrow your user" probe, went for problem-reality instead), extraction caught 3 unstated assumptions from one turn. User now driving a real test interview at localhost:3000.
+
+**Next:** collect iteration notes from the test drive → tune prompts → commit Day-1 iteration → close for the day → Thu morning starts meta-noticing + Managed Agents talk at 18:00 IST.

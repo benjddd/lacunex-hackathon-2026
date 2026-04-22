@@ -10,18 +10,24 @@ import {
   buildExtractionUser,
   parseExtractionOutput,
 } from "./prompts/extraction";
+import {
+  buildTakeawaySystem,
+  buildTakeawayUser,
+} from "./prompts/takeaway";
 import type {
   ConductorDecision,
   ExtractionState,
   Template,
   Turn,
 } from "./types";
+import { DEFAULT_ROLE_LABELS } from "./types";
 
 // Kept generous — truncation mid-JSON produces a parse error and kills the turn.
 // If a turn's output exceeds these, bump them. See "Unterminated string in JSON"
 // errors in the dev log as the canonical signal.
 const CONDUCTOR_MAX_TOKENS = 1200;
 const EXTRACTION_MAX_TOKENS = 6000;
+const TAKEAWAY_MAX_TOKENS = 2500;
 
 function textFromMessage(content: Array<{ type: string; text?: string }>): string {
   for (const block of content) {
@@ -86,4 +92,37 @@ export async function callExtraction(params: {
 
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
   return parseExtractionOutput(raw);
+}
+
+export async function callTakeaway(params: {
+  template: Template;
+  transcript: Turn[];
+  extraction: ExtractionState;
+}): Promise<string> {
+  const anthropic = getAnthropic();
+  const systemText = buildTakeawaySystem(params.template);
+  const participantLabel =
+    params.template.role_labels?.participant ?? DEFAULT_ROLE_LABELS.participant;
+  const userText = buildTakeawayUser({
+    transcript: params.transcript,
+    extraction: params.extraction,
+    participantLabel,
+  });
+
+  const response = await anthropic.messages.create({
+    model: MODELS.takeaway,
+    max_tokens: TAKEAWAY_MAX_TOKENS,
+    system: [
+      {
+        type: "text",
+        text: systemText,
+        cache_control: { type: "ephemeral" },
+      },
+    ],
+    messages: [{ role: "user", content: userText }],
+  });
+
+  // Plain markdown, not JSON. Strip any fences the model might sneak in.
+  const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
+  return raw.trim().replace(/^```(?:markdown|md)?\s*/i, "").replace(/```$/, "").trim();
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatPane } from "@/components/ChatPane";
 import { DashboardPane } from "@/components/DashboardPane";
+import { TakeawayArtifact } from "@/components/TakeawayArtifact";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import {
   emptyExtraction,
@@ -35,6 +36,10 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [sessionClosed, setSessionClosed] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [takeawayOpen, setTakeawayOpen] = useState(false);
+  const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
+  const [takeawayGenerating, setTakeawayGenerating] = useState(false);
+  const [takeawayError, setTakeawayError] = useState<string | null>(null);
   const openedRef = useRef(false);
   const startedAt = useRef(new Date().toISOString());
 
@@ -108,6 +113,36 @@ export default function Home() {
     [transcript, extraction, activeObjectiveId, sessionClosed, fetchTurn]
   );
 
+  const handleEndSession = useCallback(async () => {
+    // Close the session first so the participant can't send more messages
+    // while we're generating.
+    setSessionClosed(true);
+    setTakeawayOpen(true);
+    // Reuse cached markdown if already generated.
+    if (takeawayMarkdown) return;
+    setTakeawayGenerating(true);
+    setTakeawayError(null);
+    try {
+      const res = await fetch("/api/takeaway", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          templateId: TEMPLATE.template_id,
+          transcript,
+          extraction,
+        }),
+      });
+      const data = (await res.json()) as { markdown?: string; error?: string };
+      if (!res.ok || !data.markdown) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setTakeawayMarkdown(data.markdown);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setTakeawayError(msg);
+    } finally {
+      setTakeawayGenerating(false);
+    }
+  }, [transcript, extraction, takeawayMarkdown]);
+
   const handleSave = useCallback(async () => {
     setSaveStatus("saving…");
     try {
@@ -160,7 +195,15 @@ export default function Home() {
           >
             Save session
           </button>
-          {sessionClosed && (
+          <button
+            type="button"
+            onClick={handleEndSession}
+            disabled={transcript.filter((t) => t.role === "participant").length < 2 || takeawayGenerating}
+            className="rounded-md bg-slate-800 px-3 py-1 text-xs text-white hover:bg-slate-900 disabled:opacity-40"
+          >
+            {sessionClosed && takeawayMarkdown ? "View reflection" : "End & reflect"}
+          </button>
+          {sessionClosed && !takeawayOpen && (
             <span className="rounded-full bg-stone-200 px-3 py-1 text-xs text-stone-700">
               Session closed
             </span>
@@ -192,6 +235,15 @@ export default function Home() {
           />
         </div>
       </main>
+
+      {takeawayOpen && (
+        <TakeawayArtifact
+          markdown={takeawayMarkdown}
+          isGenerating={takeawayGenerating}
+          error={takeawayError}
+          onClose={() => setTakeawayOpen(false)}
+        />
+      )}
     </div>
   );
 }

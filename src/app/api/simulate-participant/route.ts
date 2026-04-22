@@ -34,21 +34,22 @@ export async function POST(req: Request) {
 
   const transcript = body.transcript ?? [];
 
-  // Flip roles: from the simulated participant's perspective, the host speaks
-  // first and they respond. Host = assistant (the one they're replying to),
-  // participant = user (this persona's own prior lines).
+  // The Anthropic API generates the NEXT assistant message. Since Claude is
+  // playing the simulated participant here, the PARTICIPANT is the assistant
+  // role (Claude's own prior lines) and the HOST is the user role (what the
+  // other party said). The API then continues the conversation by producing
+  // the next participant (assistant) turn.
   const messages: { role: "user" | "assistant"; content: string }[] = [];
   for (const turn of transcript) {
     messages.push({
-      role: turn.role === "host" ? "assistant" : "user",
+      role: turn.role === "host" ? "user" : "assistant",
       content: turn.text,
     });
   }
 
-  // The API requires the last message be a user turn. If the transcript ends
-  // with a participant line (shouldn't happen in normal simulation flow), we
-  // can't produce a participant reply — bail loudly.
-  if (messages.length === 0 || messages[messages.length - 1].role !== "assistant") {
+  // For Claude to generate a participant reply, the last message must be a
+  // host turn (= "user" role). If it isn't, bail loudly.
+  if (messages.length === 0 || messages[messages.length - 1].role !== "user") {
     return NextResponse.json(
       {
         error:

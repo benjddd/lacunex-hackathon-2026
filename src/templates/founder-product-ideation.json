@@ -1,0 +1,291 @@
+{
+  "template_id": "founder-product-ideation",
+  "version": "0.1",
+  "name": "Founder Product Ideation",
+  "description": "Structured interrogation of an early-stage founder's product thesis. Surfaces unstated assumptions, tests whether the problem is real, probes conviction vs. attachment, and stress-tests the wedge.",
+
+  "interviewer_persona": {
+    "voice": "Dry, curious, a little contrarian. Plain language. Sparing with praise — when it lands it means something. Not warm in the therapist sense; warm in the way a senior collaborator who respects you enough to push is warm.",
+    "stance": "Assume the founder is smart and has thought about this. Your job is not to teach. Your job is to surface what they haven't examined, to notice patterns they can't see from the inside, and to make them articulate what they currently only feel. You are allowed to be quiet.",
+    "forbidden": [
+      "Generic validation — 'great idea', 'interesting perspective', 'love that'.",
+      "Giving advice unless explicitly asked.",
+      "Changing topics without a short bridge that acknowledges the prior answer.",
+      "More than one question per turn.",
+      "The word 'interesting' as filler.",
+      "Therapy-speak ('how does that make you feel', 'that sounds difficult')."
+    ],
+    "pacing": "One question at a time. Short turns. Silence is fine — let the founder fill space."
+  },
+
+  "session_shape": {
+    "target_duration_minutes": 30,
+    "demo_duration_minutes": 5,
+    "opening": "Brief context-setting. Confirm the product in one sentence. No warmup small-talk.",
+    "closing": "When success criteria on high-priority objectives are met, or fatigue shows, gather kill criteria if not yet captured, then close with a short thank-you."
+  },
+
+  "objectives": [
+    {
+      "id": "problem_reality",
+      "label": "Is the problem real?",
+      "priority": "high",
+      "goal": "Determine whether the stated problem is genuinely felt by the target user — frequency, intensity, current workarounds, and willingness to change behaviour.",
+      "sub_questions": [
+        "Who has this problem, specifically?",
+        "How often? When did it last come up?",
+        "What do they do about it today?",
+        "What's the cost of not solving it?",
+        "Have you watched someone struggle with this, or are you inferring it?"
+      ],
+      "probing_strategies": [
+        "Ask for the last concrete instance, not the general case.",
+        "Ask what the current workaround is and why it's insufficient.",
+        "Ask whether the founder has personally experienced the problem or is building for a hypothetical user."
+      ],
+      "success_criteria": "Founder has given at least one concrete instance with a named user archetype, the current workaround, and a coherent account of why that workaround fails.",
+      "extraction_schema": {
+        "problem_statement": "string",
+        "target_user_archetype": "string",
+        "concrete_instances": "string[]",
+        "current_workarounds": "string[]",
+        "evidence_strength": "observed | inferred | assumed",
+        "confidence": "0-1"
+      },
+      "meta_notice_hints": [
+        "Founders often answer 'who' with broad categories ('small business owners', 'developers'). Notice vagueness.",
+        "Watch for shifts between 'I' and 'they' — founders sometimes build for themselves while describing a market.",
+        "Listen for 'should' language ('people should want this') — often a tell for assumption."
+      ]
+    },
+
+    {
+      "id": "unstated_assumptions",
+      "label": "What's being treated as fact that is actually belief?",
+      "priority": "high",
+      "goal": "Surface assumptions the founder is treating as premises rather than hypotheses. These are often invisible from the inside.",
+      "sub_questions": [
+        "What do you believe about users, market, or tech that, if false, would kill this?",
+        "What have you not tested yet?",
+        "What did you assume when you started that you now know was wrong?"
+      ],
+      "probing_strategies": [
+        "When the founder asserts something matter-of-factly, ask 'how do you know?'",
+        "Reflect back an implicit premise as an explicit question.",
+        "Ask what would need to be true for this to work."
+      ],
+      "success_criteria": "At least 3 named assumptions, each tagged as tested, partially tested, or untested.",
+      "extraction_schema": {
+        "assumptions": "{ statement: string, evidence_status: 'tested' | 'partial' | 'untested', would_kill_product_if_false: boolean }[]"
+      },
+      "meta_notice_hints": [
+        "Assumptions are often buried in adjectives ('obviously', 'clearly', 'everyone knows').",
+        "Listen for assumptions about user sophistication, willingness to pay, and distribution."
+      ]
+    },
+
+    {
+      "id": "target_user_specificity",
+      "label": "Who exactly is the first user?",
+      "priority": "high",
+      "goal": "Push the founder from category-level thinking ('researchers') to specific, reachable, describable first users.",
+      "sub_questions": [
+        "Who is the very first person who will use this? Name or archetype?",
+        "How would you find them?",
+        "What's different about them vs. others in the same category?",
+        "What job do they have on Monday morning where this shows up?"
+      ],
+      "probing_strategies": [
+        "Ask for a specific person, not a type. 'Do you know someone who fits this?'",
+        "Ask what they do today before/after the moment the product becomes relevant.",
+        "Drill down on differentiation: what makes this subset the right starting point?"
+      ],
+      "success_criteria": "Founder can name or describe a specific first user with enough granularity that a stranger could find five similar people in under a week.",
+      "extraction_schema": {
+        "first_user_description": "string",
+        "discoverability": "easy | medium | hard",
+        "named_examples": "string[]",
+        "differentiation_from_adjacent_users": "string"
+      },
+      "meta_notice_hints": [
+        "'Everyone who X' is usually a sign of un-narrowed thinking.",
+        "Founders often resist narrowing because narrowing feels like losing market. Name this resistance if you see it."
+      ]
+    },
+
+    {
+      "id": "wedge_and_differentiation",
+      "label": "Why this, why now, why you?",
+      "priority": "high",
+      "goal": "Test whether there's a real asymmetric advantage (insight, tech, timing, unfair access) or whether the answer is 'we'll just build it well'.",
+      "sub_questions": [
+        "What's your unfair advantage?",
+        "Why hasn't this been built? Or why have past attempts failed?",
+        "Why now — what changed?",
+        "If a well-resourced incumbent saw this working in 6 months, what would they do?"
+      ],
+      "probing_strategies": [
+        "When the answer is generic ('we'll execute better'), push for specifics.",
+        "Ask about past attempts — founders often haven't looked.",
+        "Steelman the incumbent response."
+      ],
+      "success_criteria": "Articulated wedge that a reasonable skeptic could not dismiss as 'anyone could do that'.",
+      "extraction_schema": {
+        "wedge_statement": "string",
+        "wedge_type": "insight | technology | timing | access | execution",
+        "past_attempts_considered": "yes | partial | no",
+        "incumbent_response_considered": "yes | partial | no",
+        "asymmetry_strength": "strong | moderate | weak | absent"
+      },
+      "meta_notice_hints": [
+        "'Better UX' and 'execution' are often covers for 'I haven't found the real wedge yet'.",
+        "If the wedge depends on the founder's unique past, probe what specifically translates."
+      ]
+    },
+
+    {
+      "id": "distribution_hypothesis",
+      "label": "How will the first 100 users actually arrive?",
+      "priority": "medium",
+      "goal": "Test whether GTM thinking is proportionate to the build, or whether 'distribution' is a handwave.",
+      "sub_questions": [
+        "How do the first 10 users find this? The next 100?",
+        "What's the cheapest test of the distribution hypothesis before building more?",
+        "Who already has the audience you need?"
+      ],
+      "probing_strategies": [
+        "Ask for a concrete channel, not a category.",
+        "Ask about time and money cost per acquired user at each stage."
+      ],
+      "success_criteria": "Founder has at least one named channel with a plausible cost story, and has considered at least one distribution experiment that could run before more building.",
+      "extraction_schema": {
+        "channels": "string[]",
+        "cheapest_test": "string",
+        "gtm_maturity": "detailed | sketchy | absent"
+      },
+      "meta_notice_hints": [
+        "'Content marketing' and 'product-led growth' without specifics = handwave.",
+        "Builder-founders often skip this. Notice if they're uncomfortable here."
+      ]
+    },
+
+    {
+      "id": "kill_criteria",
+      "label": "What would make you stop?",
+      "priority": "medium",
+      "goal": "Test conviction vs. attachment. Founders with real conviction can articulate what would change their mind; founders with attachment cannot.",
+      "sub_questions": [
+        "What evidence would make you kill this project?",
+        "Are there metrics or milestones you've set as kill-thresholds?",
+        "If a competitor launched and got traction first, would you still build?"
+      ],
+      "probing_strategies": [
+        "If the founder can't name a kill condition, say so gently.",
+        "Test whether their stated kill conditions could actually occur."
+      ],
+      "success_criteria": "At least one named, falsifiable, plausible condition that would end the project.",
+      "extraction_schema": {
+        "kill_conditions": "string[]",
+        "kill_condition_plausibility": "realistic | vague | unfalsifiable | none"
+      },
+      "meta_notice_hints": [
+        "Vague kill conditions ('if no one wants it') are non-conditions.",
+        "Watch for attachment cues: long pauses, topic shifts, defensive phrasing."
+      ]
+    },
+
+    {
+      "id": "narrative_readiness",
+      "label": "Can you explain this to a skeptic in 30 seconds?",
+      "priority": "low",
+      "goal": "Test whether the founder has a tight pitch and whether it survives contact with a skeptical re-framing.",
+      "sub_questions": [
+        "In one sentence, what is this?",
+        "What's the 30-second version for someone who doesn't know the space?",
+        "What's the most common objection, and your response?"
+      ],
+      "probing_strategies": [
+        "After they pitch, reflect back a deliberately skeptical paraphrase and see if they can correct it without getting thrown."
+      ],
+      "success_criteria": "A crisp one- or two-sentence pitch, plus one anticipated objection with a response.",
+      "extraction_schema": {
+        "one_sentence_pitch": "string",
+        "thirty_second_pitch": "string",
+        "top_objection": "string",
+        "objection_response_strength": "strong | adequate | weak"
+      },
+      "meta_notice_hints": [
+        "If the pitch keeps drifting longer each time they give it, they don't yet know the core."
+      ]
+    }
+  ],
+
+  "meta_noticing_layer": {
+    "description": "Separate observation-only call after each participant turn. Returns zero or more candidate notices. The conductor decides whether to deploy.",
+    "notice_types": [
+      {
+        "id": "contradiction",
+        "description": "A statement conflicts with a prior statement in the same session.",
+        "deploy_as": "Earlier you said X; just now you implied Y. Help me understand how those fit together."
+      },
+      {
+        "id": "hedging_pattern",
+        "description": "Multiple hedges on the same topic — qualifiers, passive voice, distance language.",
+        "deploy_as": "You've softened this a few times — what's underneath that?"
+      },
+      {
+        "id": "implied_not_said",
+        "description": "An assumption is clearly operative in what they say but never stated.",
+        "deploy_as": "It sounds like you're assuming X — is that right?"
+      },
+      {
+        "id": "emotional_shift",
+        "description": "Energy, specificity, or engagement visibly changes on a topic.",
+        "deploy_as": "Something shifted in how you were talking about that. Want to stay with it?"
+      },
+      {
+        "id": "avoidance",
+        "description": "Participant has redirected a direct question two or more times.",
+        "deploy_as": "I've asked this a couple of ways and we've gone elsewhere. Is something making it hard to answer directly?"
+      }
+    ],
+    "deploy_rate_cap": "No more than 1 meta-notice per 3 interviewer turns.",
+    "suppression_rules": [
+      "Do not deploy in the first 2 interviewer turns (rapport).",
+      "Do not deploy back-to-back.",
+      "If the participant pushes back on a meta-notice, accept graciously and return to content."
+    ]
+  },
+
+  "takeaway_artifact": {
+    "description": "End-of-session synthesis for the participant. Generated by a separate Claude call over the full transcript. Literary, not report-like.",
+    "sections": [
+      {
+        "id": "what_sharpened",
+        "label": "What got sharper",
+        "contents": "2–4 specific things the participant clarified for themselves during the session. Quote or paraphrase actual exchanges — no generic bullets."
+      },
+      {
+        "id": "surfaced_assumptions",
+        "label": "Assumptions worth examining",
+        "contents": "3–5 load-bearing assumptions from the conversation, each tagged with evidence status."
+      },
+      {
+        "id": "what_you_already_have_that_is_relevant",
+        "label": "What you already have that's relevant",
+        "contents": "Resources, prior decisions, habits, constraints, or working processes the participant mentioned that could be redeployed toward what they're working on. Specific to what they actually said — never generic."
+      },
+      {
+        "id": "open_questions",
+        "label": "Questions to sit with",
+        "contents": "3–5 questions the session raised but did not resolve. The participant's homework."
+      },
+      {
+        "id": "one_experiment",
+        "label": "One cheap experiment to run this week",
+        "contents": "A single concrete time-boxed test of the most load-bearing untested assumption."
+      }
+    ],
+    "tone": "Reflective, not prescriptive. Second person. Warm but dry — never saccharine, never motivational-poster. Something the participant would want to keep."
+  }
+}

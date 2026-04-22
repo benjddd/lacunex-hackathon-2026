@@ -43,13 +43,16 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 ⚠️ **Problem-statements list from the hackathon rules is not in hand yet.** The Impact criterion explicitly asks for fit to a listed problem statement — surface this ASAP so we can frame the pitch to match.
 
-### Special prizes we're targeting
+### Prize priority
 
-| Prize | Our posture | Cost |
+- **Primary target: top 3 placement** (determined by the weighted criteria above).
+- **Secondary target: the three special prizes below.** They are pursued *only where the work also lifts a main-criterion score* — not as independent build targets.
+
+| Special prize | What main criteria it serves | Our posture |
 |---|---|---|
-| **Creative medium** (voice, POV, "made us feel something") | **Chase in build.** Sharpen interviewer persona; make the takeaway literary; bake a "felt" beat into the demo. | ~2–3h |
-| **"Where Claude belongs"** (novel problem, real-world impact) | **Chase in pitch language only.** Position on bilateral value + civic-engagement adjacency in README and pitch. No extra build. | ~1h writing |
-| **Best Managed Agents use** | **Conditional Fri add.** Post-session research agent that runs 5–15min, produces deeper briefing for designer. **Gated on Thu progress + Michael Cohen's talk 2026-04-23 18:00 IST.** | ~4–6h |
+| **Creative medium** (voice, POV, "made us feel something") | Demo (25%) — "genuinely cool to watch" | Chase in build: interviewer voice, literary takeaway, one felt beat in the demo video. ~2–3h, and the work is Demo polish anyway. |
+| **"Where Claude belongs"** (novel problem, real-world impact) | Impact (30%) — breadth of use case, problem-statement fit | Chase in pitch + minor build: 2–3 stub templates visible in selector, framing in README and video. ~1–2h, same work we'd do for Impact. |
+| **Best Managed Agents use** | Opus 4.7 Use (25%) + Depth & Execution (20%) | Conditional Fri add, leaning yes if Thu is clean. Gated on Thu milestones + Michael Cohen's talk 2026-04-23 18:00 IST. ~4–6h. |
 
 ### Critical calendar items
 

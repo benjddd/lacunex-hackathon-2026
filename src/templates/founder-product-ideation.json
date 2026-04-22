@@ -49,8 +49,7 @@
         "target_user_archetype": "string",
         "concrete_instances": "string[]",
         "current_workarounds": "string[]",
-        "evidence_strength": "observed | inferred | assumed",
-        "confidence": "0-1"
+        "evidence_strength": "observed | inferred | assumed"
       },
       "meta_notice_hints": [
         "Founders often answer 'who' with broad categories ('small business owners', 'developers'). Notice vagueness.",

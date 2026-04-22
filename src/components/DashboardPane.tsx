@@ -91,7 +91,6 @@ function ObjectiveCard({
   fields,
   isActive,
 }: ObjectiveCardProps) {
-  const hasFields = Object.keys(fields).length > 0;
   return (
     <div
       className={`rounded-lg border px-4 py-3 transition ${
@@ -127,20 +126,20 @@ function ObjectiveCard({
         </span>
       </div>
 
-      {hasFields && (
-        <dl className="mt-3 space-y-1 text-[12px] leading-snug">
-          {Object.entries(fields)
-            .filter(([, v]) => v !== null && v !== undefined && v !== "")
-            .map(([k, v]) => (
+      {(() => {
+        const visible = Object.entries(fields).filter(([, v]) => !isEmptyValue(v));
+        if (visible.length === 0) return null;
+        return (
+          <dl className="mt-3 space-y-1.5 text-[12px] leading-snug">
+            {visible.map(([k, v]) => (
               <div key={k} className="flex gap-2">
-                <dt className="shrink-0 text-stone-500">{k}:</dt>
-                <dd className="text-stone-800">
-                  {typeof v === "string" ? v : JSON.stringify(v)}
-                </dd>
+                <dt className="shrink-0 text-stone-500">{humanizeKey(k)}:</dt>
+                <dd className="text-stone-800">{renderFieldValue(v)}</dd>
               </div>
             ))}
-        </dl>
-      )}
+          </dl>
+        );
+      })()}
 
       {keyQuotes.length > 0 && (
         <div className="mt-3 space-y-1">
@@ -162,4 +161,70 @@ function ObjectiveCard({
       )}
     </div>
   );
+}
+
+function isEmptyValue(v: unknown): boolean {
+  if (v === null || v === undefined) return true;
+  if (typeof v === "string") return v.trim().length === 0;
+  if (Array.isArray(v)) return v.length === 0;
+  if (typeof v === "object") return Object.keys(v as object).length === 0;
+  return false;
+}
+
+function humanizeKey(key: string): string {
+  // snake_case -> Title Case with spaces. Single edit surface for key display.
+  return key
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function renderFieldValue(v: unknown): React.ReactNode {
+  if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+    return String(v);
+  }
+  if (Array.isArray(v)) {
+    if (v.length === 0) return null;
+    // Array of primitives: comma-join. Array of objects: bullet list.
+    const firstItem = v[0];
+    if (
+      typeof firstItem === "string" ||
+      typeof firstItem === "number" ||
+      typeof firstItem === "boolean"
+    ) {
+      return v.join(", ");
+    }
+    return (
+      <ul className="space-y-1">
+        {v.map((item, i) => (
+          <li key={i} className="flex gap-1">
+            <span className="text-stone-400">·</span>
+            <span>{renderObjectSummary(item)}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  if (typeof v === "object" && v !== null) {
+    return renderObjectSummary(v);
+  }
+  return String(v);
+}
+
+function renderObjectSummary(obj: unknown): string {
+  if (typeof obj !== "object" || obj === null) return String(obj);
+  // For objects like { statement, evidence_status, ... } render
+  // "statement" first (if present), then append qualifiers.
+  const entries = Object.entries(obj).filter(([, v]) => !isEmptyValue(v));
+  if (entries.length === 0) return "";
+  // Prefer a main "statement"-like field as the leading phrase.
+  const mainKeys = ["statement", "description", "text", "label"];
+  const mainEntry = entries.find(([k]) => mainKeys.includes(k));
+  if (mainEntry) {
+    const rest = entries.filter(([k]) => k !== mainEntry[0]);
+    const restStr = rest
+      .map(([k, v]) => `${humanizeKey(k)}: ${String(v)}`)
+      .join(" · ");
+    return restStr ? `${String(mainEntry[1])} (${restStr})` : String(mainEntry[1]);
+  }
+  return entries.map(([k, v]) => `${humanizeKey(k)}: ${String(v)}`).join(" · ");
 }

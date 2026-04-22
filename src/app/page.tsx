@@ -32,6 +32,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [sessionClosed, setSessionClosed] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const openedRef = useRef(false);
   const startedAt = useRef(new Date().toISOString());
 
@@ -105,9 +106,38 @@ export default function Home() {
     [transcript, extraction, activeObjectiveId, sessionClosed, fetchTurn]
   );
 
+  const handleSave = useCallback(async () => {
+    setSaveStatus("saving…");
+    try {
+      const res = await fetch("/api/save-session", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          templateId: TEMPLATE.template_id,
+          transcript,
+          extraction,
+          activeObjectiveId,
+          startedAtIso: startedAt.current,
+        }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        path?: string;
+        turns?: number;
+        error?: string;
+      };
+      if (!res.ok || !data.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setSaveStatus(`saved · ${data.path} · ${data.turns} turns`);
+      setTimeout(() => setSaveStatus(null), 8000);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setSaveStatus(`save failed: ${msg}`);
+    }
+  }, [transcript, extraction, activeObjectiveId]);
+
   return (
     <div className="flex h-dvh flex-col bg-stone-50">
-      <header className="flex shrink-0 items-baseline justify-between border-b border-stone-200 bg-white px-6 py-3">
+      <header className="flex shrink-0 items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
         <div>
           <h1 className="text-lg font-semibold tracking-tight text-stone-900">
             CaptainSubtext
@@ -116,11 +146,24 @@ export default function Home() {
             Goal-directed interview · {TEMPLATE.name}
           </p>
         </div>
-        {sessionClosed && (
-          <span className="rounded-full bg-stone-200 px-3 py-1 text-xs text-stone-700">
-            Session closed
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {saveStatus && (
+            <span className="text-[11px] text-stone-500">{saveStatus}</span>
+          )}
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={transcript.length === 0}
+            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50 disabled:opacity-40"
+          >
+            Save session
+          </button>
+          {sessionClosed && (
+            <span className="rounded-full bg-stone-200 px-3 py-1 text-xs text-stone-700">
+              Session closed
+            </span>
+          )}
+        </div>
       </header>
 
       {errorMsg && (

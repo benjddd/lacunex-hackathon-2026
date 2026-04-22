@@ -53,3 +53,6 @@ notes-private/
 
 # Claude Code session state
 .claude/
+
+# Saved interview sessions — dev-only, contain user/participant content
+transcripts/

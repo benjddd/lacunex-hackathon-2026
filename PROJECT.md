@@ -79,6 +79,10 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D9 | No auth / no DB for POC | Session state in memory per browser tab |
 | D10 | Original scoping docs stay out of repo | They're thinking material, not product. The repo contains only work authored in-session. |
 | D11 | Git initialized locally today | Commits timestamped inside hackathon window — originality evidence |
+| D12 | Role naming | **Host** (was "designer"). **Participant** retained (rejects "guest" — would hurt credibility with research / policy / expert-elicitation operators). |
+| D13 | Natural-language template authoring | **Yes, but scheduled Thu afternoon** after meta-noticing core works. First cut if anything slips. Host never sees JSON — templates presented in human-readable form. |
+| D14 | GitHub remote | **github.com/Attius-Digital-Art/captainsubtext**, I'll create via `gh` when ready. Public from Day 1 — commit-trail transparency matters for originality evidence. |
+| D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** (new section per Q4) |
 
 ---
 

@@ -9,6 +9,7 @@ Read this first every session.
 ## Key docs in this repo
 
 - [PROJECT.md](PROJECT.md) — live tracker: timeline, decisions, open questions, submission checklist. **Update this whenever scope or decisions change.**
+- [CALENDAR.md](CALENDAR.md) — **read this at every session start.** Milestones and gates by IST datetime. If we're within 4h of a gate, surface it in your first response.
 - [INTERNAL.md](INTERNAL.md) — **gitignored** strategy notes (judging posture, positioning, naming). Read for context, never leak content from this file into the public repo or commits.
 - `tmp/files_extracted/*.md` — original scoping docs from a prior Claude session. **These are thinking material, not a spec.** Do not cite them as gospel; re-evaluate any claim against current reality. Not committed.
 

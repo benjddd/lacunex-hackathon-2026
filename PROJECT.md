@@ -32,6 +32,22 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | Originality rule | **Built entirely during the hackathon** — no pre-existing code/content |
 | Judging rounds | R1 async Apr 27 → R2 live Apr 28 12:00 EST → winners 12:45 EST |
 
+### Special prizes we're targeting
+
+| Prize | Our posture | Cost |
+|---|---|---|
+| **Creative medium** (voice, POV, "made us feel something") | **Chase in build.** Sharpen interviewer persona; make the takeaway literary; bake a "felt" beat into the demo. | ~2–3h |
+| **"Where Claude belongs"** (novel problem, real-world impact) | **Chase in pitch language only.** Position on bilateral value + civic-engagement adjacency in README and pitch. No extra build. | ~1h writing |
+| **Best Managed Agents use** | **Conditional Fri add.** Post-session research agent that runs 5–15min, produces deeper briefing for designer. **Gated on Thu progress + Michael Cohen's talk 2026-04-23 18:00 IST.** | ~4–6h |
+
+### Critical calendar items
+
+| When (IST) | Event | Action |
+|---|---|---|
+| **Thu 2026-04-23 18:00 IST** | "Claude Managed Agents with Michael Cohen" live session | **Watch live if we're pursuing Prize C.** |
+| Fri 2026-04-24 00:00 IST | Live Session Three (Mike Brown, prev winner) | Optional; watch if energy permits. |
+| Sun 2026-04-27 01:00 IST | Submissions open in CV platform (prior hours) | Final buffer. |
+
 ---
 
 ## 3. Timeline (IST, assumes ~14h working days)
@@ -109,6 +125,8 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 |---|---|---|
 | Voice integration eats Fri/Sat and breaks demo polish | High | Hard cut: if voice isn't clean by Fri evening IST, ship text-only with a single voice stub |
 | Meta-notices feel canned in demo — kills the "wow" moment | High (product thesis) | Thu is dedicated to iterating meta-noticing prompts against a real dry-run transcript |
+| Managed Agents add (Prize C) eats into core polish | Medium | Hard gate: only proceed Fri if Thu core is solid and Michael Cohen's talk shows a clean path |
+| "Just another AI interviewer" perception from judges | Medium (dilutes Prize B + main) | Positioning in README/pitch emphasizes bilateral value + non-questionnaire + live-not-post-hoc |
 | No demo subject decided → Sat recording is weak | Medium | Start with current plan; reflect during first real test Thu evening |
 | Anthropic API key not provisioned when I need to wire the first call | Medium | User aware; will ping on first blocker |
 | Model ID drift — we code to Opus 4.7 but availability changes | Low | Model IDs in one config module |

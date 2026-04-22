@@ -1,16 +1,24 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Turn } from "@/lib/types";
+import type { RoleLabels, Turn } from "@/lib/types";
+import { DEFAULT_ROLE_LABELS } from "@/lib/types";
 
 interface ChatPaneProps {
   transcript: Turn[];
   isLoading: boolean;
   onSend: (text: string) => void;
   disabled?: boolean;
+  roleLabels?: RoleLabels;
 }
 
-export function ChatPane({ transcript, isLoading, onSend, disabled }: ChatPaneProps) {
+export function ChatPane({
+  transcript,
+  isLoading,
+  onSend,
+  disabled,
+  roleLabels = DEFAULT_ROLE_LABELS,
+}: ChatPaneProps) {
   const [text, setText] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -41,12 +49,16 @@ export function ChatPane({ transcript, isLoading, onSend, disabled }: ChatPanePr
           </p>
         )}
         {transcript.map((turn) => (
-          <MessageBubble key={turn.index} turn={turn} />
+          <MessageBubble
+            key={turn.index}
+            turn={turn}
+            roleLabels={roleLabels}
+          />
         ))}
         {isLoading && (
           <div className="flex items-center gap-2 text-stone-500 text-sm">
             <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-amber-600" />
-            Host is thinking…
+            {roleLabels.host} is thinking…
           </div>
         )}
       </div>
@@ -83,7 +95,13 @@ export function ChatPane({ transcript, isLoading, onSend, disabled }: ChatPanePr
   );
 }
 
-function MessageBubble({ turn }: { turn: Turn }) {
+function MessageBubble({
+  turn,
+  roleLabels,
+}: {
+  turn: Turn;
+  roleLabels: RoleLabels;
+}) {
   const isHost = turn.role === "host";
   return (
     <div className={`flex ${isHost ? "justify-start" : "justify-end"}`}>
@@ -99,7 +117,7 @@ function MessageBubble({ turn }: { turn: Turn }) {
             isHost ? "text-amber-800" : "text-slate-300"
           }`}
         >
-          {isHost ? "Host" : "You"}
+          {isHost ? roleLabels.host : roleLabels.participant}
         </div>
         <div className="whitespace-pre-wrap">{turn.text}</div>
       </div>

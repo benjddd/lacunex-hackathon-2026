@@ -6,6 +6,7 @@ import { DashboardPane } from "@/components/DashboardPane";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import {
   emptyExtraction,
+  DEFAULT_ROLE_LABELS,
   type ConductorDecision,
   type ExtractionState,
   type Template,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/types";
 
 const TEMPLATE = founderTemplate as unknown as Template;
+const ROLE_LABELS = TEMPLATE.role_labels ?? DEFAULT_ROLE_LABELS;
 
 interface TurnResponse {
   decision: ConductorDecision;
@@ -179,6 +181,7 @@ export default function Home() {
             isLoading={isLoading}
             onSend={handleParticipantSend}
             disabled={sessionClosed}
+            roleLabels={ROLE_LABELS}
           />
         </div>
         <div className="w-[400px] shrink-0">

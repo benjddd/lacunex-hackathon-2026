@@ -96,7 +96,14 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D12 | Role naming | **Host** (was "designer"). **Participant** retained (rejects "guest" — would hurt credibility with research / policy / expert-elicitation operators). |
 | D13 | Natural-language template authoring | **Yes, but scheduled Thu afternoon** after meta-noticing core works. First cut if anything slips. Host never sees JSON — templates presented in human-readable form. |
 | D14 | GitHub remote | **github.com/Attius-Digital-Art/captainsubtext**, I'll create via `gh` when ready. Public from Day 1 — commit-trail transparency matters for originality evidence. |
-| D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** (new section per Q4) |
+| D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** |
+| D16 | Founder brief reframed to **Founder Investment Evaluation** | Host = Investor, Participant = Founder. Fixes the Host/Participant separation the original framing collapsed (the founder was both roles). Objectives unchanged; persona updated to investor-doing-DD; `role_labels` field added to brief schema and UI reads it. Same `template_id`. |
+| D17 | Second brief = **Civic Consultation** (Facilitator/Resident) | Authored Fri. Maximally different from Founder brief in tone + stakes; strongest Impact-30% evidence (non-feasible-today scale). Fallback: Expert Knowledge Elicitation. |
+| D18 | Drop "3 stub briefs in selector" in favor of 2 **fully functional** briefs | A greyed-out selector reads as marketing; a real second brief that actually runs is the domain-neutrality proof. |
+| D19 | Role labels per brief | `role_labels: { host, participant }` optional on brief; UI falls back to "Host/Participant." Enables Clinician/Patient, Facilitator/Resident, etc. without UI changes. |
+| D20 | Anti-positioning refined | Post-hoc transcript analysis is trivial now; the uniquely-hard work is the conversation itself. Sharpens the USP line across README, video, written summary. |
+| D21 | Terminology per glossary (INTERNAL §8) | User-facing never uses "JSON schema" / "extraction_schema" / "conductor" / "meta-noticing." |
+| D22 | Stack concern resolved | Next.js + API routes is appropriate; Built-with-Opus-4.6 winners all won on domain fit, not infra sophistication. Stack stays. |
 
 ---
 
@@ -152,8 +159,22 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 ---
 
-## 9. Current status
+## 9. Current status — Day 1 close
 
-**Phase:** Day 1 gate met. Repo public at [github.com/Attius-Digital-Art/captainsubtext](https://github.com/Attius-Digital-Art/captainsubtext). Next.js app scaffolded, Anthropic SDK wired, Founder Product Ideation template authored, Conductor + Extraction prompts live, two-panel UI running. End-to-end smoke test passed — conductor made a genuinely adaptive move on the first fuzzy participant turn (resisted the obvious "narrow your user" probe, went for problem-reality instead), extraction caught 3 unstated assumptions from one turn. User now driving a real test interview at localhost:3000.
+**Day 1 gate met and then some.** Repo public at [github.com/Attius-Digital-Art/captainsubtext](https://github.com/Attius-Digital-Art/captainsubtext). What shipped beyond the original Day-1 target:
 
-**Next:** collect iteration notes from the test drive → tune prompts → commit Day-1 iteration → close for the day → Thu morning starts meta-noticing + Managed Agents talk at 18:00 IST.
+- Next.js scaffold + MIT LICENSE + README + CLAUDE.md + PROJECT.md + CALENDAR.md + INTERNAL.md (gitignored).
+- Anthropic SDK + prompt caching on static blocks; model IDs isolated in one config.
+- Conductor prompt + Extraction prompt (non-fatal failure path); stateless `/api/turn` route.
+- Two-panel UI (ChatPane + DashboardPane) with live insight capture rendering.
+- Founder brief (now reframed: **Founder Investment Evaluation**, Investor/Founder roles, `role_labels` supported through UI).
+- Save-session endpoint + button (local-fs, dev-only; Fri deploy will switch to client download or Vercel KV).
+- Synthetic participant mode: five cross-domain personas (founder / PM / academic / designer / operations) + `/api/simulate-participant` + `npm run sim` CLI for 10× faster Thu prompt iteration.
+- Real test drive demonstrated the thesis: conductor made adaptive moves (*"That's the container, not the thing"*), extraction caught cross-turn inference (*"building for genuine market need vs. hackathon submission novelty"* as a load-bearing untested assumption).
+- Resilience fixes (token ceilings raised; extraction failure non-fatal).
+
+**Decisions locked tonight:** reframe D16, second brief D17, drop stubs D18, role labels D19, anti-positioning D20, terminology glossary D21, stack resolved D22.
+
+**Open for Thu 08:00 IST:** start meta-noticing prompt module. Use synthetic participants to iterate. Watch Michael Cohen Managed Agents talk at 18:00 IST (gates Fri's Managed Agents decision). Decide demo subject by Thu 22:00 IST.
+
+**Open for Fri:** Civic Consultation brief (authored fresh), Managed Agents post-session research agent (conditional on Thu talk), Vercel deploy.

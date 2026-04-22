@@ -1,6 +1,7 @@
 "use client";
 
 import type { ExtractionState, Template } from "@/lib/types";
+import { DEFAULT_ROLE_LABELS } from "@/lib/types";
 
 interface DashboardPaneProps {
   template: Template;
@@ -13,11 +14,12 @@ export function DashboardPane({
   extraction,
   activeObjectiveId,
 }: DashboardPaneProps) {
+  const roleLabels = template.role_labels ?? DEFAULT_ROLE_LABELS;
   return (
     <div className="flex h-full flex-col border-l border-stone-200 bg-white">
       <header className="border-b border-stone-200 px-6 py-4">
         <h2 className="text-xs uppercase tracking-widest text-stone-500">
-          Host dashboard
+          {roleLabels.host} dashboard
         </h2>
         <p className="mt-1 text-sm font-medium text-stone-900">
           {template.name}

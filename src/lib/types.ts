@@ -57,17 +57,28 @@ export interface TakeawayArtifact {
   tone: string;
 }
 
+export interface RoleLabels {
+  host: string; // e.g. "Investor", "Facilitator", "Researcher", "Clinician"
+  participant: string; // e.g. "Founder", "Resident", "Expert", "Patient"
+}
+
 export interface Template {
   template_id: string;
   version: string;
   name: string;
   description: string;
+  role_labels?: RoleLabels; // falls back to "Host" / "Participant"
   interviewer_persona: InterviewerPersona;
   session_shape: SessionShape;
   objectives: ObjectiveTemplate[];
   meta_noticing_layer: MetaNoticingLayer;
   takeaway_artifact: TakeawayArtifact;
 }
+
+export const DEFAULT_ROLE_LABELS: RoleLabels = {
+  host: "Host",
+  participant: "Participant",
+};
 
 // ---------- Runtime session state ----------
 

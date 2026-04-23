@@ -1,14 +1,18 @@
 import type { Template } from "./types";
 import founderProductIdeation from "@/templates/founder-product-ideation.json";
 import postIncidentWitness from "@/templates/post-incident-witness.json";
+import civicConsultation from "@/templates/civic-consultation.json";
 
-// Registry of available briefs. Second brief (Post-Incident Witness) shipped
-// Thu 2026-04-23 to demonstrate domain-neutrality of the four-call
-// architecture — Investor/Founder vs. Investigator/Witness cover very
-// different tones, stakes, and success criteria with the same core loop.
+// Three domain-neutral briefs:
+// - Founder Investment Evaluation (Investor/Founder) — Thu 2026-04-22
+// - Post-Incident Witness Interview (Investigator/Witness) — Thu 2026-04-23
+// - Civic Consultation (Facilitator/Resident) — Thu 2026-04-23
+// Covers VC due-diligence, incident investigation, and civic engagement.
+// Same four-call architecture, three completely different tones and stakes.
 const templates: Template[] = [
   founderProductIdeation as unknown as Template,
   postIncidentWitness as unknown as Template,
+  civicConsultation as unknown as Template,
 ];
 
 export function listTemplates(): Pick<Template, "template_id" | "name" | "description">[] {

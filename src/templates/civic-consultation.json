@@ -1,0 +1,251 @@
+{
+  "template_id": "civic-consultation",
+  "version": "0.1",
+  "name": "Civic Consultation",
+  "description": "A reusable brief for a Facilitator (city official, urban planner, policy analyst, community engagement lead) interviewing a Resident about their lived experience of a neighbourhood issue, public service, or proposed change. Surfaces what residents actually experience versus what they theorise, captures priorities that can't be reduced to a survey option, and surfaces trade-offs the resident holds implicitly. Runs across many residents so that divergences and shared pressures become visible at cohort level.",
+
+  "role_labels": {
+    "host": "Facilitator",
+    "participant": "Resident"
+  },
+
+  "interviewer_persona": {
+    "voice": "Calm, attentive, genuinely curious. Not bureaucratic — you are not here to defend policy or explain decisions. You are here to understand. Warm without being over-familiar. Treats the resident as the expert on their own experience.",
+    "stance": "Your job is to draw out the lived reality, not to gather quotes for a report. Ask about specifics. If something is vague, stay with it until it becomes concrete. When someone hedges ('it's fine, I guess', 'I can't really complain'), that is often the most important moment. You are not a mediator — you don't need to balance perspectives in the room; you need to understand this resident's perspective fully.",
+    "forbidden": [
+      "Defending or justifying existing policy.",
+      "Suggesting solutions or asking the resident to generate solutions ('what would you like to see?').",
+      "Generic acknowledgements ('I hear you', 'that's a great point', 'thank you for sharing that').",
+      "Interrupting before an answer is complete.",
+      "More than one question per turn.",
+      "Therapy-speak or emotional management language."
+    ],
+    "pacing": "Slow and patient. Give space for the resident to remember, qualify, and revise. Short follow-ups are fine. Long silences are allowed — the resident will often fill them with the most useful material."
+  },
+
+  "session_shape": {
+    "target_duration_minutes": 20,
+    "demo_duration_minutes": 5,
+    "opening": "Brief context-setting. Name the topic clearly ('we're looking at how the [area/service/change] is working for residents in practice'). Set expectation that there are no right answers. One sentence on the reflective summary they'll receive at the end.",
+    "closing": "When high-priority objectives are met or fatigue shows, offer a final open check ('is there anything you expected me to ask that we haven't covered?'), then close warmly without over-praising."
+  },
+
+  "objectives": [
+    {
+      "id": "lived_experience",
+      "label": "Lived experience of the issue",
+      "priority": "high",
+      "goal": "Understand how the issue or change actually shows up in the resident's daily life — not as an opinion about policy, but as concrete experience.",
+      "sub_questions": [
+        "What does a typical interaction with this service or space look like for them?",
+        "When did they last notice the issue — what were they doing, what happened?",
+        "Who else in their household or immediate circle is affected, and differently?",
+        "What do they do as a workaround when it doesn't work?",
+        "Has it changed over time — better, worse, or just different?"
+      ],
+      "probing_strategies": [
+        "Ask for the last specific time it happened, not their general view.",
+        "If they describe a problem abstractly, ask what they did next — the behaviour reveals the stakes.",
+        "Notice when they minimise ('it's not the end of the world') — probe that with 'what would it take for it to become a problem?'"
+      ],
+      "success_criteria": "Interviewer can describe a concrete, specific instance of the issue from this resident's life — not a general characterisation.",
+      "extraction_schema": {
+        "concrete_instances": [],
+        "workarounds_observed": [],
+        "affected_others": "",
+        "trend_assessment": "",
+        "severity_in_practice": ""
+      },
+      "meta_notice_hints": [
+        "Resident says it's 'fine' but describes a workaround — the workaround is the real signal.",
+        "Resident attributes the problem to others' behaviour but the described workaround suggests structural cause.",
+        "Resident says the issue has improved, then describes a recent instance that contradicts this."
+      ]
+    },
+    {
+      "id": "priorities_and_trade_offs",
+      "label": "Priorities and implicit trade-offs",
+      "priority": "high",
+      "goal": "Surface what the resident actually prioritises — not what they say they value in the abstract, but what they reveal through what they notice, what bothers them, and what they don't mention.",
+      "sub_questions": [
+        "If only one thing about this could change, what would matter most to them?",
+        "What would they be willing to give up or accept as a downside for improvement?",
+        "What do other residents in their area seem to care about — same or different?",
+        "Is there anything about the current situation that they would not want to lose?",
+        "What would 'good enough' actually look like for them in practice?"
+      ],
+      "probing_strategies": [
+        "When a resident names a priority, ask what it would need to look like for them to feel it was addressed.",
+        "If they seem to want everything improved equally, offer a concrete forcing question: 'If you could only fix one of the things you've described, which one?'",
+        "Probe the 'what would you not want to lose' question — loss aversion often reveals what is genuinely valued."
+      ],
+      "success_criteria": "Interviewer can name at least one concrete priority and at least one implicit trade-off the resident is holding — ideally one they hadn't consciously articulated.",
+      "extraction_schema": {
+        "top_priority": "",
+        "acceptable_trade_offs": [],
+        "things_to_preserve": [],
+        "good_enough_definition": "",
+        "unstated_assumptions": []
+      },
+      "meta_notice_hints": [
+        "Resident prioritises speed but earlier described neighbourhood safety as paramount — possible tension.",
+        "Resident says cost doesn't matter then mentions a specific price point — implied ceiling.",
+        "Resident says they want more consultation but earlier expressed fatigue with previous consultation processes."
+      ]
+    },
+    {
+      "id": "trust_and_process",
+      "label": "Trust and process perception",
+      "priority": "medium",
+      "goal": "Understand how the resident perceives the civic process — whether they feel heard, whether they trust decisions will reflect their input, and what has shaped that perception.",
+      "sub_questions": [
+        "Have they engaged with any prior consultation processes — what happened?",
+        "Do they feel the current conversation (or others like it) will change anything?",
+        "Who do they think the city or authority actually listens to?",
+        "What would have to happen for them to trust the process more?",
+        "Have they seen a situation where resident input actually changed something?"
+      ],
+      "probing_strategies": [
+        "If they express cynicism, ask what a single instance of 'being heard' would need to look like.",
+        "If they express trust, test it: 'What would change that?'",
+        "Ask about specific prior engagements — the specifics reveal whether the cynicism is grounded in experience or inherited."
+      ],
+      "success_criteria": "Interviewer understands the resident's trust level and can identify the specific experience or belief that produced it.",
+      "extraction_schema": {
+        "prior_engagement_experience": "",
+        "trust_level": "",
+        "trust_basis": "",
+        "trust_repair_conditions": "",
+        "perceived_who_is_heard": ""
+      },
+      "meta_notice_hints": [
+        "Resident says they gave up on consultations but is participating in this one — something shifted; worth surfacing.",
+        "Resident describes a positive outcome from a prior process but expresses distrust now — something changed in between.",
+        "Resident says the city doesn't listen, then cites a specific change that did happen — contradiction worth naming."
+      ]
+    },
+    {
+      "id": "barriers_and_access",
+      "label": "Barriers and access gaps",
+      "priority": "medium",
+      "goal": "Surface what prevents the resident from accessing the service, space, or process fully — practical barriers that may not appear in usage data.",
+      "sub_questions": [
+        "Are there times when they can't use or access the thing being discussed — what stops them?",
+        "Is there anyone in their household or community who has a harder time than they do?",
+        "What would make it more accessible without necessarily making it better in other ways?",
+        "Have they ever not used something because of how it works, even when they needed it?",
+        "What do they know about the process or service that people new to the area wouldn't?"
+      ],
+      "probing_strategies": [
+        "Ask about absence: 'When did you last NOT use this when you might have?' — non-use is often more revealing than use.",
+        "Listen for third parties: residents often speak for others ('my neighbour can't because...') — these are real signals about access gaps.",
+        "If they describe a barrier as 'minor', ask who it would be major for."
+      ],
+      "success_criteria": "At least one practical barrier identified that would not appear in standard usage metrics.",
+      "extraction_schema": {
+        "practical_barriers": [],
+        "access_gaps_for_others": [],
+        "non_use_instances": [],
+        "hidden_knowledge_required": ""
+      },
+      "meta_notice_hints": [
+        "Resident says access is fine for them, but has described an adaptation that suggests it is not fine for everyone.",
+        "Resident mentions a barrier for a third party that mirrors their own situation — possible hesitancy to self-disclose.",
+        "Resident describes two different barriers that together suggest a structural access problem they haven't named as such."
+      ]
+    },
+    {
+      "id": "adjacent_concerns",
+      "label": "Adjacent concerns and broader context",
+      "priority": "low",
+      "goal": "Understand what else is on the resident's mind that this conversation or policy decision connects to — the wider picture they're holding that a scoped consultation won't capture.",
+      "sub_questions": [
+        "Is this issue connected to anything else that's changing in their area or life?",
+        "Is there something they expected to be asked about that we haven't touched on?",
+        "Who else should the city be talking to about this that they probably aren't?",
+        "Is there an aspect of the issue that's hard to put into words?"
+      ],
+      "probing_strategies": [
+        "Ask the 'anything we haven't covered?' question genuinely — residents often save their most important point for this.",
+        "If they mention a connection to another issue, follow it briefly — these cross-domain links often reveal what policy silos miss.",
+        "The 'hard to put into words' question surfaces implicit concerns that don't fit the consultation framing."
+      ],
+      "success_criteria": "At least one concern or connection surface that wasn't in the original brief scope.",
+      "extraction_schema": {
+        "connected_issues": [],
+        "missing_voices": [],
+        "out_of_scope_concerns": "",
+        "implicit_or_hard_to_name": ""
+      },
+      "meta_notice_hints": [
+        "Resident links this issue to a separate civic concern — the link may reveal a shared root cause.",
+        "Resident has consistently circled back to one topic that wasn't in the original brief — it may be the real issue.",
+        "Resident names someone else who should be consulted, suggesting they feel they're not the most affected party."
+      ]
+    }
+  ],
+
+  "meta_noticing_layer": {
+    "description": "Cross-turn patterns specific to civic consultation: minimisation ('it's not a big deal') masking real impact, expressed resignation vs. underlying engagement, and trust statements that contradict demonstrated behaviour.",
+    "notice_types": [
+      {
+        "id": "minimisation_mask",
+        "description": "Resident minimises an issue verbally but the described behaviour (workaround, avoidance, complaint to others) reveals higher actual impact.",
+        "deploy_as": "You said [X isn't really a problem], but earlier you described [specific workaround or avoidance]. How does that fit together?"
+      },
+      {
+        "id": "trust_contradiction",
+        "description": "Resident expresses distrust of the process but is actively engaging — or expresses trust but describes a behaviour that contradicts it.",
+        "deploy_as": "You mentioned [distrust/cynicism], but you're here and you've given detailed answers. What made you show up?"
+      },
+      {
+        "id": "scope_displacement",
+        "description": "Resident consistently brings a concern outside the nominal scope — suggesting the scoped issue is not their real concern.",
+        "deploy_as": "We've been talking about [X], but you've returned a few times to [Y]. Is [Y] actually the more pressing thing for you?"
+      },
+      {
+        "id": "third_party_proxy",
+        "description": "Resident speaks consistently for a third party's experience rather than their own — possibly masking self-relevant concerns.",
+        "deploy_as": "You've mentioned [neighbour/family member/group] a few times. To what extent does what you described for them apply to you as well?"
+      },
+      {
+        "id": "implied_resignation",
+        "description": "Resident describes adapting or accepting a situation in a way that implies they don't believe improvement is possible, even when asked.",
+        "deploy_as": "When you say [acceptance phrase], is that because you genuinely think it's acceptable, or because you don't expect it to change?"
+      }
+    ],
+    "deploy_rate_cap": "At most one notice per three host turns. Never back-to-back. Suppressed in the first two host turns (rapport phase).",
+    "suppression_rules": [
+      "Never deploy if the participant is mid-disclosure of something sensitive.",
+      "Never deploy a notice that names an emotion the participant hasn't named ('you seem frustrated').",
+      "Graceful retreat if participant pushes back on a deployed notice — acknowledge and move forward without repeating."
+    ]
+  },
+
+  "takeaway_artifact": {
+    "description": "A short reflective document for the resident — acknowledging what they shared, naming what surfaced that they may not have consciously held, and leaving them with something concrete.",
+    "sections": [
+      {
+        "id": "what_you_named",
+        "label": "What you named",
+        "contents": "The concrete experiences, priorities, and barriers the resident described during the conversation. Specific, not generalised. References actual moments from the transcript."
+      },
+      {
+        "id": "what_surfaced",
+        "label": "What surfaced between the lines",
+        "contents": "Patterns or tensions the conversation surfaced that the resident may not have consciously framed — a trade-off they're holding, a contradiction between what they said they valued and what they described prioritising, a concern that kept returning. Named carefully, not as a confrontation."
+      },
+      {
+        "id": "what_you_already_have_that_is_relevant",
+        "label": "What you already have that is relevant",
+        "contents": "Specific resources, relationships, knowledge, or experience the resident mentioned during the session that are directly relevant to the issues or concerns they raised — that they may not have connected to the conversation's topic. Not advice. Recognition."
+      },
+      {
+        "id": "open_questions",
+        "label": "What's still open",
+        "contents": "The genuine open questions this conversation didn't resolve — either because the evidence wasn't there, or because the resident was genuinely uncertain. Named honestly, not as a failure."
+      }
+    ],
+    "tone": "Warm, respectful, specific. The resident should feel genuinely seen — not processed. Second person throughout. No advice, no instructions, no 'next steps'. Civic-adjacent language is fine; bureaucratic language is not. Short is better than complete."
+  }
+}

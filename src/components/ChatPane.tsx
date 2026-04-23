@@ -10,6 +10,7 @@ interface ChatPaneProps {
   onSend: (text: string) => void;
   disabled?: boolean;
   roleLabels?: RoleLabels;
+  showReasoning?: boolean;
 }
 
 export function ChatPane({
@@ -18,6 +19,7 @@ export function ChatPane({
   onSend,
   disabled,
   roleLabels = DEFAULT_ROLE_LABELS,
+  showReasoning = false,
 }: ChatPaneProps) {
   const [text, setText] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -53,6 +55,7 @@ export function ChatPane({
             key={turn.index}
             turn={turn}
             roleLabels={roleLabels}
+            showReasoning={showReasoning}
           />
         ))}
         {isLoading && (
@@ -98,44 +101,69 @@ export function ChatPane({
 function MessageBubble({
   turn,
   roleLabels,
+  showReasoning = false,
 }: {
   turn: Turn;
   roleLabels: RoleLabels;
+  showReasoning?: boolean;
 }) {
+  const [reasoningOpen, setReasoningOpen] = useState(false);
   const isHost = turn.role === "host";
+  const hasReasoning = isHost && showReasoning && !!turn.reasoning;
+
   return (
     <div className={`flex ${isHost ? "justify-start" : "justify-end"}`}>
-      <div
-        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-          isHost
-            ? "bg-amber-50 text-stone-900 rounded-bl-sm"
-            : "bg-slate-800 text-white rounded-br-sm"
-        }`}
-      >
+      <div className={`max-w-[75%] ${isHost ? "" : ""}`}>
         <div
-          className={`mb-1 flex items-center gap-2 text-[10px] uppercase tracking-wider ${
-            isHost ? "text-amber-800" : "text-slate-300"
+          className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+            isHost
+              ? "bg-amber-50 text-stone-900 rounded-bl-sm"
+              : "bg-slate-800 text-white rounded-br-sm"
           }`}
         >
-          <span>{isHost ? roleLabels.host : roleLabels.participant}</span>
-          {isHost && typeof turn.anchor_turn === "number" && (
-            <span
-              title="The platform re-opened a prior turn — cross-turn reasoning"
-              className="rounded-full bg-amber-200/80 px-2 py-0.5 text-[9px] font-medium tracking-wider text-amber-900"
-            >
-              ↩ re-opened turn {turn.anchor_turn}
-            </span>
-          )}
-          {isHost && turn.deployed_notice && (
-            <span
-              title={`Cross-turn notice (${turn.deployed_notice.type}) across turns [${turn.deployed_notice.anchors.join(", ")}]: ${turn.deployed_notice.observation}`}
-              className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-medium tracking-wider text-emerald-900"
-            >
-              ◆ {turn.deployed_notice.type.replace(/_/g, " ")} · turns {turn.deployed_notice.anchors.join(",")}
-            </span>
-          )}
+          <div
+            className={`mb-1 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider ${
+              isHost ? "text-amber-800" : "text-slate-300"
+            }`}
+          >
+            <span>{isHost ? roleLabels.host : roleLabels.participant}</span>
+            {isHost && typeof turn.anchor_turn === "number" && (
+              <span
+                title="The platform re-opened a prior turn — cross-turn reasoning"
+                className="rounded-full bg-amber-200/80 px-2 py-0.5 text-[9px] font-medium tracking-wider text-amber-900"
+              >
+                ↩ re-opened turn {turn.anchor_turn}
+              </span>
+            )}
+            {isHost && turn.deployed_notice && (
+              <span
+                title={`Cross-turn notice (${turn.deployed_notice.type}) across turns [${turn.deployed_notice.anchors.join(", ")}]: ${turn.deployed_notice.observation}`}
+                className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-medium tracking-wider text-emerald-900"
+              >
+                ◆ {turn.deployed_notice.type.replace(/_/g, " ")} · turns {turn.deployed_notice.anchors.join(",")}
+              </span>
+            )}
+          </div>
+          <div className="whitespace-pre-wrap">{turn.text}</div>
         </div>
-        <div className="whitespace-pre-wrap">{turn.text}</div>
+
+        {hasReasoning && (
+          <div className="mt-1 px-1">
+            <button
+              type="button"
+              onClick={() => setReasoningOpen((o) => !o)}
+              className="flex items-center gap-1 text-[10px] text-stone-400 hover:text-stone-600 transition-colors"
+            >
+              <span className="text-[8px]">{reasoningOpen ? "▾" : "▸"}</span>
+              why this question?
+            </button>
+            {reasoningOpen && (
+              <div className="mt-1 rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-[11px] leading-relaxed text-stone-600">
+                {turn.reasoning}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

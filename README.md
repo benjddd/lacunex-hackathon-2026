@@ -29,23 +29,45 @@ A Host describes what they want to learn — objectives, hypotheses, success cri
 
 ---
 
-## Architecture (Day 1 slice)
+## Architecture
 
 ```
 Participant speaks
         │
         ▼
-┌───────────────────────┐    ┌──────────────────────┐
-│  1. Conductor         │    │  2. Extraction       │
-│  Decides next move    │    │  Updates dashboard   │
-│  + renders utterance  │    │  (in parallel)       │
-└─────────┬─────────────┘    └──────────┬───────────┘
-          │                              │
-          ▼                              ▼
-   Interviewer speaks            Host dashboard updates
+┌───────────────────────────────────────────────────────┐
+│  Phase 1 (parallel)                                   │
+│                                                       │
+│  ┌─────────────────────┐  ┌───────────────────────┐  │
+│  │  Meta-Noticing      │  │  Extraction           │  │
+│  │  Opus 4.7           │  │  Haiku 4.5            │  │
+│  │  Spots contradictions│  │  Updates structured   │  │
+│  │  hedging, implied-  │  │  insight dashboard    │  │
+│  │  not-said across    │  │  in real time         │  │
+│  │  turns (≥2 anchors) │  │                       │  │
+│  └──────────┬──────────┘  └───────────┬───────────┘  │
+│             │ candidate notices        │ new state     │
+└─────────────┼──────────────────────────┼──────────────┘
+              ▼                          ▼
+┌───────────────────────────────────────────────────────┐
+│  Phase 2                                              │
+│                                                       │
+│  ┌─────────────────────────────────────────────────┐ │
+│  │  Conductor · Opus 4.7                           │ │
+│  │  Receives notices + updated state               │ │
+│  │  Decides: probe / switch / deploy notice /      │ │
+│  │           anchor_return / wrap_up               │ │
+│  │  Renders the next question in the host's voice  │ │
+│  └─────────────────────┬───────────────────────────┘ │
+└────────────────────────┼──────────────────────────────┘
+                         ▼
+              Interviewer speaks
+              Host dashboard updates live
 ```
 
-All four calls are shipped. Meta-noticing currently runs as an evaluable layer against saved sessions (via `npm run eval:noticing`) with a hard kill rule (notices must cite ≥2 distinct turn indices + a verbatim quote from each). Its live wiring into the interview loop is gated.
+All four calls run every turn. Meta-Noticing runs in parallel with Extraction; candidate notices are passed to the Conductor which decides whether and how to deploy them. A notice can only be deployed if it cites ≥2 distinct turn indices (enforced in code — not just in the prompt). The Conductor enforces a rate cap (one deploy per three turns) and suppression rules.
+
+At session close, a fifth call — **Takeaway Synthesis** (Opus 4.7) — produces the participant's reflective artifact.
 
 Everything is one Next.js app. API routes call Claude directly. Session state is client-owned — the UI sends the full transcript with each turn. Simple, serverless-safe, no database.
 
@@ -63,7 +85,7 @@ Everything is one Next.js app. API routes call Claude directly. Session state is
 |---|---|---|---|---|
 | **Conductor** | `claude-opus-4-7` | every Host turn | system (persona + objectives + rules) | JSON: `{reasoning, move_type, move_target, next_utterance}` |
 | **Extraction** | `claude-haiku-4-5-20251001` | every Host turn, in parallel with Conductor | system (objectives + schemas) | full live-insight state (non-fatal on failure: prior state is preserved) |
-| **Meta-Noticing** | `claude-opus-4-7` | every Host turn (coming Thu) | system (notice types + hints) | JSON array of candidate notices with `transcript_anchors`, `why_cross_turn`, `strength`, `suggested_deploy_language` |
+| **Meta-Noticing** | `claude-opus-4-7` | every Host turn, parallel with Extraction | system (notice types + hints) | JSON array of candidate notices with `transcript_anchors`, `why_cross_turn`, `strength`, `suggested_deploy_language` |
 | **Takeaway Synthesis** | `claude-opus-4-7` | once at session end | system (artifact tone + sections) | markdown for the participant's reflective artifact |
 
 Model IDs are isolated in [src/lib/models.ts](src/lib/models.ts) — one edit to swap. **Prompt caching** is on for every system block (stable within a session), so turn-over-turn cost drops to cache rates after turn 1.

@@ -5,6 +5,7 @@ import { ChatPane } from "@/components/ChatPane";
 import { TakeawayArtifact } from "@/components/TakeawayArtifact";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
 import {
   emptyExtraction,
   DEFAULT_ROLE_LABELS,
@@ -18,6 +19,7 @@ import {
 const TEMPLATE_MAP: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
   [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
+  [civicTemplate.template_id]: civicTemplate as unknown as Template,
 };
 
 interface DeployedNoticePayload {

@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
 import { DEFAULT_ROLE_LABELS, type Round, type Template } from "@/lib/types";
 
 const AVAILABLE_BRIEFS: Template[] = [
   founderTemplate as unknown as Template,
   postIncidentTemplate as unknown as Template,
+  civicTemplate as unknown as Template,
 ];
 
 export default function HostPage() {

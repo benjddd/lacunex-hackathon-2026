@@ -114,7 +114,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D30 | **Branding: CaptainSubtext brand can stay** (competitor scan updated the analysis) | Subagent C's competitor scan found that the BRAND NAME is defensible as a compound (like "Uber" isn't a generic term), but "subtext" as the explanatory noun is contested by Subtext Labs. Verdict: keep `CaptainSubtext` for repo + UI header + README title; swap out "subtext" the noun in pitch copy for **"cross-turn reasoning"**. Headline: *"Cross-turn reasoning, rendered live. Both sides leave with something."* |
 | D31 | **Rounds as first-class entity** | Shipped. A round groups N sessions run against the same brief. Storage `transcripts/rounds/round-<id>.json`. API: GET/POST `/api/rounds`, GET/POST `/api/rounds/[id]`, POST `/api/rounds/[id]/aggregate`. UI: `/rounds` list + `/rounds/[id]` detail with aggregate view. User said this is a MUST — it's the feature that genuinely demonstrates "comparable signal across N," the claim no competitor makes. |
 | D32 | **Cross-participant aggregation with 6 pattern types** | Shipped. `callAggregate` Opus 4.7 call takes N sessions, returns: convergent_problem / divergent_framing / shared_assumption / recurring_hedge / outlier / unasked_across_cohort patterns, top themes, signal strength per objective, routing recommendations ("you should also loop in X about Y"). Verbatim quotes cited per pattern. |
-| D33 | **Meta-noticing stays out of live /api/turn loop** (user-reverted) | The layer works end-to-end via `scripts/eval-noticing.ts` harness (v1 prompt: 100% kill-rule pass, 8/10 earned per analyst judgment). User reverted an attempt to wire `callMetaNoticing` into `/api/turn`; respecting that. Meta-noticing stays evaluable but not live in the interview loop. Revisit post-Thu-22:00 gate. |
+| D33 | **Meta-noticing wired live into /api/turn** | Restored in commit 28edb63 after loss during subagent branch operations. Runs in parallel with Extraction on every turn past the 2nd participant turn. Candidates passed to Conductor. Response includes `notices: {candidates, deployed}`. Conductor deploy rate-cap and suppression rules enforced. |
 | D34 | **Subagent-driven feature bundle** | Subagent A recommended bundle: cross-participant aggregation (shipped as D31/D32) + `outside_consideration` meta-notice type (shipped in meta-noticing v1) + protected `what_you_already_have` takeaway section + N2 (objective stall detector) + N3 (anchor_return conductor move). N2/N3 deferred — stretch if time on Fri. |
 | D35 | **News hooks locked for demo video** | Subagent C locked verbatim quotes: Cloudflare Nov 18 2025 postmortem *"there were assumptions made in the past, that the list of columns returned by a query like this would only include the 'default' database"* (our thesis in their words); Grenfell RBKC *"ignored or minimised… belittled and brushed aside"* (institutional self-indictment, camera-safe); plus AWS us-east-1 Oct 2025 and nuclear tacit-knowledge loss as range. |
 | D36 | **Managed Agents pre-briefing for Cohen talk** | Subagent B: conditional GO at 6-hour scope IF Cohen talk confirms (a) `web_search`+`web_fetch` in `agent_toolset_20260401`, (b) stable file I/O, (c) no account allowlist blocks. Default NO. Pricing $0.08/session-hour + token rates + $10/1K web_search. CrossBeam pattern = single long-horizon Agent SDK run, not parallel sub-agents as previously reported. |
@@ -192,3 +192,26 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 **Open for Thu 08:00 IST:** start meta-noticing prompt module. Use synthetic participants to iterate. Watch Michael Cohen Managed Agents talk at 18:00 IST (gates Fri's Managed Agents decision). Decide demo subject by Thu 22:00 IST.
 
 **Open for Fri:** Civic Consultation brief (authored fresh), Managed Agents post-session research agent (conditional on Thu talk), Vercel deploy.
+
+---
+
+## 10. Current status — Day 2 / Thu 2026-04-23
+
+**Shipped beyond Day-1 baseline:**
+- Meta-noticing wired live into `/api/turn` (parallel with Extraction; candidates → Conductor; deployed notice attaches to Host Turn with green chip in UI). Commit 28edb63.
+- Post-Incident Witness Interview brief (`post-incident-witness.json`) — Investigator/Witness role labels, 5 objectives, full extraction schema. Second brief proves domain-neutrality of the four-call architecture.
+- N3 `anchor_return` conductor move: new move_type, anchor_turn stored on Turn, amber chip rendered in ChatPane.
+- 12 synthetic personas (up from 5). `confident_confabulator` added for testing overconfidence patterns.
+- Screen separation: `/p/[templateId]` participant-only chat route (no dashboard); `/host` hub listing briefs + rounds + screen-separation explainer. Demo banner on `/`.
+- Reasoning hover: Conductor's `reasoning` field now stored on Turn, surfaced as collapsible "why this question?" disclosure in the host/combined view only.
+- Civic Consultation brief (`civic-consultation.json`) — Facilitator/Resident, 5 objectives. Third brief for maximum domain-neutrality proof.
+- Conductor prompt hardening: echo/elaboration probe rule, wrap-up bookend (open check-in before wrap_up), defensiveness handling, mood/tone adaptation.
+- README architecture diagram updated to show all four calls + meta-noticing in parallel pipeline.
+- "Making of" document written (gitignored, submission material).
+- Demo round: 15 synthetic sessions aggregated. 10 themes, 10 patterns.
+
+**Open gates:**
+- Thu 22:00 IST: Managed Agents go/no-go + demo subject decision.
+- Fri: Vercel deploy (save-session → client-side download fallback on hosted env), final polish.
+- Sat: Record demo video (AI-produced: screen recording + ElevenLabs voiceover + Descript assembly).
+- Sun: Submit.

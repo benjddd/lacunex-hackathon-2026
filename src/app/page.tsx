@@ -91,6 +91,7 @@ export default function Home() {
           role: "host",
           text: data.decision.next_utterance,
           at: new Date().toISOString(),
+          reasoning: data.decision.reasoning ?? undefined,
           anchor_turn:
             data.decision.move_type === "anchor_return" &&
             typeof data.decision.anchor_turn === "number"
@@ -223,14 +224,32 @@ export default function Home() {
       });
       const data = (await res.json()) as {
         ok?: boolean;
+        hosted?: boolean;
         sessionId?: string;
+        payload?: unknown;
         path?: string;
         turns?: number;
         error?: string;
       };
-      if (!res.ok || !data.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-      if (data.sessionId) setSavedSessionId(data.sessionId);
-      setSaveStatus(`saved · ${data.path} · ${data.turns} turns`);
+      if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+      if (data.hosted && data.payload) {
+        // Hosted env (Vercel): trigger client-side JSON download instead.
+        const blob = new Blob([JSON.stringify(data.payload, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `session-${data.sessionId ?? Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        if (data.sessionId) setSavedSessionId(data.sessionId);
+        setSaveStatus(`downloaded · ${data.turns} turns`);
+      } else {
+        if (!data.ok) throw new Error(data.error ?? "save failed");
+        if (data.sessionId) setSavedSessionId(data.sessionId);
+        setSaveStatus(`saved · ${data.path} · ${data.turns} turns`);
+      }
       setTimeout(() => setSaveStatus(null), 8000);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -325,6 +344,7 @@ export default function Home() {
             onSend={handleParticipantSend}
             disabled={sessionClosed}
             roleLabels={ROLE_LABELS}
+            showReasoning
           />
         </div>
         <div className="w-[400px] shrink-0">

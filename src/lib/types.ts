@@ -89,6 +89,10 @@ export interface Turn {
   role: TurnRole;
   text: string;
   at: string; // ISO timestamp
+  // Conductor reasoning for this host turn — surfaced in the host view as
+  // a collapsible "why this question?" disclosure. Never shown to the
+  // participant in the /p/[templateId] route.
+  reasoning?: string;
   // When the conductor chose move_type=anchor_return on this Host turn, the
   // anchor_turn is the earlier turn index being re-opened. The UI renders a
   // small "↩ re-opened turn N" chip on the bubble to make cross-turn

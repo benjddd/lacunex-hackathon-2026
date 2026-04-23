@@ -27,6 +27,33 @@ export async function POST(req: Request) {
   const now = new Date();
   const stamp = now.toISOString().replace(/[:.]/g, "-");
   const sessionId = stamp; // stable handle used to pair takeaways later
+
+  // On Vercel (or any hosted env without a writable filesystem), return the
+  // session payload for client-side download instead of writing to disk.
+  // The interview loop, takeaway, and meta-noticing all work normally — only
+  // server-side persistence is unavailable.
+  const isHosted = !!process.env.VERCEL;
+  if (isHosted) {
+    const payload = {
+      session_id: sessionId,
+      saved_at: now.toISOString(),
+      template_id: body.templateId,
+      started_at: body.startedAtIso ?? null,
+      active_objective_id: body.activeObjectiveId,
+      note: body.note ?? null,
+      turn_count: body.transcript.length,
+      transcript: body.transcript,
+      extraction: body.extraction,
+    };
+    return NextResponse.json({
+      ok: true,
+      hosted: true,
+      sessionId,
+      payload, // client downloads this as JSON
+      turns: body.transcript.length,
+    });
+  }
+
   const filename = `session-${sessionId}.json`;
   const dir = path.join(process.cwd(), "transcripts");
   const filepath = path.join(dir, filename);

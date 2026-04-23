@@ -132,6 +132,61 @@ export interface Session {
   deployed_notices: { turn: number; type: string }[];
 }
 
+// ---------- Rounds (cross-participant) ----------
+//
+// A Round groups N sessions run against the same brief. The same host kicks
+// off a round, invites / receives participants, and reads the aggregate
+// cross-participant insight. The individual session remains useful on its own
+// (each participant gets their reflective takeaway), but the host's primary
+// artifact at scale is the Round aggregate, not any one transcript.
+
+export type RoundStatus = "open" | "aggregating" | "closed";
+
+export interface Round {
+  round_id: string; // stable timestamp-based id, e.g. "2026-04-23T12-00-00-000Z"
+  label: string; // human-facing, e.g. "Q2 founder due diligence cohort"
+  template_id: string;
+  created_at: string;
+  target_participant_count: number | null; // optional planning number
+  session_ids: string[]; // ordered insertion order
+  status: RoundStatus;
+  aggregate: RoundAggregate | null; // populated by POST /api/rounds/[id]/aggregate
+  note: string | null;
+}
+
+export type AggregatePatternType =
+  | "convergent_problem" // most participants name ~same pain
+  | "divergent_framing" // participants disagree on what the problem is
+  | "shared_assumption" // assumption surfaced in multiple sessions
+  | "recurring_hedge" // same hedge pattern across participants
+  | "outlier" // one participant's strong signal that diverges from the rest
+  | "unasked_across_cohort"; // something the brief should probe but no participant raised
+
+export interface AggregatePattern {
+  type: AggregatePatternType;
+  summary: string; // 1-2 sentences
+  supporting_session_ids: string[]; // which sessions evidence this pattern
+  sample_quotes: { session_id: string; turn: number; text: string }[];
+  strength: "strong" | "weak";
+}
+
+export interface RoundAggregate {
+  generated_at: string;
+  session_count: number;
+  patterns: AggregatePattern[];
+  top_themes: string[]; // cross-cohort theme names, ~5-10
+  signal_strength_by_objective: Record<string, number>; // 0..1 per objective
+  summary: string; // 1-paragraph narrative of the cohort
+  // Routing recommendations — "you heard this, but you should also talk to
+  // role X about Y." Produced when the aggregate surfaces findings relevant
+  // to audiences adjacent to the host's original scope.
+  routing_recommendations: {
+    audience: string; // "your PM", "the legal team", "a clinician"
+    finding: string; // what they'd want to know
+    supporting_session_ids: string[];
+  }[];
+}
+
 export function emptyExtraction(template: Template): ExtractionState {
   const per_objective: Record<string, ObjectiveState> = {};
   for (const obj of template.objectives) {

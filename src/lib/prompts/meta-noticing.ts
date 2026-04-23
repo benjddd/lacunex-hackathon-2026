@@ -200,6 +200,19 @@ function judgeNotice(n: MetaNotice): MetaNoticeVerdict {
   if (typeof n.why_cross_turn !== "string" || n.why_cross_turn.trim().length === 0) {
     return { notice: n, passed: false, reason: "missing or empty why_cross_turn" };
   }
+  // v2 guard — why_cross_turn must contain at least one double-quoted substring
+  // (i.e. a verbatim fragment from the transcript). Prevents drift back to
+  // generic "this is only visible across turns" copy. Exception: numbers, if
+  // the quoted stretch is a literal phrase, the eval harness catches specific
+  // content overlap separately.
+  if (!/[“"][^“"]{1,}["”]/.test(n.why_cross_turn)) {
+    return {
+      notice: n,
+      passed: false,
+      reason:
+        "why_cross_turn has no quoted verbatim fragment — recurrence/contrast must be anchored in transcript text",
+    };
+  }
   return { notice: n, passed: true, reason: "" };
 }
 

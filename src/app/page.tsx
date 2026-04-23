@@ -221,6 +221,12 @@ export default function Home() {
             <span className="text-[11px] text-stone-500">{saveStatus}</span>
           )}
           <Link
+            href="/rounds"
+            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+          >
+            Rounds
+          </Link>
+          <Link
             href="/sessions"
             className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
           >

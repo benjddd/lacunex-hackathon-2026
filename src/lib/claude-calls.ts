@@ -20,6 +20,13 @@ import {
   parseMetaNoticingOutput,
   type MetaNotice,
 } from "./prompts/meta-noticing";
+import {
+  buildAggregateSystem,
+  buildAggregateUser,
+  parseAggregateOutput,
+  type AggregateInputSession,
+} from "./prompts/aggregate";
+import type { RoundAggregate } from "./types";
 import type {
   ConductorDecision,
   ExtractionState,
@@ -35,6 +42,7 @@ const CONDUCTOR_MAX_TOKENS = 1200;
 const EXTRACTION_MAX_TOKENS = 6000;
 const TAKEAWAY_MAX_TOKENS = 2500;
 const META_NOTICING_MAX_TOKENS = 2000;
+const AGGREGATE_MAX_TOKENS = 8000; // N sessions + patterns + quotes = larger output
 
 function textFromMessage(content: Array<{ type: string; text?: string }>): string {
   for (const block of content) {
@@ -171,4 +179,39 @@ export async function callMetaNoticing(params: {
 
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
   return parseMetaNoticingOutput(raw);
+}
+
+// Cross-participant aggregation: given N sessions run against the same brief,
+// produce the cohort-level RoundAggregate. Uses Opus 4.7 — this is one-shot
+// per round, quality matters, cost is not a hot path.
+//
+// Input size: O(N * transcript_size). For N=20 * ~2000 tokens/transcript that
+// approaches but stays under Opus 4.7 context. If we hit ceilings, options
+// include summarising per-session first (two-stage) or batching. Start simple.
+export async function callAggregate(params: {
+  template: Template;
+  sessions: AggregateInputSession[];
+}): Promise<RoundAggregate> {
+  if (params.sessions.length === 0) {
+    throw new Error("callAggregate requires at least one session");
+  }
+  const anthropic = getAnthropic();
+  const systemText = buildAggregateSystem(params.template);
+  const userText = buildAggregateUser(params.sessions);
+
+  const response = await anthropic.messages.create({
+    model: MODELS.takeaway, // reuse Opus 4.7 pointer; aggregation is quality-over-speed
+    max_tokens: AGGREGATE_MAX_TOKENS,
+    system: [
+      {
+        type: "text",
+        text: systemText,
+        cache_control: { type: "ephemeral" },
+      },
+    ],
+    messages: [{ role: "user", content: userText }],
+  });
+
+  const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
+  return parseAggregateOutput(raw);
 }

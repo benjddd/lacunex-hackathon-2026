@@ -93,6 +93,7 @@ export default function Home() {
           role: "host",
           text: data.decision.next_utterance,
           at: new Date().toISOString(),
+          objective_id: data.activeObjectiveId ?? undefined,
           reasoning: data.decision.reasoning ?? undefined,
           anchor_turn:
             data.decision.move_type === "anchor_return" &&
@@ -357,6 +358,7 @@ export default function Home() {
             template={TEMPLATE}
             extraction={extraction}
             activeObjectiveId={activeObjectiveId}
+            transcript={transcript}
           />
         </div>
       </main>

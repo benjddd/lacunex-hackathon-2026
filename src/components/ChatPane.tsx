@@ -23,6 +23,7 @@ export function ChatPane({
 }: ChatPaneProps) {
   const [text, setText] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -30,6 +31,14 @@ export function ChatPane({
       behavior: "smooth",
     });
   }, [transcript.length, isLoading]);
+
+  // Re-focus the input after each host turn so the participant doesn't have
+  // to click back into the field between turns.
+  useEffect(() => {
+    if (!isLoading && !disabled) {
+      textareaRef.current?.focus();
+    }
+  }, [isLoading, disabled]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +81,7 @@ export function ChatPane({
       >
         <div className="flex gap-2">
           <textarea
+            ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {

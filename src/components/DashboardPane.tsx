@@ -1,20 +1,33 @@
 "use client";
 
-import type { ExtractionState, Template } from "@/lib/types";
+import { useState } from "react";
+import type { ExtractionState, Template, Turn } from "@/lib/types";
 import { DEFAULT_ROLE_LABELS } from "@/lib/types";
 
 interface DashboardPaneProps {
   template: Template;
   extraction: ExtractionState;
   activeObjectiveId: string | null;
+  transcript?: Turn[];
 }
 
 export function DashboardPane({
   template,
   extraction,
   activeObjectiveId,
+  transcript = [],
 }: DashboardPaneProps) {
   const roleLabels = template.role_labels ?? DEFAULT_ROLE_LABELS;
+
+  // Build a turn-index set per objective from the transcript for traceability.
+  const turnsByObjective: Record<string, number[]> = {};
+  for (const t of transcript) {
+    if (t.role === "host" && t.objective_id) {
+      if (!turnsByObjective[t.objective_id]) turnsByObjective[t.objective_id] = [];
+      turnsByObjective[t.objective_id].push(t.index);
+    }
+  }
+
   return (
     <div className="flex h-full flex-col border-l border-stone-200 bg-white">
       <header className="border-b border-stone-200 px-6 py-4">
@@ -34,12 +47,15 @@ export function DashboardPane({
             <ObjectiveCard
               key={obj.id}
               label={obj.label}
+              goal={obj.goal}
+              successCriteria={obj.success_criteria}
               priority={obj.priority}
               completeness={state?.completeness ?? 0}
               confidence={state?.confidence ?? 0}
               keyQuotes={state?.key_quotes ?? []}
               fields={state?.fields ?? {}}
               isActive={active}
+              turnIndices={turnsByObjective[obj.id] ?? []}
             />
           );
         })}
@@ -76,23 +92,30 @@ export function DashboardPane({
 
 interface ObjectiveCardProps {
   label: string;
+  goal: string;
+  successCriteria: string;
   priority: string;
   completeness: number;
   confidence: number;
   keyQuotes: { turn: number; text: string }[];
   fields: Record<string, unknown>;
   isActive: boolean;
+  turnIndices: number[];
 }
 
 function ObjectiveCard({
   label,
+  goal,
+  successCriteria,
   priority,
   completeness,
   confidence,
   keyQuotes,
   fields,
   isActive,
+  turnIndices,
 }: ObjectiveCardProps) {
+  const [goalOpen, setGoalOpen] = useState(false);
   return (
     <div
       className={`rounded-lg border px-4 py-3 transition ${
@@ -115,6 +138,27 @@ function ObjectiveCard({
           {priority}
         </span>
       </div>
+
+      {/* Goal / traceability toggle */}
+      <button
+        type="button"
+        onClick={() => setGoalOpen((o) => !o)}
+        className="mt-1 flex items-center gap-1 text-[10px] text-stone-400 hover:text-stone-600 transition-colors"
+      >
+        <span className="text-[8px]">{goalOpen ? "▾" : "▸"}</span>
+        what we're trying to learn
+        {turnIndices.length > 0 && (
+          <span className="ml-1 text-stone-400">
+            · turns {turnIndices.join(", ")}
+          </span>
+        )}
+      </button>
+      {goalOpen && (
+        <div className="mt-1.5 rounded-md border border-stone-100 bg-stone-50/80 px-3 py-2 text-[11px] leading-relaxed text-stone-600 space-y-1">
+          <p>{goal}</p>
+          <p className="text-stone-400 italic">Done when: {successCriteria}</p>
+        </div>
+      )}
 
       <div className="mt-2 flex items-center gap-3">
         <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-stone-100">

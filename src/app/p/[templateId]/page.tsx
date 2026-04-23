@@ -121,6 +121,7 @@ function ParticipantPageContent({
           role: "host",
           text: data.decision.next_utterance,
           at: new Date().toISOString(),
+          objective_id: data.activeObjectiveId ?? undefined,
           anchor_turn:
             data.decision.move_type === "anchor_return" &&
             typeof data.decision.anchor_turn === "number"

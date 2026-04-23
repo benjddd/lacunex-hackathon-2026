@@ -87,12 +87,15 @@ export async function callConductor(params: {
     if (extraSystemNudge) {
       systemBlocks.push({ type: "text", text: extraSystemNudge });
     }
+    const t0 = Date.now();
     const response = await anthropic.messages.create({
       model: MODELS.conductor,
       max_tokens: CONDUCTOR_MAX_TOKENS,
       system: systemBlocks,
       messages: [{ role: "user", content: userText }],
     });
+    const usage = response.usage as { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
+    console.log(`[conductor] ${Date.now() - t0}ms | in=${usage.input_tokens} out=${usage.output_tokens} cache_read=${usage.cache_read_input_tokens ?? 0} cache_write=${usage.cache_creation_input_tokens ?? 0}`);
     const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
     return parseConductorOutput(raw);
   };
@@ -120,6 +123,7 @@ export async function callExtraction(params: {
   const systemText = buildExtractionSystem(params.template);
   const userText = buildExtractionUser(params);
 
+  const t0 = Date.now();
   const response = await anthropic.messages.create({
     model: MODELS.extraction,
     max_tokens: EXTRACTION_MAX_TOKENS,
@@ -132,6 +136,8 @@ export async function callExtraction(params: {
     ],
     messages: [{ role: "user", content: userText }],
   });
+  const eu = response.usage as { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
+  console.log(`[extraction] ${Date.now() - t0}ms | in=${eu.input_tokens} out=${eu.output_tokens} cache_read=${eu.cache_read_input_tokens ?? 0} cache_write=${eu.cache_creation_input_tokens ?? 0}`);
 
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
   return parseExtractionOutput(raw);
@@ -152,6 +158,7 @@ export async function callTakeaway(params: {
     participantLabel,
   });
 
+  const t0 = Date.now();
   const response = await anthropic.messages.create({
     model: MODELS.takeaway,
     max_tokens: TAKEAWAY_MAX_TOKENS,
@@ -164,6 +171,8 @@ export async function callTakeaway(params: {
     ],
     messages: [{ role: "user", content: userText }],
   });
+  const tu = response.usage as { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
+  console.log(`[takeaway] ${Date.now() - t0}ms | in=${tu.input_tokens} out=${tu.output_tokens} cache_read=${tu.cache_read_input_tokens ?? 0} cache_write=${tu.cache_creation_input_tokens ?? 0}`);
 
   // Plain markdown, not JSON. Strip any fences the model might sneak in.
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
@@ -192,6 +201,7 @@ export async function callMetaNoticing(params: {
 
   // System prompt is stable within a session → prompt caching, same pattern
   // as conductor/extraction/takeaway.
+  const t0 = Date.now();
   const response = await anthropic.messages.create({
     model: MODELS.metaNoticing,
     max_tokens: META_NOTICING_MAX_TOKENS,
@@ -204,6 +214,8 @@ export async function callMetaNoticing(params: {
     ],
     messages: [{ role: "user", content: userText }],
   });
+  const mu = response.usage as { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
+  console.log(`[meta-noticing] ${Date.now() - t0}ms | in=${mu.input_tokens} out=${mu.output_tokens} cache_read=${mu.cache_read_input_tokens ?? 0} cache_write=${mu.cache_creation_input_tokens ?? 0}`);
 
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
   return parseMetaNoticingOutput(raw);

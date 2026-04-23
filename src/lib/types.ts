@@ -89,6 +89,10 @@ export interface Turn {
   role: TurnRole;
   text: string;
   at: string; // ISO timestamp
+  // Which objective the conductor was advancing when it produced this turn.
+  // Set on host turns; undefined on participant turns. Enables goal→outcome
+  // traceability in the dashboard.
+  objective_id?: string;
   // Conductor reasoning for this host turn — surfaced in the host view as
   // a collapsible "why this question?" disclosure. Never shown to the
   // participant in the /p/[templateId] route.

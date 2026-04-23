@@ -54,6 +54,8 @@ export default function Home() {
     { turn: number; type: string }[]
   >([]);
   const [objectiveStallTurns, setObjectiveStallTurns] = useState(0);
+  const [prevExtraction, setPrevExtraction] = useState<ExtractionState | null>(null);
+  const [currentReasoning, setCurrentReasoning] = useState<string | null>(null);
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
@@ -109,7 +111,9 @@ export default function Home() {
             : undefined,
         };
         setTranscript([...withTranscript, hostTurn]);
+        setPrevExtraction(withExtraction);
         setExtraction(data.extraction);
+        setCurrentReasoning(data.decision.reasoning ?? null);
         setObjectiveStallTurns((prev) =>
           data.activeObjectiveId === withActive ? prev + 1 : 0
         );
@@ -358,8 +362,10 @@ export default function Home() {
           <DashboardPane
             template={TEMPLATE}
             extraction={extraction}
+            prevExtraction={prevExtraction}
             activeObjectiveId={activeObjectiveId}
             transcript={transcript}
+            currentReasoning={currentReasoning}
           />
         </div>
       </main>

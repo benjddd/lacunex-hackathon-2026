@@ -7,15 +7,19 @@ import { DEFAULT_ROLE_LABELS } from "@/lib/types";
 interface DashboardPaneProps {
   template: Template;
   extraction: ExtractionState;
+  prevExtraction?: ExtractionState | null;
   activeObjectiveId: string | null;
   transcript?: Turn[];
+  currentReasoning?: string | null;
 }
 
 export function DashboardPane({
   template,
   extraction,
+  prevExtraction,
   activeObjectiveId,
   transcript = [],
+  currentReasoning,
 }: DashboardPaneProps) {
   const roleLabels = template.role_labels ?? DEFAULT_ROLE_LABELS;
 
@@ -37,12 +41,23 @@ export function DashboardPane({
         <p className="mt-1 text-sm font-medium text-stone-900">
           {template.name}
         </p>
+        {currentReasoning && (
+          <p className="mt-2 text-[11px] leading-relaxed text-indigo-700 border-t border-stone-100 pt-2">
+            <span className="font-medium uppercase tracking-wider text-[9px] text-indigo-400 mr-1">tracking →</span>
+            {currentReasoning}
+          </p>
+        )}
       </header>
 
       <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
         {template.objectives.map((obj) => {
           const state = extraction.per_objective[obj.id];
+          const prevState = prevExtraction?.per_objective[obj.id];
           const active = obj.id === activeObjectiveId;
+          const completenessDelta =
+            prevState != null
+              ? (state?.completeness ?? 0) - prevState.completeness
+              : null;
           return (
             <ObjectiveCard
               key={obj.id}
@@ -56,6 +71,7 @@ export function DashboardPane({
               fields={state?.fields ?? {}}
               isActive={active}
               turnIndices={turnsByObjective[obj.id] ?? []}
+              completenessDelta={completenessDelta}
             />
           );
         })}
@@ -101,6 +117,7 @@ interface ObjectiveCardProps {
   fields: Record<string, unknown>;
   isActive: boolean;
   turnIndices: number[];
+  completenessDelta?: number | null;
 }
 
 function ObjectiveCard({
@@ -114,6 +131,7 @@ function ObjectiveCard({
   fields,
   isActive,
   turnIndices,
+  completenessDelta,
 }: ObjectiveCardProps) {
   const [goalOpen, setGoalOpen] = useState(false);
   return (
@@ -170,6 +188,16 @@ function ObjectiveCard({
         <span className="text-[11px] tabular-nums text-stone-500">
           {Math.round(completeness * 100)}%
         </span>
+        {completenessDelta != null && Math.abs(completenessDelta) > 0.03 && (
+          <span
+            title={`${completenessDelta > 0 ? "+" : ""}${Math.round(completenessDelta * 100)}% this turn`}
+            className={`text-[11px] font-medium ${
+              completenessDelta > 0 ? "text-emerald-600" : "text-amber-600"
+            }`}
+          >
+            {completenessDelta > 0 ? "↑" : "↓"}
+          </span>
+        )}
       </div>
 
       {(() => {

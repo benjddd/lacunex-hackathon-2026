@@ -94,7 +94,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D10 | Original scoping docs stay out of repo | They're thinking material, not product. The repo contains only work authored in-session. |
 | D11 | Git initialized locally today | Commits timestamped inside hackathon window — originality evidence |
 | D12 | Role naming | **Host** (was "designer"). **Participant** retained (rejects "guest" — would hurt credibility with research / policy / expert-elicitation operators). |
-| D13 | Natural-language template authoring | **Yes, but scheduled Thu afternoon** after meta-noticing core works. First cut if anything slips. Host never sees JSON — templates presented in human-readable form. |
+| D13 | Natural-language template authoring | **CLOSED — formally cut.** Thu calendar was compressed to meta-noticing only; authoring was never built and is not in scope for this submission. The 3 fully-functional briefs + host journey prove the platform without it. |
 | D14 | GitHub remote | **github.com/Attius-Digital-Art/captainsubtext**, I'll create via `gh` when ready. Public from Day 1 — commit-trail transparency matters for originality evidence. |
 | D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** |
 | D16 | Founder brief reframed to **Founder Investment Evaluation** | Host = Investor, Participant = Founder. Fixes the Host/Participant separation the original framing collapsed (the founder was both roles). Objectives unchanged; persona updated to investor-doing-DD; `role_labels` field added to brief schema and UI reads it. Same `template_id`. |
@@ -109,15 +109,19 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D25 | **Thu 08:00–18:00 compressed to meta-noticing only + 60-min competitor scan** | Was multi-item (meta-noticing + takeaway + authoring). Takeaway already shipped today; authoring demoted to Sat-if-time. Single focus on meta-noticing Thu morning is the highest-leverage work remaining. |
 | D26 | **Meta-noticing kill rule baked into prompt schema** | Per devil's-advocate rubric: a notice only "counts" if it cites ≥2 distinct turn indices AND would not fire on either turn in isolation. The prompt requires `transcript_anchors: number[]` (≥2 unique) and `why_cross_turn: string`. Orchestrator rejects notices that fail the rule. If by Thu 22:00 no genuinely surprising notice emerges from synthetic-adversary runs, **meta-noticing is cut from the demo's peak beats**. |
 | D27 | **Demo opens with a brief running**, not architecture | Subagent 3 finding from 4.6 winner patterns: every winner was introduced by *what* they did, not *how*. Video storyboard flips: 0:00–0:30 is the interview + dashboard filling, architecture diagram is a 15–20s reveal mid-video. |
-| D28 | **Numeric compression claim is mandatory** | Subagent 3: every 4.6 winner headline had one ("weeks → hours," "39K LOC in 30 hrs"). Working draft in INTERNAL §14. Must appear in video closing 10s AND the 100–200 word summary. |
+| D28 | **Numeric compression claim — LOCKED:** *"15 minutes → structured insight that would take a researcher 3 hours to extract post-hoc."* | Appears in video closing 10s AND the 100–200 word written summary. Defensible: post-hoc transcript analysis + thematic coding on a 15-min interview is documented at 2–4 hours in qualitative research literature. |
 | D29 | `what_you_already_have_that_is_relevant` protected as closing frame | Subagent 2 identified it as our single unusual move without a plausible competitor. Becomes the literal closing frame of the video. Prompt gets hardened with transcript-anchor examples. |
 | D30 | **Branding: CaptainSubtext brand can stay** (competitor scan updated the analysis) | Subagent C's competitor scan found that the BRAND NAME is defensible as a compound (like "Uber" isn't a generic term), but "subtext" as the explanatory noun is contested by Subtext Labs. Verdict: keep `CaptainSubtext` for repo + UI header + README title; swap out "subtext" the noun in pitch copy for **"cross-turn reasoning"**. Headline: *"Cross-turn reasoning, rendered live. Both sides leave with something."* |
 | D31 | **Rounds as first-class entity** | Shipped. A round groups N sessions run against the same brief. Storage `transcripts/rounds/round-<id>.json`. API: GET/POST `/api/rounds`, GET/POST `/api/rounds/[id]`, POST `/api/rounds/[id]/aggregate`. UI: `/rounds` list + `/rounds/[id]` detail with aggregate view. User said this is a MUST — it's the feature that genuinely demonstrates "comparable signal across N," the claim no competitor makes. |
 | D32 | **Cross-participant aggregation with 6 pattern types** | Shipped. `callAggregate` Opus 4.7 call takes N sessions, returns: convergent_problem / divergent_framing / shared_assumption / recurring_hedge / outlier / unasked_across_cohort patterns, top themes, signal strength per objective, routing recommendations ("you should also loop in X about Y"). Verbatim quotes cited per pattern. |
 | D33 | **Meta-noticing wired live into /api/turn** | Restored in commit 28edb63 after loss during subagent branch operations. Runs in parallel with Extraction on every turn past the 2nd participant turn. Candidates passed to Conductor. Response includes `notices: {candidates, deployed}`. Conductor deploy rate-cap and suppression rules enforced. |
-| D34 | **Subagent-driven feature bundle** | Subagent A recommended bundle: cross-participant aggregation (shipped as D31/D32) + `outside_consideration` meta-notice type (shipped in meta-noticing v1) + protected `what_you_already_have` takeaway section + N2 (objective stall detector) + N3 (anchor_return conductor move). N2/N3 deferred — stretch if time on Fri. |
+| D34 | **Subagent-driven feature bundle** | All shipped: cross-participant aggregation (D31/D32), `outside_consideration` meta-notice type, protected `what_you_already_have` takeaway section, N2 objective stall detector (commit 940e338), N3 anchor_return. Bundle complete. |
 | D35 | **News hooks locked for demo video** | Subagent C locked verbatim quotes: Cloudflare Nov 18 2025 postmortem *"there were assumptions made in the past, that the list of columns returned by a query like this would only include the 'default' database"* (our thesis in their words); Grenfell RBKC *"ignored or minimised… belittled and brushed aside"* (institutional self-indictment, camera-safe); plus AWS us-east-1 Oct 2025 and nuclear tacit-knowledge loss as range. |
 | D36 | **Managed Agents pre-briefing for Cohen talk** | Subagent B: conditional GO at 6-hour scope IF Cohen talk confirms (a) `web_search`+`web_fetch` in `agent_toolset_20260401`, (b) stable file I/O, (c) no account allowlist blocks. Default NO. Pricing $0.08/session-hour + token rates + $10/1K web_search. CrossBeam pattern = single long-horizon Agent SDK run, not parallel sub-agents as previously reported. |
+| D37 | **Host journey complete** | Round creation (brief selector + participant count), shareable `/p/[templateId]?round=[id]` link shown on creation + in round detail, participant page reads `?round=` and auto-saves session on End. Rounds and sessions pages show hosted-mode notice on Vercel. |
+| D38 | **Goal→outcome traceability in dashboard** | Each host turn now carries `objective_id`. DashboardPane shows collapsible "what we're trying to learn" per objective (goal text + success criteria + turn indices). Judges can see the causal chain: goal → questions → extraction result. |
+| D39 | **Token + timing logs** | All 4 Claude calls log ms + input/output/cache_read/cache_write token counts to server console. Now visible during prompt iteration. |
+| D40 | **Managed Agents — implementation direction settled** | Unique value: post-session claim-verification agent. Reads transcript, identifies 2–3 factual claims, uses `web_search` to check them, appends "claims verified" section to takeaway. Directly demonstrates anti-confabulation thesis. Route: `/api/sessions/[id]/research`. Awaiting user GO after Cohen talk. |
 
 ---
 
@@ -214,4 +218,30 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 - Thu 22:00 IST: Managed Agents go/no-go + demo subject decision.
 - Fri: Vercel deploy (save-session → client-side download fallback on hosted env), final polish.
 - Sat: Record demo video (AI-produced: screen recording + ElevenLabs voiceover + Descript assembly).
+
+---
+
+## 11. Current status — Day 3 / Thu 2026-04-23 (continued)
+
+**Shipped this session:**
+- N2 stall detector: conductor receives `stall_turns` per objective, fires soft rule at ≥4/≥6 turns. Commit 940e338.
+- Host journey complete (D37): round creation with brief selector + participant count, shareable participant link shown in `/rounds` and `/rounds/[id]`, participant page reads `?round=` and auto-saves on End. Commit 0677737.
+- Goal→outcome traceability (D38): `objective_id` stored on host turns, DashboardPane exposes "what we're trying to learn" + turn indices per objective. Commit 4cc52ca.
+- Input auto-refocus fix: textarea re-focuses after each host turn (demo UX). Commit 4cc52ca.
+- Token + timing logs (D39): all 4 Claude calls log ms + token counts including cache_read/cache_write. Commit 4cc52ca.
+- Vercel hosted-mode: rounds GET returns `hosted: true` flag, UI shows local-deployment notice. Commits 76519e1, 7f78416.
+- Round creation UX: participant count field, hosted-mode notice, Vercel-safe GET. Commit 7f78416.
+- D13 formally closed (NL template authoring cut from scope).
+- D28 locked: "15 minutes → 3 hours saved" compression claim.
+- Model IDs verified: `claude-opus-4-7` correct (no date suffix), Haiku suffix confirmed.
+- Claude Design verified as real product with Claude Code handoff.
+
+**Open gates:**
+- **Managed Agents (D40):** user watching Cohen talk. GO signal → build `/api/sessions/[id]/research` claim-verification agent today. NO-GO → move to Fri polish.
+- **6 civic simulations:** running in background (bdoxl3et7). Aggregate after completion.
+- **Problem statements:** user must visit the submission form to inspect the "Track Name" dropdown — can't be found externally.
+- **Demo subject (Q4):** still undecided. Gate: today by end of Cohen talk.
+- **Terminology pass:** UI still uses some internal terms (objectives, meta-noticing). Low priority, Fri task.
+- **Sat:** Record demo video. Tool recommendation: ScreenApp (free) + ElevenLabs voiceover OR one month Pictory (~$30).
+- **Sun:** Final video edit + written summary + submit.
 - Sun: Submit.

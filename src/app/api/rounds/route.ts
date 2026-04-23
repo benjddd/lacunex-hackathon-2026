@@ -21,6 +21,7 @@ interface CreateRoundBody {
   templateId: string;
   label: string;
   targetParticipantCount?: number | null;
+  targetDate?: string | null;
   note?: string | null;
   sessionIds?: string[];
 }
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
       templateId: body.templateId,
       label: body.label,
       targetParticipantCount: body.targetParticipantCount ?? null,
+      targetDate: body.targetDate ?? null,
       note: body.note ?? null,
       sessionIds: body.sessionIds ?? [],
     });

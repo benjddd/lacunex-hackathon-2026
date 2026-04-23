@@ -40,6 +40,7 @@ export async function createRound(params: {
   templateId: string;
   label: string;
   targetParticipantCount?: number | null;
+  targetDate?: string | null;
   note?: string | null;
   sessionIds?: string[];
 }): Promise<Round> {
@@ -50,6 +51,7 @@ export async function createRound(params: {
     template_id: params.templateId,
     created_at: now.toISOString(),
     target_participant_count: params.targetParticipantCount ?? null,
+    target_date: params.targetDate ?? null,
     session_ids: params.sessionIds ?? [],
     status: "open",
     aggregate: null,

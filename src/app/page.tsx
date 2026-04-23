@@ -387,6 +387,67 @@ export default function Home() {
           onClose={() => setTakeawayOpen(false)}
         />
       )}
+
+      {showWalkthrough && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setShowWalkthrough(false)}
+        >
+          <div
+            className="relative w-full max-w-lg rounded-xl bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-stone-100 px-6 py-4">
+              <h2 className="text-sm font-semibold text-stone-900">What you&apos;re looking at</h2>
+              <button
+                type="button"
+                onClick={() => setShowWalkthrough(false)}
+                className="text-stone-400 hover:text-stone-600 text-lg leading-none"
+              >
+                ×
+              </button>
+            </div>
+            <div className="px-6 py-5 space-y-4 text-sm text-stone-700">
+              <div className="space-y-3">
+                <Feature
+                  label="Left panel — participant chat"
+                  desc="This is exactly what the participant sees at /start. No dashboard, no badges — a natural conversation. The AI interviewer decides each question turn-by-turn from the full session state."
+                />
+                <Feature
+                  label="Right panel — host dashboard (live)"
+                  desc="Completeness bars fill in real time as the conversation runs. Each objective tracks its own structured evidence — not just a transcript summary. ↑/↓ arrows show confidence change per turn."
+                />
+                <Feature
+                  label="tracking → strip"
+                  desc="The conductor's stated reasoning after each turn. Not post-hoc — this is what the model said it was doing before generating the question."
+                />
+                <Feature
+                  label="◆ meta-notice badges"
+                  desc="When the system detects a cross-turn pattern (contradiction, hedge, avoidance), it surfaces a badge on the host's turn citing ≥2 turn indices. The conductor then decides whether to deploy it."
+                />
+                <Feature
+                  label="↩ anchor-return chips"
+                  desc="When the conductor re-opens a prior turn to probe further, a chip marks which earlier turn it returned to. Makes cross-turn reasoning visible on screen."
+                />
+              </div>
+              <div className="border-t border-stone-100 pt-4 space-y-1 text-xs text-stone-500">
+                <p><span className="font-medium text-stone-600">End &amp; reflect</span> — closes the session and generates the participant&apos;s personalised takeaway.</p>
+                <p><Link href="/start" className="text-amber-700 underline">Start a clean participant session →</Link></p>
+                <p><Link href="/rounds" className="text-amber-700 underline">See rounds &amp; cohort synthesis →</Link></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Feature({ label, desc }: { label: string; desc: string }) {
+  return (
+    <div className="rounded-lg bg-stone-50 px-3 py-2.5">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-0.5">{label}</p>
+      <p className="text-xs leading-relaxed text-stone-700">{desc}</p>
     </div>
   );
 }

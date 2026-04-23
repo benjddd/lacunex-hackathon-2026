@@ -312,6 +312,11 @@ function RoundStats({
           <span className="text-xs text-stone-500">
             Opened {new Date(round.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
           </span>
+          {round.target_date && (
+            <span className="text-xs text-stone-500">
+              Closes {new Date(round.target_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+            </span>
+          )}
           <span
             className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
               round.status === "closed"

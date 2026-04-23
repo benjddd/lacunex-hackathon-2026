@@ -22,6 +22,14 @@ Ambitext
 ## Field 4 — Selected Hackathon Problem Statement
 *(This is a free-text textarea — write your own problem statement)*
 
+**[OPTION A — with incident hook (verify Cloudflare Nov 2025 specifics before using)]:**
+
+Post-incident investigations keep finding the same thing: the signal was there. Someone saw it. Nobody asked the right follow-up question in the moment — so the assumption stayed buried, the plan went ahead, and the incident followed.
+
+The Cloudflare November 2025 outage investigation found that a configuration assumption had been visible in team conversations for months. Boeing's 737 MAX Senate testimony revealed that engineers and pilots had raised MCAS concerns that never made it into the structured review rooms. Not because the people were wrong — because the conversations weren't designed to surface what people actually thought, as opposed to what they said in a formal setting.
+
+**[OPTION B — without incident hook (current clean version)]:**
+
 The people who run interviews get three things wrong, consistently.
 
 They arrive too early — with a script, with a framework, with the answers they expect to hear. The participant senses this and performs rather than reflects.
@@ -33,6 +41,8 @@ They go too shallow — they catch what was said, not what was meant. The hedge 
 Ambitext fixes all three. The conductor adapts turn-by-turn to what the participant just said. The meta-noticing layer identifies contradictions, hedging, and implied-not-stated beliefs in real time — and the conductor can act on them, within the same conversation, before the window closes. The host's structured extraction fills live during the interview, not after.
 
 The thesis is not "a better way to read a transcript." It is: by the time you're reading the transcript, you've already missed the chance to react.
+
+*[If using Option A: verify Cloudflare Nov 2025 incident details — source the specific assumption that was flagged and when. Boeing MCAS details are solid: JAMA Internal Medicine 2020 and US Senate Committee testimony Dec 2019.]*
 
 ---
 

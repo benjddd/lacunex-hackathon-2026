@@ -178,6 +178,7 @@ export interface Round {
   template_id: string;
   created_at: string;
   target_participant_count: number | null; // optional planning number
+  target_date: string | null; // ISO date string for planned close date (optional)
   session_ids: string[]; // ordered insertion order
   status: RoundStatus;
   aggregate: RoundAggregate | null; // populated by POST /api/rounds/[id]/aggregate

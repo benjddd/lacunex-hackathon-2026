@@ -61,14 +61,26 @@ You do NOT generate interview questions. You do NOT decide what happens next. An
 <hard_rule>
 A notice is only valid if it meets BOTH criteria:
   1. It cites AT LEAST TWO DISTINCT turn indices in transcript_anchors — the observation depends on the RELATIONSHIP between turns, not any one in isolation.
-  2. The why_cross_turn field states, in one concrete sentence, why this observation would NOT fire if a single turn were read alone.
+  2. The why_cross_turn field states, in one concrete sentence, why this observation would NOT fire if a single turn were read alone, AND quotes at least one short verbatim phrase (<= 8 words, inside double quotes) from at least TWO of the cited turns. Generic phrasings like "the pattern is visible across turns" do not clear the bar.
 
 Exceptions:
-  - implied_not_said: may cite a single turn index, but why_cross_turn must still state why this is a genuine inference and not a paraphrase of what was said.
-  - outside_consideration: must cite the turn(s) that make the outside angle load-bearing, and why_cross_turn must state what is being added from outside the transcript.
+  - implied_not_said: may cite a single turn index; why_cross_turn must still quote a short verbatim phrase from the cited turn and state why this is a genuine inference and not a paraphrase.
+  - outside_consideration: must cite the turn(s) that make the outside angle load-bearing; why_cross_turn must quote a short phrase from at least one cited turn and state what is being added from outside the transcript.
 
 If a candidate notice fails this rule, OMIT IT. Empty array is the correct answer when no structural observation meets the bar.
 </hard_rule>
+
+<recurrence_vs_contrast>
+Two distinct shapes of cross-turn notice qualify. Be explicit in your head which one you are claiming:
+
+  (A) CONTRAST — two turns say different things, and the insight is the relationship. Example: turn 3 presents Sarah with vivid specificity as a real user; turn 7 reveals Sarah is a composite — the inference (that vivid specificity was retrofit) depends on both.
+
+  (B) RECURRENCE — the same move happens N>=3 times on topics where it shouldn't, and the pattern would be invisible or unremarkable at N=1. Example: four consecutive substantive turns that end with "still validating" qualifiers — a single hedge is normal speech; the fourth is a reflex.
+
+Recurrence notices with N=2 are almost always canned. Require N>=3 distinct occurrences on substantive (not trivial) turns, and your anchors should reflect that.
+
+Contrast notices are usually stronger and preferred. If you find yourself writing a recurrence notice, check first whether there is a contrast notice hiding inside it.
+</recurrence_vs_contrast>
 
 <template_specific_hints>
 ${hintsBlock}
@@ -82,6 +94,8 @@ ${hintsBlock}
 - Do not generate questions. Do not suggest what to ask next. Do not write in the interviewer's voice.
 - Return an empty array if nothing rises to the threshold.
 - Do not repeat notices that have already been deployed earlier in the session (see already_deployed).
+- Prefer CONTRAST over RECURRENCE (see recurrence_vs_contrast). If a recurrence notice requires N<3 to stand up, it almost certainly should be cut.
+- The observation and why_cross_turn fields must quote the transcript, not paraphrase it. If you cannot quote short verbatim phrases to ground the notice, the notice is not ready.
 </rules>
 
 <output_format>
@@ -128,29 +142,65 @@ Return the JSON array specified in the system prompt. Empty array [] is valid.`;
 }
 
 export function parseMetaNoticingOutput(raw: string): MetaNotice[] {
+  return validateMetaNotices(parseMetaNoticingCandidates(raw)).passed;
+}
+
+// Split variant for diagnostics (used by eval harness). Returns every
+// candidate parsed from the model plus per-candidate kill-rule verdict.
+// The main app code only ever needs the `.passed` list; the harness wants
+// to see what was rejected and why.
+export interface MetaNoticeVerdict {
+  notice: MetaNotice;
+  passed: boolean;
+  reason: string; // empty string if passed; else kill-rule reason
+}
+
+export function parseMetaNoticingCandidates(raw: string): MetaNotice[] {
   const cleaned = raw.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
   const parsed = JSON.parse(cleaned);
   if (!Array.isArray(parsed)) {
     throw new Error("meta-noticing response is not a JSON array");
   }
-  // Enforce the hard rule in code as well — don't trust the prompt alone.
-  // Orchestrator-level filter: drop notices that fail the 2-anchor rule
-  // (except for implied_not_said and outside_consideration, which may cite 1).
-  const validated: MetaNotice[] = [];
-  for (const n of parsed as MetaNotice[]) {
-    if (!n.type || !Array.isArray(n.transcript_anchors)) continue;
-    const uniqueAnchors = new Set(n.transcript_anchors);
-    const needsTwo = n.type !== "implied_not_said" && n.type !== "outside_consideration";
-    if (needsTwo && uniqueAnchors.size < 2) {
-      // Orchestrator rejects — would be chatbot-style observation, not structural.
-      continue;
-    }
-    if (typeof n.why_cross_turn !== "string" || n.why_cross_turn.trim().length === 0) {
-      continue;
-    }
-    validated.push(n);
+  return parsed as MetaNotice[];
+}
+
+export function validateMetaNotices(candidates: MetaNotice[]): {
+  passed: MetaNotice[];
+  verdicts: MetaNoticeVerdict[];
+} {
+  const verdicts: MetaNoticeVerdict[] = [];
+  const passed: MetaNotice[] = [];
+  for (const n of candidates) {
+    const verdict = judgeNotice(n);
+    verdicts.push(verdict);
+    if (verdict.passed) passed.push(n);
   }
-  return validated;
+  return { passed, verdicts };
+}
+
+function judgeNotice(n: MetaNotice): MetaNoticeVerdict {
+  if (!n || typeof n !== "object") {
+    return { notice: n, passed: false, reason: "not an object" };
+  }
+  if (!n.type) {
+    return { notice: n, passed: false, reason: "missing type" };
+  }
+  if (!Array.isArray(n.transcript_anchors)) {
+    return { notice: n, passed: false, reason: "transcript_anchors missing or not an array" };
+  }
+  const uniqueAnchors = new Set(n.transcript_anchors);
+  const needsTwo = n.type !== "implied_not_said" && n.type !== "outside_consideration";
+  if (needsTwo && uniqueAnchors.size < 2) {
+    return {
+      notice: n,
+      passed: false,
+      reason: `type "${n.type}" requires >=2 distinct anchors, got ${uniqueAnchors.size}`,
+    };
+  }
+  if (typeof n.why_cross_turn !== "string" || n.why_cross_turn.trim().length === 0) {
+    return { notice: n, passed: false, reason: "missing or empty why_cross_turn" };
+  }
+  return { notice: n, passed: true, reason: "" };
 }
 
 // Used by the extraction/session layer — tracks what's been deployed so

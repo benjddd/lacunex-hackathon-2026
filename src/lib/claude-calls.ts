@@ -14,6 +14,12 @@ import {
   buildTakeawaySystem,
   buildTakeawayUser,
 } from "./prompts/takeaway";
+import {
+  buildMetaNoticingSystem,
+  buildMetaNoticingUser,
+  parseMetaNoticingOutput,
+  type MetaNotice,
+} from "./prompts/meta-noticing";
 import type {
   ConductorDecision,
   ExtractionState,
@@ -28,6 +34,7 @@ import { DEFAULT_ROLE_LABELS } from "./types";
 const CONDUCTOR_MAX_TOKENS = 1200;
 const EXTRACTION_MAX_TOKENS = 6000;
 const TAKEAWAY_MAX_TOKENS = 2500;
+const META_NOTICING_MAX_TOKENS = 2000;
 
 function textFromMessage(content: Array<{ type: string; text?: string }>): string {
   for (const block of content) {
@@ -125,4 +132,43 @@ export async function callTakeaway(params: {
   // Plain markdown, not JSON. Strip any fences the model might sneak in.
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
   return raw.trim().replace(/^```(?:markdown|md)?\s*/i, "").replace(/```$/, "").trim();
+}
+
+// Meta-noticing: observation-only call that runs after each participant turn
+// and returns zero or more candidate notices. The prompt encodes a hard rule
+// (see prompts/meta-noticing.ts) and `parseMetaNoticingOutput` rejects
+// notices that fail the orchestrator-level kill rule (ex: fewer than 2
+// distinct transcript_anchors for non-exempt notice types).
+//
+// Not yet wired into the live turn loop — this is exercised by the
+// scripts/eval-noticing.ts harness until the prompt is stable.
+export async function callMetaNoticing(params: {
+  template: Template;
+  transcript: Turn[];
+  alreadyDeployed: { turn: number; type: string }[];
+}): Promise<MetaNotice[]> {
+  const anthropic = getAnthropic();
+  const systemText = buildMetaNoticingSystem(params.template);
+  const userText = buildMetaNoticingUser({
+    transcript: params.transcript,
+    alreadyDeployed: params.alreadyDeployed,
+  });
+
+  // System prompt is stable within a session → prompt caching, same pattern
+  // as conductor/extraction/takeaway.
+  const response = await anthropic.messages.create({
+    model: MODELS.metaNoticing,
+    max_tokens: META_NOTICING_MAX_TOKENS,
+    system: [
+      {
+        type: "text",
+        text: systemText,
+        cache_control: { type: "ephemeral" },
+      },
+    ],
+    messages: [{ role: "user", content: userText }],
+  });
+
+  const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
+  return parseMetaNoticingOutput(raw);
 }

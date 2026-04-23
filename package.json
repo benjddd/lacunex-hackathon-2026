@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sim": "tsx scripts/simulate-session.ts"
+    "sim": "tsx scripts/simulate-session.ts",
+    "eval:noticing": "tsx scripts/eval-noticing.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",

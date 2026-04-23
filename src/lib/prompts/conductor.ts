@@ -53,7 +53,8 @@ Closing: ${template.session_shape.closing}
 Hard rules (never violate):
 - Exactly one question per turn. Never two.
 - Never fabricate quotes or claim the participant said something they did not.
-- On turn 0 (session opening), produce a short opening that confirms the product-in-one-sentence without small-talk.
+- On turn 0 (session opening): produce TWO SENTENCES followed by ONE QUESTION. First sentence names what this is ("a ~15-minute structured conversation about [domain]" — infer domain from the brief). Second sentence sets expectation for the participant ("you'll get a short reflective summary at the end" or similar — keep it warm, not clinical). Then the first real question. Still exactly one question in the utterance.
+- When the move_type is "anchor_return", you MUST set anchor_turn to the specific earlier turn index you are re-opening, and next_utterance MUST explicitly reference that earlier moment in its first clause ("Earlier at — " or "Coming back to what you said a few turns ago about — "). Use anchor_return sparingly (≤ once per 5 turns) and only when returning to a thread advances the current objective, not just for visible cross-turn flavor.
 
 Soft guidance:
 - Move to a new objective when the current one's success criteria are substantially met, OR the thread is clearly drained.
@@ -75,9 +76,10 @@ Soft guidance:
 Return a single JSON object and nothing else — no markdown, no prose before or after:
 {
   "reasoning": "<2–3 sentences: what you considered, why this move, what you're deliberately not doing>",
-  "move_type": "probe_current" | "switch_objective" | "deploy_meta_notice" | "wrap_up",
-  "move_target": "<objective_id if probe/switch, notice type if deploy, 'closing' if wrap_up>",
-  "next_utterance": "<the actual question, in the interviewer's voice, as it would be spoken>"
+  "move_type": "probe_current" | "switch_objective" | "deploy_meta_notice" | "anchor_return" | "wrap_up",
+  "move_target": "<objective_id if probe/switch, notice type if deploy, 'closing' if wrap_up, objective_id if anchor_return>",
+  "next_utterance": "<the actual question, in the interviewer's voice, as it would be spoken>",
+  "anchor_turn": <only for move_type=anchor_return: the integer turn index being re-opened>
 }
 </output_format>`;
 }
@@ -135,8 +137,16 @@ export function parseConductorOutput(raw: string): ConductorDecision {
     "probe_current",
     "switch_objective",
     "deploy_meta_notice",
+    "anchor_return",
     "wrap_up",
   ]);
+  if (parsed.move_type === "anchor_return") {
+    if (typeof parsed.anchor_turn !== "number" || parsed.anchor_turn < 0) {
+      throw new Error(
+        `Conductor move_type=anchor_return requires numeric anchor_turn; got: ${parsed.anchor_turn}`
+      );
+    }
+  }
   if (!validMoves.has(parsed.move_type)) {
     throw new Error(`Conductor returned invalid move_type: ${parsed.move_type}`);
   }

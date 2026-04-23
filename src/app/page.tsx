@@ -76,6 +76,11 @@ export default function Home() {
           role: "host",
           text: data.decision.next_utterance,
           at: new Date().toISOString(),
+          anchor_turn:
+            data.decision.move_type === "anchor_return" &&
+            typeof data.decision.anchor_turn === "number"
+              ? data.decision.anchor_turn
+              : undefined,
         };
         setTranscript([...withTranscript, hostTurn]);
         setExtraction(data.extraction);

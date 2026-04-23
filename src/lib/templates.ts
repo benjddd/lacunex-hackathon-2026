@@ -1,9 +1,15 @@
 import type { Template } from "./types";
 import founderProductIdeation from "@/templates/founder-product-ideation.json";
+import postIncidentWitness from "@/templates/post-incident-witness.json";
 
-// Registry of available templates. On Fri we may add 2-3 stub templates
-// (non-functional range-demo entries) so the selector looks alive.
-const templates: Template[] = [founderProductIdeation as unknown as Template];
+// Registry of available briefs. Second brief (Post-Incident Witness) shipped
+// Thu 2026-04-23 to demonstrate domain-neutrality of the four-call
+// architecture — Investor/Founder vs. Investigator/Witness cover very
+// different tones, stakes, and success criteria with the same core loop.
+const templates: Template[] = [
+  founderProductIdeation as unknown as Template,
+  postIncidentWitness as unknown as Template,
+];
 
 export function listTemplates(): Pick<Template, "template_id" | "name" | "description">[] {
   return templates.map((t) => ({

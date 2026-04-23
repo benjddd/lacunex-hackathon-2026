@@ -45,7 +45,7 @@ Participant speaks
    Interviewer speaks            Host dashboard updates
 ```
 
-Coming Thu: **Meta-noticing** (observation-only call catching contradictions, hedging, unsaid assumptions) and **Takeaway synthesis** (end-of-session artifact for the participant).
+All four calls are shipped. Meta-noticing currently runs as an evaluable layer against saved sessions (via `npm run eval:noticing`) with a hard kill rule (notices must cite ≥2 distinct turn indices + a verbatim quote from each). Its live wiring into the interview loop is gated.
 
 Everything is one Next.js app. API routes call Claude directly. Session state is client-owned — the UI sends the full transcript with each turn. Simple, serverless-safe, no database.
 

@@ -74,16 +74,17 @@ export async function POST(req: Request) {
       extractionPromise,
     ]);
 
+    const nextActive =
+      decision.move_type === "switch_objective" && decision.move_target !== "closing"
+        ? decision.move_target
+        : decision.move_type === "anchor_return" && decision.move_target
+          ? decision.move_target
+          : activeObjectiveId;
+
     return NextResponse.json({
       decision,
       extraction: newExtraction,
-      activeObjectiveId:
-        decision.move_type === "switch_objective" ||
-        decision.move_type === "deploy_meta_notice"
-          ? decision.move_target === "closing"
-            ? activeObjectiveId
-            : decision.move_target
-          : activeObjectiveId,
+      activeObjectiveId: nextActive,
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

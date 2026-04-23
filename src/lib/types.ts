@@ -89,6 +89,11 @@ export interface Turn {
   role: TurnRole;
   text: string;
   at: string; // ISO timestamp
+  // When the conductor chose move_type=anchor_return on this Host turn, the
+  // anchor_turn is the earlier turn index being re-opened. The UI renders a
+  // small "↩ re-opened turn N" chip on the bubble to make cross-turn
+  // reasoning visible on camera.
+  anchor_turn?: number;
 }
 
 export interface ObjectiveState {
@@ -114,6 +119,7 @@ export type MoveType =
   | "probe_current"
   | "switch_objective"
   | "deploy_meta_notice"
+  | "anchor_return" // N3 — explicitly re-open a prior turn (visible on camera)
   | "wrap_up";
 
 export interface ConductorDecision {
@@ -121,6 +127,9 @@ export interface ConductorDecision {
   move_type: MoveType;
   move_target: string;
   next_utterance: string;
+  // For anchor_return: the turn index being re-opened. UI renders an anchor
+  // chip on the resulting Host bubble to make cross-turn reasoning visible.
+  anchor_turn?: number;
 }
 
 export interface Session {

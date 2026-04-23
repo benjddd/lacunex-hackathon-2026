@@ -113,11 +113,19 @@ function MessageBubble({
         }`}
       >
         <div
-          className={`mb-1 text-[10px] uppercase tracking-wider ${
+          className={`mb-1 flex items-center gap-2 text-[10px] uppercase tracking-wider ${
             isHost ? "text-amber-800" : "text-slate-300"
           }`}
         >
-          {isHost ? roleLabels.host : roleLabels.participant}
+          <span>{isHost ? roleLabels.host : roleLabels.participant}</span>
+          {isHost && typeof turn.anchor_turn === "number" && (
+            <span
+              title="The platform re-opened a prior turn — cross-turn reasoning"
+              className="rounded-full bg-amber-200/80 px-2 py-0.5 text-[9px] font-medium tracking-wider text-amber-900"
+            >
+              ↩ re-opened turn {turn.anchor_turn}
+            </span>
+          )}
         </div>
         <div className="whitespace-pre-wrap">{turn.text}</div>
       </div>

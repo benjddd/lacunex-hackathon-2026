@@ -1,0 +1,147 @@
+{
+  "_annotation": {
+    "purpose": "Curated post-incident witness session showing cross-turn reasoning in practice.",
+    "persona": "30-year ICU nurse, bedside near-miss (patient with post-op internal bleed, caught early by somatic cue before vitals deteriorated)",
+    "session_id": "2026-04-23T20-50-30-808Z",
+    "session_file": "transcripts/session-2026-04-23T20-50-30-808Z.json",
+    "turn_count": 25,
+    "key_moments": [
+      {
+        "turn": 2,
+        "type": "conductor_probe",
+        "note": "Host asks witness to articulate tacit knowledge: 'thin' is not a clinical term — what does it mean under her fingers? This is the platform holding on a phenomenological claim that would be dismissed in a form-based interview."
+      },
+      {
+        "turn": 10,
+        "type": "conductor_cross_turn_catch",
+        "note": "CROSS-TURN REASONING: Host catches a sequence inconsistency across two tellings of the same event (turns 5 and 9). First telling: dressing check AFTER pulse palpation. Second telling: dressing check BEFORE pulse palpation. The conductor held both versions and named the inconsistency directly — 'in your first telling... you described lifting the dressing after you'd felt the pulse... just now you've placed the dressing inspection before the pulse palpation.'"
+      },
+      {
+        "turn": 11,
+        "type": "witness_epistemic_revision",
+        "note": "Witness identifies the source of the inconsistency herself: 'The second version I just gave you — that's what I do routinely. That's my standard flow.' The routine overwrote the event memory when asked to reconstruct it formally. This is Loftus source monitoring error made visible — the witness's own 30-year routine contaminated her recall of one specific event."
+      },
+      {
+        "turn": 12,
+        "type": "conductor_generalization",
+        "note": "Host generalizes: if the sequence shifted under pressure, might the other details (warmth, erythema, distension comparison) also be partially reconstructed? The conductor is treating the sequence inconsistency as a probe for a broader epistemological question, not just correcting one detail."
+      },
+      {
+        "turn": 13,
+        "type": "witness_separates_certain_from_constructed",
+        "note": "Witness distinguishes: distension (certain — 'real and it was the second thing that worried me'), warmth/erythema (uncertain — 'I may have been filling in the picture of what a bleed looks like'). She names the mechanism: primed to perceive. This is exactly the difference between observation and pattern-match reconstruction."
+      },
+      {
+        "turn": 17,
+        "type": "witness_admits_incomplete_baseline",
+        "note": "Host asks about the midnight baseline comparison (earlier used as evidence). Witness admits: 'At midnight I did a quick exam... I didn't want to wake him unnecessarily.' The baseline she used to establish the distension comparison was itself a quick, incomplete assessment — the comparison that anchors the whole clinical argument rests on a less-than-thorough baseline."
+      },
+      {
+        "turn": 18,
+        "type": "conductor_restore_certainty",
+        "note": "CONDUCTOR MOVE — PROTECTIVE SYNTHESIS: 'I don't want the things you're actually certain of to get lost in the correcting.' The conductor recognizes the witness has over-corrected and may be discarding valid memories along with reconstructed ones. This is a sophisticated epistemic move: distinguishing between accurate recollection and accurate revision."
+      },
+      {
+        "turn": 19,
+        "type": "witness_produces_certainty_inventory",
+        "note": "Witness produces a clean distinction: the pulse (certain), the distension (certain), the incision findings (uncertain). She separates these without being prompted to categorize them — the conversation produced this clarity."
+      },
+      {
+        "turn": 22,
+        "type": "conductor_final_check",
+        "note": "Host asks: did you pull anything back under questioning that, setting aside the pressure, still feels true? This tests whether the revision was accurate or overcautious."
+      },
+      {
+        "turn": 23,
+        "type": "witness_anchors_on_core",
+        "note": "Final answer: 'The pulse. Not the name I gave it, not the comparison to 2004. But the fact that something in that pulse registered as wrong — that I felt a difference that made my body say stay.' This is the irreducible core: not the clinical label, not the analogy, not the accompanying evidence — just the somatic signal that triggered everything else."
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "The distinction between routine-as-template and event-as-experienced — a distinction the witness herself had not made before this conversation",
+      "The incision findings (erythema, warmth) were likely pattern-matched from 'what a bleed looks like' rather than directly observed in that lighting, at that time",
+      "The midnight baseline comparison rested on a quick, incomplete assessment — the clinical argument's anchor was less solid than presented",
+      "The irreducible core: the somatic pulse sensation. Everything else was either scaffolding or reconstruction; this was the actual trigger",
+      "Willingness to escalate before objective evidence: 'You don't call a doctor because a pulse feels off. But I wasn't leaving that room either.' — This is the tacit-knowledge claim, surfaced and validated as separate from the reconstructed details"
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "The sequence inconsistency (turns 5 vs 9) — a form-based interview would record one answer and move on",
+      "The routine-as-template contamination — requires holding two tellings and comparing them",
+      "The incision-detail uncertainty — requires generalizing from the sequence finding to other claimed details",
+      "The midnight baseline weakness — requires returning to an earlier claim (distension comparison) in the light of a new one",
+      "The protective synthesis at turn 18 — requires tracking how much the witness has revised and whether the revision has overshot"
+    ]
+  },
+  "session_summary": {
+    "template_id": "post-incident-witness",
+    "persona": "retiring_domain_expert — 30-year ICU nurse, near-retirement",
+    "domain": "Clinical near-miss: patient post-op internal bleed caught by somatic cue before vital sign deterioration",
+    "turn_count": 25,
+    "objectives_active": ["timeline_reconstruction", "observed_vs_inferred"],
+    "extraction_highlights": {
+      "timeline_reconstruction": {
+        "completeness": 0.7,
+        "confidence": 0.88,
+        "key_finding": "Sequence of 3AM events revised mid-session: dressing check moved from post-pulse to pre-pulse. Routine-as-template contamination of event memory."
+      },
+      "observed_vs_inferred": {
+        "completeness": 0.85,
+        "confidence": 0.91,
+        "key_finding": "Pulse sensation: directly observed, certain. Abdominal distension: directly observed, certain. Incision warmth/erythema: likely pattern-matched, uncertain. Midnight baseline: quick, incomplete, understated earlier."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "This is a short structured conversation — about twenty-five minutes — to help us understand what happened, in your own words. Nothing here is on the record beyond what the investigator chooses to include, and I'll close with a brief summary of what I've heard. To start — can you walk me through what you saw, beginning from just before you noticed something was unusual?"
+    },
+    {
+      "index": 1,
+      "role": "participant",
+      "text": "*shifts in chair, takes a breath*\n\nOkay. So it was a Tuesday morning, maybe 6:15, I was doing rounds on my four patients before the day shift came in. Mr. Chen in 412 — I'd had him for three nights, post-op day two from his bowel resection, doing fine, vitals stable. I was checking his dressing, writing notes. And when I looked at his monitor, nothing jumped out. BP was 138 over 82, heart rate in the low 80s. But when I went to palpate his radial pulse — *pauses* — it wasn't right. It had that quality, you know, almost like the beat wasn't filling out the way it should. Not weak exactly. Just... thin.\n\nHis skin was still warm, he was alert, talking to me. By every number on that monitor, he was fine. But I've felt thousands of pulses, and something in that one told me his perfusion was starting to slip. So I stayed at the bedside instead of moving on. Checked him head to toe again. That's when I noticed the belly was a little more distended than it had been at midnight.\n\n*meets your eyes*\n\nYou don't call a doctor because a pulse 'feels off.' But I wasn't leaving that room either."
+    },
+    {
+      "index": 9,
+      "role": "participant",
+      "text": "*pauses, eyes narrowing slightly — knows where this is going*\n\nYou want the exact sequence. Fair enough.\n\nI came in, glanced at the monitor first — that's habit, you always check the screen before you approach the bed. Then I walked to him, looked at his face, checked if he was sleeping. He was. I went to the dressing next — visual inspection, then I carefully lifted the edge of the tape to see underneath without fully opening it. That's when I noticed the warmth around the incision, the slight erythema.\n\nThen I went to palpate the radial pulse. *demonstrates on own wrist* That's when I felt that thinness. After that — and this is important — I didn't immediately lift the gown. I took the manual cuff and got a pressure reading first. *pauses* Then I lifted the gown to do a full abdominal exam.\n\nSo: monitor, face, dressing inspection, pulse palpation, manual BP, then the gown.",
+      "_note": "Second telling of the sequence — places dressing inspection BEFORE pulse palpation"
+    },
+    {
+      "index": 10,
+      "role": "host",
+      "text": "Honest answer: in your first telling a few minutes ago, you described lifting the dressing after you'd felt the pulse and just before calling the resident — and just now you've placed the dressing inspection before the pulse palpation. I'm not checking you against anyone else; sequence memory tends to blur around moments like this. Can you sit with both versions for a second and tell me which feels closer to what actually happened?",
+      "_note": "CROSS-TURN CATCH: conductor holds both tellings and surfaces the inconsistency directly"
+    },
+    {
+      "index": 11,
+      "role": "participant",
+      "text": "*stops, jaw tightens slightly. Long pause.*\n\nYou're right. I'm... *rubs face* The second version I just gave you — that's what I do routinely. That's my standard flow. But the first one, when I was actually describing the moment? *quieter* That felt more like what happened that morning.\n\nI felt the pulse first. That's what pulled my attention. That's what made me stay. And *then* I lifted the dressing — because by that point I was already worried, already looking for a reason. I wasn't just doing my standard checks in order. I was investigating.\n\n*meets your eyes*\n\nThirty years of routine. Sometimes you can't tell the difference between what you always do and what you did that one time, unless someone makes you sit with it. I appreciate you catching that. The pulse — that came first. Everything else followed because of that.",
+      "_note": "Witness identifies the contamination mechanism herself: 30-year routine overwrote the event memory"
+    },
+    {
+      "index": 13,
+      "role": "participant",
+      "text": "*long silence. Jaw works slightly. Looks away, then back*\n\nThat's a hard question.\n\n*takes a breath*\n\nThe distension — I'm certain of that. That's what I saw at 3 AM versus midnight. That was real and it was the second thing that worried me. The warmth around the incision... *pauses, uncomfortable* I felt something. Whether it was actual heat or whether I was primed to feel it because the pulse scared me — I can't separate those things anymore. It's been three weeks.\n\nThe erythema. *rubs temples* I said I could see the difference. But we were in dim lighting, the monitor glow mostly. When I think back on it now, I'm not sure I actually *saw* redness, or if that's what I expected to see. Or what I think I should have seen.\n\n*meets your eyes, quieter*\n\nThe pulse was real. The distension was real. Those two things made me call the resident. The stuff around the incision — *hesitates* — I may have been filling in the picture of what a bleed looks like, not reporting what I actually observed in that moment.",
+      "_note": "Witness self-separates: certain observations vs pattern-matched reconstruction"
+    },
+    {
+      "index": 18,
+      "role": "host",
+      "text": "I want to pause for a second — you've moved a long way from where you started, and I don't want the things you're actually certain of to get lost in the correcting. Can you tell me what, at this point, you still stand by from that morning?",
+      "_note": "PROTECTIVE SYNTHESIS: conductor recognizes over-correction risk and restores certainty anchor"
+    },
+    {
+      "index": 19,
+      "role": "participant",
+      "text": "*takes a deliberate breath, centers himself*\n\nOkay. What I'm certain of:\n\nAt 3 AM, I checked Mr. Chen's radial pulse and something about it concerned me enough to stay at the bedside instead of moving on. Whether I can perfectly describe what I felt or whether it matches textbook 'thready' — I'm less sure about the clinical language. But the decision to stay? That was real.\n\nThe abdomen was more distended than my midnight exam. That's real.\n\nAnd I called the resident, and I said 'something's not right, I need you here,' and I didn't phrase it as a question. That part's solid.\n\nWhat I'm less certain about: the incision findings. The erythema, the warmth — I'm not confident I can distinguish what I actually observed from what I expected to observe.\n\n*pause*\n\nAnd the midnight baseline I was comparing to? *quietly* I'm not sure I was as thorough as I was presenting myself as being."
+    },
+    {
+      "index": 23,
+      "role": "participant",
+      "text": "*pauses, thinks carefully*\n\nThe pulse. Not the name I gave it, not the comparison to 2004. But the fact that something in that pulse registered as *wrong* — that I felt a difference that made my body say 'stay.' That still feels true.\n\n*rubs wrist thoughtfully*\n\nAnd the distension. I may have been imprecise about exactly what I observed at midnight — and I may have filled in details around the incision. But the fact that his belly was more distended at 3 AM than it had been earlier? That I'm standing by.\n\nThe core clinical judgment — staying, calling, insisting — that I'd make again with the same information.",
+      "_note": "Final answer: the irreducible core. Not the label, not the analogy, not the surrounding evidence — the somatic signal and the decision it triggered."
+    }
+  ]
+}

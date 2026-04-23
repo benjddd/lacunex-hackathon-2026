@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { use, useCallback, useEffect, useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
+import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
 import {
   DEFAULT_ROLE_LABELS,
   type AggregatePattern,
@@ -24,6 +26,8 @@ interface SessionDoc {
 
 const TEMPLATES: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
+  [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
+  [civicTemplate.template_id]: civicTemplate as unknown as Template,
 };
 
 export default function RoundDetailPage({
@@ -113,6 +117,32 @@ export default function RoundDetailPage({
 
       {round && (
         <main className="mx-auto max-w-6xl px-6 py-8 space-y-8">
+          <section className="rounded-lg border border-stone-200 bg-white p-4">
+            <p className="text-xs uppercase tracking-wider text-stone-500 mb-2">Participant link</p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 rounded bg-stone-50 px-3 py-1.5 text-xs text-stone-800 border border-stone-200 select-all">
+                {typeof window !== "undefined" ? window.location.origin : ""}/p/{round.template_id}?round={round.round_id}
+              </code>
+              <button
+                type="button"
+                onClick={() => void navigator.clipboard.writeText(
+                  `${window.location.origin}/p/${round.template_id}?round=${round.round_id}`
+                )}
+                className="shrink-0 rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+              >
+                Copy
+              </button>
+              <a
+                href={`/p/${round.template_id}?round=${round.round_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 rounded-md bg-amber-600 px-3 py-1 text-xs font-medium text-white hover:bg-amber-700"
+              >
+                Open ↗
+              </a>
+            </div>
+          </section>
+
           <section className="flex flex-wrap items-center gap-3 rounded-lg border border-stone-200 bg-white p-4">
             <div className="flex-1 min-w-[200px]">
               <p className="text-xs uppercase tracking-wider text-stone-500">

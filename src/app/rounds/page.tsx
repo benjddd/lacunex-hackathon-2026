@@ -3,18 +3,26 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
+import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
 import type { Round, Template } from "@/lib/types";
 
 const TEMPLATES: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
+  [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
+  [civicTemplate.template_id]: civicTemplate as unknown as Template,
 };
+
+const TEMPLATE_LIST = Object.values(TEMPLATES);
 
 export default function RoundsListPage() {
   const [rounds, setRounds] = useState<Round[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [label, setLabel] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState(founderTemplate.template_id);
   const [showCreate, setShowCreate] = useState(false);
+  const [createdRound, setCreatedRound] = useState<Round | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -41,14 +49,14 @@ export default function RoundsListPage() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          templateId: founderTemplate.template_id,
+          templateId: selectedTemplateId,
           label: label.trim(),
         }),
       });
       const data = (await res.json()) as { round?: Round; error?: string };
       if (!res.ok || !data.round) throw new Error(data.error ?? `HTTP ${res.status}`);
       setLabel("");
-      setShowCreate(false);
+      setCreatedRound(data.round);
       void load();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -93,31 +101,41 @@ export default function RoundsListPage() {
           </p>
           <button
             type="button"
-            onClick={() => setShowCreate((v) => !v)}
+            onClick={() => { setShowCreate((v) => !v); setCreatedRound(null); }}
             className="shrink-0 rounded-md bg-slate-800 px-3 py-1 text-xs text-white hover:bg-slate-900"
           >
-            {showCreate ? "Cancel" : "New round"}
+            {showCreate || createdRound ? "Cancel" : "New round"}
           </button>
         </div>
 
-        {showCreate && (
-          <form onSubmit={handleCreate} className="mb-6 rounded-lg border border-stone-200 bg-white p-4">
-            <label className="text-xs uppercase tracking-wider text-stone-500">
-              Round label
-            </label>
-            <input
-              autoFocus
-              type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              placeholder="e.g. Q2 founder due-diligence cohort"
-              className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
-              disabled={creating}
-            />
-            <div className="mt-2 flex items-center justify-between">
-              <p className="text-[11px] text-stone-500">
-                Brief: {TEMPLATES[founderTemplate.template_id]?.name ?? founderTemplate.template_id}
-              </p>
+        {showCreate && !createdRound && (
+          <form onSubmit={handleCreate} className="mb-6 rounded-lg border border-stone-200 bg-white p-4 space-y-3">
+            <div>
+              <label className="text-xs uppercase tracking-wider text-stone-500">Brief</label>
+              <select
+                value={selectedTemplateId}
+                onChange={(e) => setSelectedTemplateId(e.target.value)}
+                disabled={creating}
+                className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+              >
+                {TEMPLATE_LIST.map((t) => (
+                  <option key={t.template_id} value={t.template_id}>{t.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-stone-500">Round label</label>
+              <input
+                autoFocus
+                type="text"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="e.g. Q2 founder due-diligence cohort"
+                className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+                disabled={creating}
+              />
+            </div>
+            <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={!label.trim() || creating}
@@ -127,6 +145,43 @@ export default function RoundsListPage() {
               </button>
             </div>
           </form>
+        )}
+
+        {createdRound && (
+          <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50/40 p-4">
+            <p className="text-xs font-medium text-emerald-800">Round created — share this link with participants:</p>
+            <div className="mt-2 flex items-center gap-2">
+              <code className="flex-1 rounded bg-white px-3 py-2 text-xs text-stone-800 border border-stone-200 select-all">
+                {typeof window !== "undefined" ? window.location.origin : ""}/p/{createdRound.template_id}?round={createdRound.round_id}
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  void navigator.clipboard.writeText(
+                    `${window.location.origin}/p/${createdRound.template_id}?round=${createdRound.round_id}`
+                  );
+                }}
+                className="shrink-0 rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+              >
+                Copy
+              </button>
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              <Link
+                href={`/rounds/${createdRound.round_id}`}
+                className="text-xs text-amber-700 underline hover:text-amber-900"
+              >
+                View round →
+              </Link>
+              <button
+                type="button"
+                onClick={() => { setCreatedRound(null); setShowCreate(true); }}
+                className="text-xs text-stone-500 underline hover:text-stone-700"
+              >
+                Create another
+              </button>
+            </div>
+          </div>
         )}
 
         {error && (

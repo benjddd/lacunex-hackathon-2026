@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, use, useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChatPane } from "@/components/ChatPane";
 import { TakeawayArtifact } from "@/components/TakeawayArtifact";
 import founderTemplate from "@/templates/founder-product-ideation.json";
@@ -46,7 +47,25 @@ export default function ParticipantPage({
 }: {
   params: Promise<{ templateId: string }>;
 }) {
+  return (
+    <Suspense fallback={
+      <div className="flex h-dvh items-center justify-center bg-stone-50">
+        <p className="text-sm text-stone-500">Loading…</p>
+      </div>
+    }>
+      <ParticipantPageContent params={params} />
+    </Suspense>
+  );
+}
+
+function ParticipantPageContent({
+  params,
+}: {
+  params: Promise<{ templateId: string }>;
+}) {
   const { templateId } = use(params);
+  const searchParams = useSearchParams();
+  const roundId = searchParams.get("round") ?? undefined;
   const template = TEMPLATE_MAP[templateId] ?? null;
   const roleLabels = template?.role_labels ?? DEFAULT_ROLE_LABELS;
 
@@ -167,6 +186,22 @@ export default function ParticipantPage({
     if (takeawayMarkdown || !template) return;
     setTakeawayGenerating(true);
     setTakeawayError(null);
+
+    // Auto-save so the session appears in the round (non-fatal if it fails).
+    void fetch("/api/save-session", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        templateId: template.template_id,
+        transcript,
+        extraction,
+        activeObjectiveId,
+        startedAtIso: startedAt.current,
+        note: `participant:${template.template_id}`,
+        roundId,
+      }),
+    }).catch(() => undefined);
+
     try {
       const res = await fetch("/api/takeaway", {
         method: "POST",
@@ -186,7 +221,7 @@ export default function ParticipantPage({
     } finally {
       setTakeawayGenerating(false);
     }
-  }, [transcript, extraction, template, takeawayMarkdown]);
+  }, [transcript, extraction, activeObjectiveId, template, takeawayMarkdown, roundId]);
 
   if (!template) {
     return (

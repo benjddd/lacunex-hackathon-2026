@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { hostedListSessions } from "@/lib/store-hosted";
 
 export const runtime = "nodejs";
 
@@ -13,10 +14,22 @@ interface SessionSummary {
   has_takeaway: boolean;
 }
 
-// Reads transcripts/ on disk and returns a summary list. Dev-only: breaks on
-// Vercel read-only FS. Fri deploy will either (a) replace with a client-side
-// local store, (b) move storage to Vercel KV, or (c) hide this page in prod.
 export async function GET() {
+  if (process.env.VERCEL) {
+    const sessions = hostedListSessions().map((raw) => {
+      const s = raw as Record<string, unknown>;
+      return {
+        session_id: s.session_id ?? null,
+        saved_at: s.saved_at ?? null,
+        template_id: s.template_id ?? null,
+        turn_count: s.turn_count ?? 0,
+        note: s.note ?? null,
+        has_takeaway: false,
+      };
+    });
+    return NextResponse.json({ sessions, hosted: true });
+  }
+
   const dir = path.join(process.cwd(), "transcripts");
   let entries: string[];
   try {

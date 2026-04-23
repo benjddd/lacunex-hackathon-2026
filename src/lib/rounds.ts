@@ -1,6 +1,11 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Round, RoundAggregate, RoundStatus } from "./types";
+import {
+  hostedSaveRound,
+  hostedGetRound,
+  hostedListRounds,
+} from "./store-hosted";
 
 // Rounds are the cross-participant grouping. A round is N sessions run against
 // the same brief, aggregated into a cohort-level picture.
@@ -50,12 +55,17 @@ export async function createRound(params: {
     aggregate: null,
     note: params.note ?? null,
   };
+  if (process.env.VERCEL) {
+    hostedSaveRound(round);
+    return round;
+  }
   await fs.mkdir(roundsDir(), { recursive: true });
   await fs.writeFile(roundPath(round.round_id), JSON.stringify(round, null, 2), "utf-8");
   return round;
 }
 
 export async function listRounds(): Promise<Round[]> {
+  if (process.env.VERCEL) return hostedListRounds();
   try {
     const entries = await fs.readdir(roundsDir());
     const rounds: Round[] = [];
@@ -67,7 +77,6 @@ export async function listRounds(): Promise<Round[]> {
         console.warn(`[rounds] skip ${e}:`, err);
       }
     }
-    // Newest first — ISO sorts correctly
     rounds.sort((a, b) => b.round_id.localeCompare(a.round_id));
     return rounds;
   } catch {
@@ -76,6 +85,7 @@ export async function listRounds(): Promise<Round[]> {
 }
 
 export async function readRound(roundId: string): Promise<Round | null> {
+  if (process.env.VERCEL) return hostedGetRound(roundId);
   try {
     const raw = await fs.readFile(roundPath(roundId), "utf-8");
     return JSON.parse(raw) as Round;
@@ -85,6 +95,10 @@ export async function readRound(roundId: string): Promise<Round | null> {
 }
 
 export async function writeRound(round: Round): Promise<void> {
+  if (process.env.VERCEL) {
+    hostedSaveRound(round);
+    return;
+  }
   await fs.mkdir(roundsDir(), { recursive: true });
   await fs.writeFile(roundPath(round.round_id), JSON.stringify(round, null, 2), "utf-8");
 }

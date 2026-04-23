@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { addSessionToRound, isValidRoundId } from "@/lib/rounds";
+import { hostedSaveSession } from "@/lib/store-hosted";
 import type { ExtractionState, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -45,11 +46,15 @@ export async function POST(req: Request) {
       transcript: body.transcript,
       extraction: body.extraction,
     };
+    hostedSaveSession(sessionId, payload);
+    if (body.roundId && isValidRoundId(body.roundId)) {
+      await addSessionToRound(body.roundId, sessionId).catch(() => null);
+    }
     return NextResponse.json({
       ok: true,
       hosted: true,
       sessionId,
-      payload, // client downloads this as JSON
+      payload,
       turns: body.transcript.length,
     });
   }

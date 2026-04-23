@@ -6,6 +6,7 @@ import {
   isValidRoundId,
   readRound,
 } from "@/lib/rounds";
+import { hostedGetSession } from "@/lib/store-hosted";
 import type { ExtractionState, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -37,17 +38,21 @@ export async function GET(_req: Request, { params }: Params) {
     return NextResponse.json({ error: "round not found" }, { status: 404 });
   }
 
-  // Load each session in the round so the UI can render transcripts +
-  // extraction state. Best-effort — sessions that fail to load are skipped.
-  const dir = path.join(process.cwd(), "transcripts");
   const sessions: SessionDoc[] = [];
-  for (const sid of round.session_ids) {
-    const filepath = path.join(dir, `session-${sid}.json`);
-    try {
-      const raw = await fs.readFile(filepath, "utf-8");
-      sessions.push(JSON.parse(raw) as SessionDoc);
-    } catch {
-      // Missing session file — skip
+  if (process.env.VERCEL) {
+    for (const sid of round.session_ids) {
+      const doc = hostedGetSession(sid) as SessionDoc | null;
+      if (doc) sessions.push(doc);
+    }
+  } else {
+    const dir = path.join(process.cwd(), "transcripts");
+    for (const sid of round.session_ids) {
+      try {
+        const raw = await fs.readFile(path.join(dir, `session-${sid}.json`), "utf-8");
+        sessions.push(JSON.parse(raw) as SessionDoc);
+      } catch {
+        // Missing session file — skip
+      }
     }
   }
 

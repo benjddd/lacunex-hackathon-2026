@@ -5,6 +5,8 @@ import { use, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { DashboardPane } from "@/components/DashboardPane";
 import founderTemplate from "@/templates/founder-product-ideation.json";
+import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
 import { DEFAULT_ROLE_LABELS, type ExtractionState, type Template, type Turn } from "@/lib/types";
 
 interface SessionDoc {
@@ -19,11 +21,10 @@ interface SessionDoc {
   extraction: ExtractionState;
 }
 
-// Registry of known templates — keyed by template_id so the detail page can
-// render any saved session's dashboard correctly. Mirrors src/lib/templates.ts
-// but lives client-side here so the detail page is a pure client component.
 const TEMPLATES: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
+  [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
+  [civicTemplate.template_id]: civicTemplate as unknown as Template,
 };
 
 export default function SessionDetailPage({
@@ -35,6 +36,9 @@ export default function SessionDetailPage({
   const [session, setSession] = useState<SessionDoc | null>(null);
   const [takeawayMd, setTakeawayMd] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [researchMd, setResearchMd] = useState<string | null>(null);
+  const [researching, setResearching] = useState(false);
+  const [researchError, setResearchError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -62,6 +66,22 @@ export default function SessionDetailPage({
 
   const template = session ? TEMPLATES[session.template_id] : null;
   const roleLabels = template?.role_labels ?? DEFAULT_ROLE_LABELS;
+
+  const handleResearch = async () => {
+    if (researching) return;
+    setResearching(true);
+    setResearchError(null);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/research`, { method: "POST" });
+      const data = (await res.json()) as { report?: string; error?: string };
+      if (!res.ok || !data.report) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setResearchMd(data.report);
+    } catch (err) {
+      setResearchError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setResearching(false);
+    }
+  };
 
   return (
     <div className="min-h-dvh bg-stone-50">
@@ -141,6 +161,38 @@ export default function SessionDetailPage({
                   </article>
                 </section>
               )}
+
+              {/* Managed Agents: post-session claim verification */}
+              <section className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <h2 className="text-xs uppercase tracking-widest text-indigo-700">
+                      Claim Verification
+                    </h2>
+                    <p className="mt-1 text-xs text-stone-500">
+                      An autonomous agent reads this transcript, identifies factual claims, and searches the web to verify each one.
+                    </p>
+                  </div>
+                  {!researchMd && (
+                    <button
+                      type="button"
+                      onClick={() => void handleResearch()}
+                      disabled={researching}
+                      className="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                      {researching ? "Verifying claims…" : "Run agent"}
+                    </button>
+                  )}
+                </div>
+                {researchError && (
+                  <p className="mt-3 text-xs text-red-700">{researchError}</p>
+                )}
+                {researchMd && (
+                  <article className="mt-4 text-[13px] leading-relaxed text-stone-800 [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-sm [&_h2]:font-semibold [&_p]:mb-2 [&_strong]:font-semibold">
+                    <ReactMarkdown>{researchMd}</ReactMarkdown>
+                  </article>
+                )}
+              </section>
             </div>
           </div>
 

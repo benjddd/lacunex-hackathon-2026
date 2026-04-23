@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { hostedGetSession } from "@/lib/store-hosted";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,14 @@ export async function GET(_req: Request, { params }: Params) {
   // Reject path-traversal attempts — sessionId is an ISO-like timestamp.
   if (!/^[A-Za-z0-9._-]+$/.test(sessionId)) {
     return NextResponse.json({ error: "invalid session id" }, { status: 400 });
+  }
+
+  if (process.env.VERCEL) {
+    const session = hostedGetSession(sessionId);
+    if (!session) {
+      return NextResponse.json({ error: "session not found" }, { status: 404 });
+    }
+    return NextResponse.json({ session, takeaway: null });
   }
 
   const dir = path.join(process.cwd(), "transcripts");

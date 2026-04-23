@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { callAggregate } from "@/lib/claude-calls";
+import { hostedGetSession } from "@/lib/store-hosted";
 import {
   isValidRoundId,
   readRound,
@@ -55,21 +56,28 @@ export async function POST(_req: Request, { params }: Params) {
   // Not persisted yet — aggregation may fail, in which case status would
   // be wrong. Persist after success only.
 
-  // Load session files from disk.
-  const dir = path.join(process.cwd(), "transcripts");
+  // Load sessions — in-memory store on Vercel, disk on local dev.
   const sessions: AggregateInputSession[] = [];
   const missing: string[] = [];
-  for (const sid of round.session_ids) {
-    try {
-      const raw = await fs.readFile(path.join(dir, `session-${sid}.json`), "utf-8");
-      const doc = JSON.parse(raw) as SessionDoc;
-      sessions.push({
-        session_id: sid,
-        transcript: doc.transcript ?? [],
-        extraction: doc.extraction,
-      });
-    } catch {
-      missing.push(sid);
+  if (process.env.VERCEL) {
+    for (const sid of round.session_ids) {
+      const doc = hostedGetSession(sid) as SessionDoc | null;
+      if (doc) {
+        sessions.push({ session_id: sid, transcript: doc.transcript ?? [], extraction: doc.extraction });
+      } else {
+        missing.push(sid);
+      }
+    }
+  } else {
+    const dir = path.join(process.cwd(), "transcripts");
+    for (const sid of round.session_ids) {
+      try {
+        const raw = await fs.readFile(path.join(dir, `session-${sid}.json`), "utf-8");
+        const doc = JSON.parse(raw) as SessionDoc;
+        sessions.push({ session_id: sid, transcript: doc.transcript ?? [], extraction: doc.extraction });
+      } catch {
+        missing.push(sid);
+      }
     }
   }
   if (sessions.length === 0) {

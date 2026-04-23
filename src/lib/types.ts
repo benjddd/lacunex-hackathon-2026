@@ -94,6 +94,15 @@ export interface Turn {
   // small "↩ re-opened turn N" chip on the bubble to make cross-turn
   // reasoning visible on camera.
   anchor_turn?: number;
+  // When the conductor chose move_type=deploy_meta_notice, this carries the
+  // specific notice being deployed. UI renders a subtle badge on the bubble
+  // so the cross-turn observation is visible (the notice's transcript
+  // anchors prove the kill-rule claim on camera).
+  deployed_notice?: {
+    type: string;
+    anchors: number[];
+    observation: string;
+  };
 }
 
 export interface ObjectiveState {

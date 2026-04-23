@@ -4,6 +4,7 @@ import type {
   Template,
   Turn,
 } from "@/lib/types";
+import type { MetaNotice } from "@/lib/prompts/meta-noticing";
 
 // The conductor's system prompt. Static within a session -> cache-friendly.
 export function buildConductorSystem(template: Template): string {
@@ -92,6 +93,7 @@ export function buildConductorUser(params: {
   minutesElapsed: number;
   deployedNoticesCount: number;
   lastNoticeTurn: number | null;
+  candidateNotices?: MetaNotice[];
 }): string {
   const {
     transcript,
@@ -101,6 +103,7 @@ export function buildConductorUser(params: {
     minutesElapsed,
     deployedNoticesCount,
     lastNoticeTurn,
+    candidateNotices,
   } = params;
 
   const transcriptBlock =
@@ -114,6 +117,16 @@ export function buildConductorUser(params: {
     .map(([id, s]) => `  - ${id}: completeness=${s.completeness.toFixed(2)}, confidence=${s.confidence.toFixed(2)}`)
     .join("\n");
 
+  const noticesBlock =
+    !candidateNotices || candidateNotices.length === 0
+      ? "(none this turn)"
+      : candidateNotices
+          .map(
+            (n) =>
+              `  - type=${n.type} strength=${n.strength} anchors=[${n.transcript_anchors.join(",")}]\n    observation: ${n.observation}\n    why_cross_turn: ${n.why_cross_turn}\n    suggested_deploy_language: ${n.suggested_deploy_language}`
+          )
+          .join("\n");
+
   return `<current_state>
 Turn number (interviewer turns so far): ${turnNumber}
 Minutes elapsed: ${minutesElapsed}
@@ -123,11 +136,15 @@ ${completeness}
 Meta-notices deployed so far: count=${deployedNoticesCount}, last at turn ${lastNoticeTurn ?? "never"}
 </current_state>
 
+<candidate_meta_notices>
+${noticesBlock}
+</candidate_meta_notices>
+
 <transcript>
 ${transcriptBlock}
 </transcript>
 
-Decide the next interviewer move and render it as one question. Return the JSON object specified in the output_format section of the system prompt.`;
+Decide the next interviewer move and render it as one question. If a STRONG candidate meta-notice fits and the deploy window is open (not first 2 interviewer turns, at least 3 turns since last deploy, not back-to-back), prefer deploying it — use move_type="deploy_meta_notice", move_target=<notice type>, and craft next_utterance based on (but not mechanically copying) the suggested_deploy_language. Return the JSON object specified in the output_format section of the system prompt.`;
 }
 
 export function parseConductorOutput(raw: string): ConductorDecision {

@@ -18,10 +18,22 @@ import {
 const TEMPLATE = founderTemplate as unknown as Template;
 const ROLE_LABELS = TEMPLATE.role_labels ?? DEFAULT_ROLE_LABELS;
 
+interface DeployedNoticePayload {
+  type: string;
+  strength: string;
+  transcript_anchors: number[];
+  observation: string;
+  suggested_deploy_language?: string;
+}
+
 interface TurnResponse {
   decision: ConductorDecision;
   extraction: ExtractionState;
   activeObjectiveId: string | null;
+  notices?: {
+    candidates: DeployedNoticePayload[];
+    deployed: DeployedNoticePayload | null;
+  };
   error?: string;
 }
 
@@ -38,6 +50,9 @@ export default function Home() {
   const [sessionClosed, setSessionClosed] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [savedSessionId, setSavedSessionId] = useState<string | null>(null);
+  const [deployedNotices, setDeployedNotices] = useState<
+    { turn: number; type: string }[]
+  >([]);
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
@@ -63,14 +78,14 @@ export default function Home() {
             extraction: withExtraction,
             activeObjectiveId: withActive,
             startedAtIso: startedAt.current,
-            deployedNoticesCount: 0,
-            lastNoticeTurn: null,
+            deployedNotices,
           }),
         });
         const data = (await res.json()) as TurnResponse;
         if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
 
         const nextIndex = withTranscript.length;
+        const deployed = data.notices?.deployed ?? null;
         const hostTurn: Turn = {
           index: nextIndex,
           role: "host",
@@ -81,10 +96,23 @@ export default function Home() {
             typeof data.decision.anchor_turn === "number"
               ? data.decision.anchor_turn
               : undefined,
+          deployed_notice: deployed
+            ? {
+                type: deployed.type,
+                anchors: deployed.transcript_anchors,
+                observation: deployed.observation,
+              }
+            : undefined,
         };
         setTranscript([...withTranscript, hostTurn]);
         setExtraction(data.extraction);
         setActiveObjectiveId(data.activeObjectiveId);
+        if (deployed) {
+          setDeployedNotices((prev) => [
+            ...prev,
+            { turn: nextIndex, type: deployed.type },
+          ]);
+        }
         if (data.decision.move_type === "wrap_up") setSessionClosed(true);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -93,7 +121,7 @@ export default function Home() {
         setIsLoading(false);
       }
     },
-    []
+    [deployedNotices]
   );
 
   // Kick off the opening turn once on mount.

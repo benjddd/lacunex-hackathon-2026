@@ -60,6 +60,7 @@ export async function callConductor(params: {
   minutesElapsed: number;
   deployedNoticesCount: number;
   lastNoticeTurn: number | null;
+  candidateNotices?: MetaNotice[];
 }): Promise<ConductorDecision> {
   const anthropic = getAnthropic();
   const systemText = buildConductorSystem(params.template);

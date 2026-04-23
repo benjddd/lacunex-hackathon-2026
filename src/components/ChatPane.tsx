@@ -126,6 +126,14 @@ function MessageBubble({
               ↩ re-opened turn {turn.anchor_turn}
             </span>
           )}
+          {isHost && turn.deployed_notice && (
+            <span
+              title={`Cross-turn notice (${turn.deployed_notice.type}) across turns [${turn.deployed_notice.anchors.join(", ")}]: ${turn.deployed_notice.observation}`}
+              className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-medium tracking-wider text-emerald-900"
+            >
+              ◆ {turn.deployed_notice.type.replace(/_/g, " ")} · turns {turn.deployed_notice.anchors.join(",")}
+            </span>
+          )}
         </div>
         <div className="whitespace-pre-wrap">{turn.text}</div>
       </div>

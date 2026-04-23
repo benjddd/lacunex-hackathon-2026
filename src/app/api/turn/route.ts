@@ -1,19 +1,30 @@
 import { NextResponse } from "next/server";
-import { callConductor, callExtraction } from "@/lib/claude-calls";
+import {
+  callConductor,
+  callExtraction,
+  callMetaNoticing,
+} from "@/lib/claude-calls";
 import { getTemplate } from "@/lib/templates";
+import type { MetaNotice } from "@/lib/prompts/meta-noticing";
 import { emptyExtraction, type ExtractionState, type Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 90;
+
+interface DeployedNoticeRef {
+  turn: number;
+  type: string;
+}
 
 interface TurnRequest {
   templateId: string;
-  transcript: Turn[]; // full history, client-owned
-  extraction?: ExtractionState; // optional; empty on opening turn
+  transcript: Turn[];
+  extraction?: ExtractionState;
   activeObjectiveId?: string | null;
-  startedAtIso?: string; // for minutes-elapsed computation
-  deployedNoticesCount?: number;
-  lastNoticeTurn?: number | null;
+  startedAtIso?: string;
+  // New: full history of deployed notices so meta-noticing can avoid
+  // re-proposing them and so the conductor knows rate-cap state.
+  deployedNotices?: DeployedNoticeRef[];
 }
 
 export async function POST(req: Request) {
@@ -44,35 +55,75 @@ export async function POST(req: Request) {
     0,
     Math.round((Date.now() - startedAt.getTime()) / 60000)
   );
+  const deployedNotices = body.deployedNotices ?? [];
+  const lastNoticeTurn =
+    deployedNotices.length > 0
+      ? deployedNotices[deployedNotices.length - 1].turn
+      : null;
 
-  // Conductor is required — if it fails the turn cannot continue. Extraction is
-  // a nice-to-have — if it fails we keep the old dashboard state and let the
-  // chat proceed. This keeps a long interview resilient to occasional extraction
-  // truncation or schema hiccups.
   const hasParticipantTurn = transcript.some((t) => t.role === "participant");
-  const extractionPromise = hasParticipantTurn
-    ? callExtraction({ template, transcript, currentState: extraction })
-        .catch((err) => {
+  const participantTurnCount = transcript.filter(
+    (t) => t.role === "participant"
+  ).length;
+
+  // Meta-noticing skipped on:
+  //   - the opening turn (no transcript yet)
+  //   - while participant turn count < 2 (rapport phase; nothing cross-turn
+  //     to notice yet — matches the conductor's suppression rule)
+  // Past that, runs in parallel with extraction. Non-fatal — a failure
+  // degrades to "no candidates" rather than killing the turn.
+  const shouldRunNoticing = participantTurnCount >= 2;
+  const noticingPromise: Promise<MetaNotice[]> = shouldRunNoticing
+    ? callMetaNoticing({
+        template,
+        transcript,
+        alreadyDeployed: deployedNotices,
+      }).catch((err) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn("[/api/turn] meta-noticing failed (no candidates):", msg);
+        return [];
+      })
+    : Promise.resolve([]);
+
+  const extractionPromise: Promise<ExtractionState> = hasParticipantTurn
+    ? callExtraction({ template, transcript, currentState: extraction }).catch(
+        (err) => {
           const msg = err instanceof Error ? err.message : String(err);
           console.warn("[/api/turn] extraction failed, preserving prior state:", msg);
           return extraction;
-        })
+        }
+      )
     : Promise.resolve(extraction);
 
   try {
-    const [decision, newExtraction] = await Promise.all([
-      callConductor({
-        template,
-        transcript,
-        extraction,
-        activeObjectiveId,
-        turnNumber,
-        minutesElapsed,
-        deployedNoticesCount: body.deployedNoticesCount ?? 0,
-        lastNoticeTurn: body.lastNoticeTurn ?? null,
-      }),
+    // Phase 1: meta-noticing + extraction in parallel. Conductor needs the
+    // candidate notices to decide whether to deploy, so it runs after.
+    const [candidateNotices, newExtraction] = await Promise.all([
+      noticingPromise,
       extractionPromise,
     ]);
+
+    const decision = await callConductor({
+      template,
+      transcript,
+      extraction: newExtraction,
+      activeObjectiveId,
+      turnNumber,
+      minutesElapsed,
+      deployedNoticesCount: deployedNotices.length,
+      lastNoticeTurn,
+      candidateNotices,
+    });
+
+    // If the conductor chose deploy_meta_notice, match to the specific
+    // candidate by type so the UI can render the notice's anchors + text.
+    let deployed: MetaNotice | null = null;
+    if (decision.move_type === "deploy_meta_notice") {
+      deployed =
+        candidateNotices.find((n) => n.type === decision.move_target) ??
+        candidateNotices[0] ??
+        null;
+    }
 
     const nextActive =
       decision.move_type === "switch_objective" && decision.move_target !== "closing"
@@ -85,6 +136,10 @@ export async function POST(req: Request) {
       decision,
       extraction: newExtraction,
       activeObjectiveId: nextActive,
+      notices: {
+        candidates: candidateNotices,
+        deployed,
+      },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

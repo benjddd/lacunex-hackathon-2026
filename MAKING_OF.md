@@ -186,6 +186,22 @@ The development pattern of "here's a constraint, find the violation" and "here's
 
 ---
 
+## Day 4: Post-incident brief in practice (Apr 23, late)
+
+The post-incident brief was authored but never stress-tested — no synthetic sessions had run against it. Running 7 sessions with diverse witness personas revealed what cross-turn reasoning actually does in a high-stakes domain.
+
+**The incident_witness session (payments near-miss, 25 turns)** showed the core capability: a witness who opened with a confident summary ("we rolled back within five to ten minutes, things stabilized") progressively separated observed facts from post-hoc reconstruction across the session. By turn 9, they were identifying exactly which numbers in their own account came from "logs I've reviewed since" vs. what they saw on-screen at 3am. By turn 15, the conductor had traced a "flag explanation" from its origin as a 3am Slack theory to its adoption as team consensus without verification. The conductor's turn 20 synthesis: *"three things are still unresolved — the earlier alert's relationship to the incident, whether the flag claim was ever verified, and what mitigations have been built on that assumption."* This is not pattern-matching on a single answer. It's a coherent multi-thread investigation across 25 turns.
+
+**The retiring_domain_expert session (30-year ICU nurse, patient near-miss)** produced something different: a witness with deep tacit knowledge trying to articulate what she knew before the data showed it. At turn 3, she described a pulse as "thin" rather than "thready" — a distinction she spent the next four turns unpacking. At turn 10, the conductor caught a sequence inconsistency: she had given two different orderings of events (dressing check before vs. after pulse palpation) across two tellings of the same story. When slowed down, she identified that the second telling was her standard routine, not what she actually did that morning. Her final answer: "The pulse came first. Everything else followed because of that." This is the core memory-science problem the Loftus axioms were embedded for — distinguishing routine from event memory. The platform surfaced it.
+
+**The evasive_pm session (PM withholding information)** showed a different pattern: cross-turn tracking of withheld information. By turn 12, the conductor named the pattern directly: *"you keep handing the knowing-part back to someone else, and I'd like to stay with you."* The witness then disclosed that they had concluded deployments weren't the culprit but said nothing to the analytics team. By turn 19: they also had support tickets from that morning they didn't share "for the same reason." Same motive, two withheld data points, surfaced across 19 turns.
+
+**The overconfident_researcher session (integrity investigation)** produced the most unexpected output: a professional who arrived confident they knew what happened and progressively lost that certainty. By turn 11, the witness was distinguishing between "honest memory failure" and "motivated forgetting" — then catching themselves using a framework to avoid the distinction and naming what they were doing. This use case (professional integrity) wasn't in the brief's original design. The investigator structure handled it.
+
+**What these sessions confirm:** the four-call architecture runs on domain-general reasoning, not domain-specific training. The post-incident brief had never been run in a live session. The conductor adapted to memory science, tacit clinical knowledge, withheld information, and potential misconduct — all using the same reasoning engine. The domain knowledge was in the brief; the reasoning was Opus 4.7.
+
+---
+
 ## File counts, domain depth, and committed artifacts
 
 **Codebase:** ~5,100 TS/TSX lines across 50+ files, 15 commits over 3 days of active building.

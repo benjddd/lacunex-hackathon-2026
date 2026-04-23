@@ -181,6 +181,7 @@ export interface Round {
   session_ids: string[]; // ordered insertion order
   status: RoundStatus;
   aggregate: RoundAggregate | null; // populated by POST /api/rounds/[id]/aggregate
+  live_synthesis: RoundAggregate | null; // incremental, refreshed on-demand for open rounds
   note: string | null;
 }
 

@@ -40,6 +40,7 @@ export default function RoundDetailPage({
   const [sessions, setSessions] = useState<SessionDoc[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [aggregating, setAggregating] = useState(false);
+  const [synthesizing, setSynthesizing] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -74,6 +75,22 @@ export default function RoundDetailPage({
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setAggregating(false);
+    }
+  };
+
+  const handleSynthesize = async () => {
+    if (synthesizing) return;
+    setSynthesizing(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/rounds/${roundId}/synthesize`, { method: "POST" });
+      const data = (await res.json()) as { round?: Round; sessions_used?: number; error?: string };
+      if (!res.ok || !data.round) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setRound(data.round);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setSynthesizing(false);
     }
   };
 
@@ -143,26 +160,63 @@ export default function RoundDetailPage({
             </div>
           </section>
 
+          {/* Live synthesis — runs on open rounds with ≥1 session, updates on refresh */}
+          {round.status !== "closed" && (
+            <section className="rounded-lg border border-indigo-100 bg-indigo-50/40 p-4">
+              <div className="flex flex-wrap items-start gap-3">
+                <div className="flex-1 min-w-[200px]">
+                  <p className="text-xs uppercase tracking-wider text-indigo-700 font-medium">
+                    Live cohort signal
+                  </p>
+                  <p className="mt-1 text-xs text-stone-600">
+                    {round.live_synthesis
+                      ? `${round.live_synthesis.session_count} session${round.live_synthesis.session_count === 1 ? "" : "s"} · updated ${new Date(round.live_synthesis.generated_at).toLocaleString()}`
+                      : round.session_ids.length === 0
+                        ? "Collect at least one session, then refresh to see early signal."
+                        : "An agent reads all sessions and surfaces emerging patterns. Runs incrementally — no need to close the round first."}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void handleSynthesize()}
+                  disabled={synthesizing || round.session_ids.length === 0}
+                  className="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-40"
+                >
+                  {synthesizing ? "Synthesizing…" : round.live_synthesis ? "Refresh signal" : "Run live synthesis"}
+                </button>
+              </div>
+              {round.live_synthesis && (
+                <div className="mt-4">
+                  <AggregateView
+                    aggregate={round.live_synthesis}
+                    sessionLookup={Object.fromEntries(sessions.map((s) => [s.session_id, s]))}
+                    roleLabels={roleLabels}
+                  />
+                </div>
+              )}
+            </section>
+          )}
+
           <section className="flex flex-wrap items-center gap-3 rounded-lg border border-stone-200 bg-white p-4">
             <div className="flex-1 min-w-[200px]">
               <p className="text-xs uppercase tracking-wider text-stone-500">
-                Cross-participant aggregate
+                Final aggregate
               </p>
               <p className="mt-1 text-sm text-stone-700">
                 {round.aggregate
-                  ? `Generated ${new Date(round.aggregate.generated_at).toLocaleString()}`
+                  ? `Generated ${new Date(round.aggregate.generated_at).toLocaleString()} · ${round.aggregate.session_count} sessions`
                   : round.session_ids.length === 0
-                    ? "Attach at least one session, then generate the aggregate."
-                    : "Not yet generated."}
+                    ? "Attach at least one session, then generate."
+                    : "Closes the round and produces the definitive cross-participant picture."}
               </p>
             </div>
             <button
               type="button"
-              onClick={handleAggregate}
+              onClick={() => void handleAggregate()}
               disabled={aggregating || round.session_ids.length === 0}
               className="rounded-md bg-amber-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:opacity-40"
             >
-              {aggregating ? "Aggregating…" : round.aggregate ? "Regenerate" : "Generate aggregate"}
+              {aggregating ? "Aggregating…" : round.aggregate ? "Regenerate" : "Generate final aggregate"}
             </button>
           </section>
 

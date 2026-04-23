@@ -53,6 +53,7 @@ export async function createRound(params: {
     session_ids: params.sessionIds ?? [],
     status: "open",
     aggregate: null,
+    live_synthesis: null,
     note: params.note ?? null,
   };
   if (process.env.VERCEL) {
@@ -124,6 +125,17 @@ export async function setRoundAggregate(
   if (!round) return null;
   round.aggregate = aggregate;
   round.status = status;
+  await writeRound(round);
+  return round;
+}
+
+export async function setRoundLiveSynthesis(
+  roundId: string,
+  synthesis: RoundAggregate
+): Promise<Round | null> {
+  const round = await readRound(roundId);
+  if (!round) return null;
+  round.live_synthesis = synthesis;
   await writeRound(round);
   return round;
 }

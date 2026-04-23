@@ -13,7 +13,7 @@ Built for the Anthropic **"Built with Opus 4.7"** hackathon (April 2026).
 A Host describes what they want to learn — objectives, hypotheses, success criteria. The platform:
 
 1. **Runs the interview live.** The Conductor decides each turn from state: probe the current objective, switch, deploy a cross-turn observation, or wrap up.
-2. **Catches what a form can't.** A separate Meta-Noticing layer spots contradictions, hedging, implied-not-said, and outside-considerations — each notice must cite at least two turn indices (enforced in code) so a judge can verify the "cross-turn" claim on camera.
+2. **Catches what a form can't.** A separate Meta-Noticing layer spots contradictions, hedging, implied-not-said, and outside-considerations — each notice must cite at least two turn indices (enforced in code), making the cross-turn claim verifiable on-screen.
 3. **Fills a structured insight dashboard *during* the conversation.** Not after.
 4. **Hands the participant a reflective takeaway** at session close — including a "what you already have that's relevant" section that names resources already in the participant's life they hadn't connected to the question.
 5. **Aggregates across N participants** into a cohort picture — convergent problems, shared assumptions, divergent framings, outliers, and unasked-across-cohort gaps — with routing recommendations ("you should also loop in X about Y").

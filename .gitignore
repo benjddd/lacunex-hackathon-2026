@@ -57,3 +57,5 @@ notes-private/
 # Saved interview sessions — dev-only, contain user/participant content
 transcripts/
 .demo-round-id
+
+.vercel

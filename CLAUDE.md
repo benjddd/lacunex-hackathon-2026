@@ -4,7 +4,7 @@ Read this first every session.
 
 ## What this repo is
 
-**CaptainSubtext** — Anthropic "Built with Opus 4.7" hackathon entry (Apr 21–26, 2026). A platform for goal-directed, adaptive interviews. Designer defines objectives; the platform runs the conversation live (not a pre-written script), extracts structured insights for the designer, and produces a reflective takeaway for the participant.
+**CaptainSubtext** — Anthropic "Built with Opus 4.7" hackathon entry (Apr 21–26, 2026). A platform for goal-directed, adaptive interviews. A Host defines objectives; the platform runs the conversation live (not a pre-written script), extracts structured insights for the Host, and produces a reflective takeaway for the participant.
 
 ## Key docs in this repo
 
@@ -42,7 +42,7 @@ Isolate model IDs in one config module so swapping is one edit.
 - **Re-evaluate docs rather than follow blindly** — the prior scoping docs were written at a Jan 2026 cutoff; check claims against what's actually available now (especially voice APIs, model IDs).
 - **Update PROJECT.md when decisions change.** That file is the source of truth on timeline and status.
 - **Keep anything positioning/judging/strategic out of the public repo** — it belongs in `INTERNAL.md` or session conversation, not in README or code comments.
-- **Commit early and often** — every commit inside the hackathon window is originality evidence.
+- **Commit early and often** — maintain a clean, timestamped commit trail.
 - Commit messages: short imperative present-tense summary, explain the *why* when non-obvious.
 
 ## Not relevant here

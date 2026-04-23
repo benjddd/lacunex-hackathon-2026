@@ -25,6 +25,14 @@ export default function RoundsListPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [createdRound, setCreatedRound] = useState<Round | null>(null);
 
+  const cloneFromRound = (r: Round) => {
+    setSelectedTemplateId(r.template_id);
+    setTargetCount(r.target_participant_count ? String(r.target_participant_count) : "");
+    setLabel(`${r.label} (copy)`);
+    setCreatedRound(null);
+    setShowCreate(true);
+  };
+
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/rounds");
@@ -221,10 +229,10 @@ export default function RoundsListPage() {
         {rounds && rounds.length > 0 && (
           <ul className="space-y-2">
             {rounds.map((r) => (
-              <li key={r.round_id}>
+              <li key={r.round_id} className="flex items-stretch gap-2">
                 <Link
                   href={`/rounds/${r.round_id}`}
-                  className="block rounded-lg border border-stone-200 bg-white px-5 py-4 transition hover:border-amber-300 hover:bg-amber-50/20"
+                  className="flex-1 rounded-lg border border-stone-200 bg-white px-5 py-4 transition hover:border-amber-300 hover:bg-amber-50/20"
                 >
                   <div className="flex items-baseline justify-between gap-4">
                     <div className="min-w-0">
@@ -250,6 +258,14 @@ export default function RoundsListPage() {
                     </span>
                   </div>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => cloneFromRound(r)}
+                  title="Use as template for a new round"
+                  className="shrink-0 self-center rounded-md border border-stone-200 bg-white px-2 py-1 text-[10px] text-stone-500 hover:border-amber-300 hover:text-amber-800"
+                >
+                  ⎘ clone
+                </button>
               </li>
             ))}
           </ul>

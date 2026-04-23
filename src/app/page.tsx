@@ -351,6 +351,7 @@ export default function Home() {
             disabled={sessionClosed}
             roleLabels={ROLE_LABELS}
             showReasoning
+            showHostMeta
           />
         </div>
         <div className="w-[400px] shrink-0">

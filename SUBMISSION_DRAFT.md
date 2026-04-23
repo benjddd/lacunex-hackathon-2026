@@ -19,14 +19,10 @@ CaptainSubtext
 
 ---
 
-## Field 4 — Selected Hackathon Problem Statement (Track Name)
-**[FILL IN — must visit the submission form dropdown to see options]**
+## Field 4 — Selected Hackathon Problem Statement
+*(This is a free-text textarea — write your own problem statement)*
 
-Best-fit framing options (match to whichever track is listed):
-- If there's a "Research / Knowledge Work" track → that is our primary fit
-- If there's a "Productivity / Enterprise Tools" track → second choice
-- If there's a "Civic / Public Services" track → strong fit given civic brief
-- If there's an "Agentic / Multi-step AI" track → fits our Managed Agents angle
+Qualitative insight — what someone actually thinks, not what they answered — requires skilled human interviewers who are scarce and expensive to scale. Survey tools capture surface-level responses. Transcript analyzers work from what was said, not what was meant. The result: most organizations run fewer conversations than needed, by people less skilled than the problem deserves, producing reports that arrive too late to change decisions. CaptainSubtext makes goal-directed, cross-turn-aware interviews available at any scale, to any host, across any domain where understanding what someone actually thinks — not just what they answered — is the point.
 
 ---
 
@@ -47,7 +43,9 @@ Neither side leaves empty-handed. The host gets structured insight *during* the 
 
 One brief runs reliably across many participants — so insights are comparable, not a pile of idiosyncratic transcripts. Three fully wired briefs ship with the platform: Founder Investment Evaluation (investor/founder), Post-Incident Witness Interview (facilitator/witness), and Civic Consultation (facilitator/resident).
 
-**It is not a research moderator that delivers overnight reports** (Outset, Listen Labs). It is not a transcript analyzer (Dovetail, Condens). The distinctive claim: cross-turn structural reasoning that detects contradictions and implied assumptions turn-by-turn — rendered live on screen, not post-hoc.
+Self-serve from day one — no enterprise contract, no demo call required. One brief, many conversations: run the same brief across any number of participants and get comparable structured signal, not a pile of idiosyncratic transcripts.
+
+**It is not a research moderator that delivers overnight reports** (Outset, Listen Labs, Strella — all batch, all post-hoc). It is not a transcript analyzer (Dovetail, Condens). The distinctive claim: cross-turn structural reasoning that detects contradictions and implied assumptions turn-by-turn — rendered live on screen during the conversation, not after. Transcription + coding + synthesis for a 15-minute interview averages 2+ hours of researcher time; we eliminate that step entirely by producing structured output while the conversation is still happening.
 
 Headline: *Cross-turn reasoning, rendered live. Both sides leave with something.*
 

@@ -11,6 +11,7 @@ interface ChatPaneProps {
   disabled?: boolean;
   roleLabels?: RoleLabels;
   showReasoning?: boolean;
+  showHostMeta?: boolean;
 }
 
 export function ChatPane({
@@ -20,6 +21,7 @@ export function ChatPane({
   disabled,
   roleLabels = DEFAULT_ROLE_LABELS,
   showReasoning = false,
+  showHostMeta = false,
 }: ChatPaneProps) {
   const [text, setText] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -65,6 +67,7 @@ export function ChatPane({
             turn={turn}
             roleLabels={roleLabels}
             showReasoning={showReasoning}
+            showHostMeta={showHostMeta}
           />
         ))}
         {isLoading && (
@@ -112,10 +115,12 @@ function MessageBubble({
   turn,
   roleLabels,
   showReasoning = false,
+  showHostMeta = false,
 }: {
   turn: Turn;
   roleLabels: RoleLabels;
   showReasoning?: boolean;
+  showHostMeta?: boolean;
 }) {
   const [reasoningOpen, setReasoningOpen] = useState(false);
   const isHost = turn.role === "host";
@@ -137,7 +142,7 @@ function MessageBubble({
             }`}
           >
             <span>{isHost ? roleLabels.host : roleLabels.participant}</span>
-            {isHost && typeof turn.anchor_turn === "number" && (
+            {showHostMeta && isHost && typeof turn.anchor_turn === "number" && (
               <span
                 title="The platform re-opened a prior turn — cross-turn reasoning"
                 className="rounded-full bg-amber-200/80 px-2 py-0.5 text-[9px] font-medium tracking-wider text-amber-900"
@@ -145,7 +150,7 @@ function MessageBubble({
                 ↩ re-opened turn {turn.anchor_turn}
               </span>
             )}
-            {isHost && turn.deployed_notice && (
+            {showHostMeta && isHost && turn.deployed_notice && (
               <span
                 title={`Cross-turn notice (${turn.deployed_notice.type}) across turns [${turn.deployed_notice.anchors.join(", ")}]: ${turn.deployed_notice.observation}`}
                 className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-medium tracking-wider text-emerald-900"

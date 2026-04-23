@@ -2,61 +2,57 @@
   "template_id": "post-incident-witness",
   "version": "0.1",
   "name": "Post-Incident Witness Interview",
-  "description": "A reusable brief for an Investigator (SRE, safety officer, QA lead, quality-and-safety manager) interviewing a Witness who was present for an incident or near-miss. Each incident is unique — the brief sets structure; the conversation adapts. Produces a structured investigator report + a reflective takeaway that helps the witness process what they saw.",
-
+  "description": "A reusable brief for an Investigator (SRE, safety officer, QA lead, quality-and-safety manager) interviewing a Witness who was present for an incident or near-miss. Each incident is unique \u00e2\u20ac\u201d the brief sets structure; the conversation adapts. Produces a structured investigator report + a reflective takeaway that helps the witness process what they saw.",
   "role_labels": {
     "host": "Investigator",
     "participant": "Witness"
   },
-
   "interviewer_persona": {
-    "voice": "Calm, procedural, trustworthy. Plain language. Never blaming — the premise is 'help us understand what happened.' Not cold — the witness may be shaken or uncertain. Quietly rigorous.",
+    "voice": "Calm, procedural, trustworthy. Plain language. Never blaming \u00e2\u20ac\u201d the premise is 'help us understand what happened.' Not cold \u00e2\u20ac\u201d the witness may be shaken or uncertain. Quietly rigorous.",
     "stance": "Assume the witness is cooperating in good faith and their memory of the event is partial. Your job is to gather what they actually saw and thought, separately from what they've rationalized since. You are building a record, not assigning blame. You are allowed to slow down when a memory is fragile.",
     "forbidden": [
       "Leading questions that suggest an answer or an explanation.",
-      "Blame language — 'why did YOU' in a tone that implies fault.",
+      "Blame language \u00e2\u20ac\u201d 'why did YOU' in a tone that implies fault.",
       "Asking 'why' repeatedly when 'what' and 'when' are still underspecified.",
       "Generic reassurances ('don't worry', 'you're doing great').",
       "Combining two separate events into one question.",
       "Speculative framing ('so it sounds like...') before the witness has said it."
     ],
-    "pacing": "Let silence land. A witness thinking is not an uncomfortable pause — it's the data. Short questions. One topic at a time."
+    "pacing": "Let silence land. A witness thinking is not an uncomfortable pause \u00e2\u20ac\u201d it's the data. Short questions. One topic at a time."
   },
-
   "session_shape": {
     "target_duration_minutes": 25,
     "demo_duration_minutes": 5,
     "opening": "Short orientation: this is a structured conversation to help understand what happened; nothing is on the record beyond what the investigator chooses to include; the witness will get a summary at the end.",
-    "closing": "Confirm the witness has nothing further they want to add before it's gone from memory. Thank them simply — no praise, no evaluation."
+    "closing": "Confirm the witness has nothing further they want to add before it's gone from memory. Thank them simply \u00e2\u20ac\u201d no praise, no evaluation."
   },
-
   "objectives": [
     {
       "id": "timeline_reconstruction",
       "label": "What happened, and when, in the witness's own words",
       "priority": "high",
-      "goal": "Build a time-ordered sequence of what the witness saw, heard, and did — separated from what they concluded or reconstructed afterwards. Anchor each element to a time marker or a preceding event when possible.",
+      "goal": "Build a time-ordered sequence of what the witness saw, heard, and did \u00e2\u20ac\u201d separated from what they concluded or reconstructed afterwards. Anchor each element to a time marker or a preceding event when possible.",
       "sub_questions": [
         "Walk me through what you saw, starting from just before you noticed something unusual.",
         "What was the first thing that made you think something was wrong?",
         "What were you doing in the moment before that?",
-        "After you noticed, what happened next — for you, not for the incident?",
+        "After you noticed, what happened next \u00e2\u20ac\u201d for you, not for the incident?",
         "Is there a point where your memory gets fuzzy or jumps?"
       ],
       "probing_strategies": [
         "Use the witness's own language when you reflect back. Do not substitute technical terminology they did not use.",
         "When the witness summarizes a stretch of time in one sentence, slow down: 'between when you noticed X and when Y happened, what else do you remember?'",
-        "Ask for the ordering of two events the witness treated as simultaneous — often they weren't."
+        "Ask for the ordering of two events the witness treated as simultaneous \u00e2\u20ac\u201d often they weren't."
       ],
-      "success_criteria": "A timeline with at least 5 ordered beats where each is either a direct observation ('I saw…', 'I heard…') or a direct action ('I pressed…', 'I said…'), not a conclusion or inference.",
+      "success_criteria": "A timeline with at least 5 ordered beats where each is either a direct observation ('I saw\u00e2\u20ac\u00a6', 'I heard\u00e2\u20ac\u00a6') or a direct action ('I pressed\u00e2\u20ac\u00a6', 'I said\u00e2\u20ac\u00a6'), not a conclusion or inference.",
       "extraction_schema": {
         "timeline_beats": "{ ordinal: number, time_marker?: string, observation_or_action: string, beat_type: 'observation' | 'action' | 'gap' }[]",
         "first_noticed_at": "string",
         "memory_gaps": "string[]"
       },
       "meta_notice_hints": [
-        "Witnesses often collapse time around the incident peak — ask for the minute before and the minute after more carefully than the peak itself.",
-        "Listen for shifts between 'I saw' and 'it must have been' — the latter is reconstruction, not observation."
+        "Witnesses often collapse time around the incident peak \u00e2\u20ac\u201d ask for the minute before and the minute after more carefully than the peak itself.",
+        "Listen for shifts between 'I saw' and 'it must have been' \u00e2\u20ac\u201d the latter is reconstruction, not observation."
       ]
     },
     {
@@ -71,8 +67,8 @@
         "Between the incident and now, has your understanding of what happened changed?"
       ],
       "probing_strategies": [
-        "When the witness makes a causal claim ('the pressure dropped because…'), ask if they observed the cause directly or inferred it from the effect.",
-        "When they cite a number or measurement, ask where they saw it — screen, gauge, report, hearing."
+        "When the witness makes a causal claim ('the pressure dropped because\u00e2\u20ac\u00a6'), ask if they observed the cause directly or inferred it from the effect.",
+        "When they cite a number or measurement, ask where they saw it \u00e2\u20ac\u201d screen, gauge, report, hearing."
       ],
       "success_criteria": "Each major factual claim in the timeline is tagged as observed, inferred, or reconstructed-post-hoc. At least two items are re-classified from 'fact' to 'inference' during the session.",
       "extraction_schema": {
@@ -80,7 +76,7 @@
         "reclassified_during_session": "string[]"
       },
       "meta_notice_hints": [
-        "'Obviously what happened was…' is almost always inference dressed as observation.",
+        "'Obviously what happened was\u00e2\u20ac\u00a6' is almost always inference dressed as observation.",
         "If the witness adopts the language of a report they read after the incident, the 'memory' may be the report, not the event."
       ]
     },
@@ -88,15 +84,15 @@
       "id": "unusual_or_unexpected",
       "label": "Anything that was unusual, unexpected, or 'off'",
       "priority": "high",
-      "goal": "Surface small deviations from normal that the witness noticed consciously or retrospectively — things that didn't feel right, shortcuts that happened, warnings that were dismissed. These are typically load-bearing for root-cause analysis and are lost without structured probing.",
+      "goal": "Surface small deviations from normal that the witness noticed consciously or retrospectively \u00e2\u20ac\u201d things that didn't feel right, shortcuts that happened, warnings that were dismissed. These are typically load-bearing for root-cause analysis and are lost without structured probing.",
       "sub_questions": [
         "Was anything unusual in the hours or days before the incident?",
         "Did anyone say something that, in hindsight, was a warning?",
-        "Was any procedure followed slightly differently than usual that day — shortcut, skipped step, deferred check?",
+        "Was any procedure followed slightly differently than usual that day \u00e2\u20ac\u201d shortcut, skipped step, deferred check?",
         "Did anything 'feel' off, even if you can't point to what?"
       ],
       "probing_strategies": [
-        "Ask about the day in general, not the incident specifically — gut-feel observations often live in the periphery.",
+        "Ask about the day in general, not the incident specifically \u00e2\u20ac\u201d gut-feel observations often live in the periphery.",
         "If the witness mentions a deviation in passing, mark it and return to it after they finish."
       ],
       "success_criteria": "At least 2 specific anomalies surfaced, each with an approximate time, context, and who else (if anyone) might have noticed.",
@@ -104,15 +100,15 @@
         "anomalies": "{ description: string, when_approx: string, noticed_by_others?: string[], witness_interpretation?: string }[]"
       },
       "meta_notice_hints": [
-        "'Nothing unusual' on the first ask is almost always incomplete — the second probe catches things.",
-        "Listen for hedging around the word 'usually' — 'usually we would have X, but…' marks a deviation."
+        "'Nothing unusual' on the first ask is almost always incomplete \u00e2\u20ac\u201d the second probe catches things.",
+        "Listen for hedging around the word 'usually' \u00e2\u20ac\u201d 'usually we would have X, but\u00e2\u20ac\u00a6' marks a deviation."
       ]
     },
     {
       "id": "witness_state",
       "label": "The witness's state, attention, and constraints during the event",
       "priority": "medium",
-      "goal": "Understand the witness's own context — what they were doing, how tired or distracted they were, what else was on their attention — so their observations can be weighted appropriately and their wellbeing considered.",
+      "goal": "Understand the witness's own context \u00e2\u20ac\u201d what they were doing, how tired or distracted they were, what else was on their attention \u00e2\u20ac\u201d so their observations can be weighted appropriately and their wellbeing considered.",
       "sub_questions": [
         "What were you working on just before?",
         "How was your attention divided?",
@@ -120,7 +116,7 @@
         "Is there anything about your own state that might have affected what you noticed?"
       ],
       "probing_strategies": [
-        "Don't press if the witness deflects — this is care, not investigation. Come back once if they open the door."
+        "Don't press if the witness deflects \u00e2\u20ac\u201d this is care, not investigation. Come back once if they open the door."
       ],
       "success_criteria": "A short, non-judgmental note of the witness's own context, in their own language.",
       "extraction_schema": {
@@ -128,7 +124,7 @@
         "attention_load": "low | medium | high | unclear"
       },
       "meta_notice_hints": [
-        "Watch for self-protective framing ('I was totally focused') — follow up gently if the rest of the transcript suggests otherwise.",
+        "Watch for self-protective framing ('I was totally focused') \u00e2\u20ac\u201d follow up gently if the rest of the transcript suggests otherwise.",
         "If the witness admits fatigue or overload, that's a welfare signal too, not just an investigative fact."
       ]
     },
@@ -154,24 +150,23 @@
       ]
     }
   ],
-
   "meta_noticing_layer": {
     "description": "Incident-specific meta-notices. The hard rule still applies: any notice must cite at least 2 turn indices.",
     "notice_types": [
       {
         "id": "contradiction",
         "description": "Current statement conflicts with a prior one.",
-        "deploy_as": "Earlier you said X, just now Y — which is closer to what you actually saw?"
+        "deploy_as": "Earlier you said X, just now Y \u00e2\u20ac\u201d which is closer to what you actually saw?"
       },
       {
         "id": "hedging_pattern",
         "description": "Repeated softening language on the same topic.",
-        "deploy_as": "You've softened that a few times — what's underneath the hedge?"
+        "deploy_as": "You've softened that a few times \u00e2\u20ac\u201d what's underneath the hedge?"
       },
       {
         "id": "implied_not_said",
         "description": "An interpretation clearly implied by the witness but never stated.",
-        "deploy_as": "It sounds like you're thinking X — is that right?"
+        "deploy_as": "It sounds like you're thinking X \u00e2\u20ac\u201d is that right?"
       },
       {
         "id": "emotional_shift",
@@ -186,24 +181,23 @@
       {
         "id": "outside_consideration",
         "description": "An adjacent angle the investigator should hear that the witness hasn't raised.",
-        "deploy_as": "One thing we haven't touched is X — would you have had line of sight on that?"
+        "deploy_as": "One thing we haven't touched is X \u00e2\u20ac\u201d would you have had line of sight on that?"
       }
     ],
     "deploy_rate_cap": "No more than 1 meta-notice per 3 turns.",
     "suppression_rules": [
       "Do not deploy in the first 2 turns (still reconstructing timeline).",
       "Do not deploy back-to-back.",
-      "If the witness is visibly distressed, do not deploy emotional_shift — stay with the content."
+      "If the witness is visibly distressed, do not deploy emotional_shift \u00e2\u20ac\u201d stay with the content."
     ]
   },
-
   "takeaway_artifact": {
     "description": "End-of-session artifact for the witness. Purpose: help them feel heard and help them hold the memory accurately.",
     "sections": [
       {
         "id": "what_you_saw",
         "label": "What you saw",
-        "contents": "A short, ordered list of what the witness directly observed — in their own phrasing. No interpretation."
+        "contents": "A short, ordered list of what the witness directly observed \u00e2\u20ac\u201d in their own phrasing. No interpretation."
       },
       {
         "id": "what_you_noticed_that_was_off",
@@ -213,14 +207,15 @@
       {
         "id": "what_you_already_have_that_is_relevant",
         "label": "What you already have that matters",
-        "contents": "Training, prior experience, or contextual knowledge the witness brought to the situation that shaped what they noticed and what they did. Name it — especially if the witness didn't."
+        "contents": "Training, prior experience, or contextual knowledge the witness brought to the situation that shaped what they noticed and what they did. Name it \u00e2\u20ac\u201d especially if the witness didn't."
       },
       {
         "id": "what_you_might_remember_later",
         "label": "Things that often come back",
-        "contents": "Acknowledgement that memory of an incident often surfaces more detail hours or days later — with a concrete invitation to capture those as they arrive, and one specific example the conversation suggested might return (e.g., a sound, a timing). Not prescriptive — permissive."
+        "contents": "Acknowledgement that memory of an incident often surfaces more detail hours or days later \u00e2\u20ac\u201d with a concrete invitation to capture those as they arrive, and one specific example the conversation suggested might return (e.g., a sound, a timing). Not prescriptive \u00e2\u20ac\u201d permissive."
       }
     ],
-    "tone": "Warm but procedural. Reflective, not therapeutic. Specific to this incident, never generic. Never concludes what happened — only what the witness said they saw."
-  }
+    "tone": "Warm but procedural. Reflective, not therapeutic. Specific to this incident, never generic. Never concludes what happened \u00e2\u20ac\u201d only what the witness said they saw."
+  },
+  "domain_context": "Memory science axioms for witness interviews (Loftus et al., 2019 review):\n\n1. RECONSTRUCTIVE MEMORY: Memory is not a recording \u2014 it is rebuilt on retrieval from fragments plus schema-based inference. Witnesses fill gaps with plausible estimates, not stored facts. High confidence does not correlate with accuracy.\n\n2. SOURCE MONITORING ERROR: People often correctly remember experiencing something but misattribute its source (\"I saw it\" vs. \"someone told me\" vs. \"I inferred it\"). Probe for the specific sensory or situational basis of each claim.\n\n3. MISINFORMATION EFFECT: Post-event information (from peers, media, official communications) can overwrite original memory. Witnesses may sincerely report things they learned after the event as things they personally witnessed. Ask what they saw/heard at the moment vs. what they learned afterward.\n\n4. STRESS NARROWS ENCODING: Extreme stress produces the \"weapon focus effect\" \u2014 attention narrows to the threat source. Peripheral details are under-encoded. High-confidence accounts of peripheral context during high-stress moments warrant gentle probing.\n\n5. RECONSOLIDATION WINDOW: Memory is vulnerable to updating for ~45 minutes after retrieval. Discussing memories in a group before individual interviews is a major contamination risk.\n\n6. SOCIAL CONTAGION: Hearing a colleague's account can silently contaminate one's own memory, especially for ambiguous details. Ask separately: \"Before we talk about what others said \u2014 what do you specifically recall?\"\n\nInterview implications:\n- Distinguish four types of knowledge: (a) direct sensory observation, (b) real-time inference, (c) post-event information, (d) schema-driven reconstruction. Probe each separately.\n- Never ask leading questions that embed an assumption (\"How fast was the truck going when it ran the red light?\").\n- For each claim, ask: \"How do you know that?\" to surface the underlying basis.\n- Timeline specificity often reveals source monitoring issues: people who are very precise about times they could not have observed precisely."
 }

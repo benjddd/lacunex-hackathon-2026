@@ -73,6 +73,10 @@ export interface Template {
   objectives: ObjectiveTemplate[];
   meta_noticing_layer: MetaNoticingLayer;
   takeaway_artifact: TakeawayArtifact;
+  // Domain-specific knowledge the conductor and meta-noticing layer can draw on.
+  // Embedded as distilled axioms (not raw documents). Optional — briefs without it
+  // still work; briefs with it probe with more precision.
+  domain_context?: string;
 }
 
 export const DEFAULT_ROLE_LABELS: RoleLabels = {

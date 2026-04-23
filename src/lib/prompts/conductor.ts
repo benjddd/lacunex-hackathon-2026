@@ -78,7 +78,11 @@ Soft guidance:
 - Therapy-speak.
 </forbidden>
 
-<output_format>
+${template.domain_context ? `<domain_context>
+${template.domain_context}
+</domain_context>
+
+` : ""}<output_format>
 Return a single JSON object and nothing else — no markdown, no prose before or after:
 {
   "reasoning": "<2–3 sentences: what you considered, why this move, what you're deliberately not doing>",

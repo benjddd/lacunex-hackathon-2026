@@ -16,6 +16,7 @@ const AVAILABLE_BRIEFS: Template[] = [
 export default function HostPage() {
   const [rounds, setRounds] = useState<Round[] | null>(null);
   const [roundsError, setRoundsError] = useState<string | null>(null);
+  const [isHosted, setIsHosted] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -24,10 +25,14 @@ export default function HostPage() {
         const res = await fetch("/api/rounds");
         const data = (await res.json()) as {
           rounds?: Round[];
+          hosted?: boolean;
           error?: string;
         };
         if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-        if (!cancelled) setRounds(data.rounds ?? []);
+        if (!cancelled) {
+          setRounds(data.rounds ?? []);
+          if (data.hosted) setIsHosted(true);
+        }
       } catch (err) {
         if (!cancelled)
           setRoundsError(err instanceof Error ? err.message : String(err));
@@ -161,9 +166,16 @@ export default function HostPage() {
           {!rounds && !roundsError && (
             <p className="text-xs text-stone-500">Loading…</p>
           )}
-          {rounds && rounds.length === 0 && (
+          {isHosted && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50/50 px-4 py-3 text-xs text-amber-800">
+              Rounds and aggregation require local deployment (filesystem storage).
+              Run locally to use this feature — see README for setup.
+              The live interview and takeaway features work in full on this URL.
+            </div>
+          )}
+          {!isHosted && rounds && rounds.length === 0 && (
             <div className="rounded-lg border border-stone-200 bg-white px-5 py-4 text-sm text-stone-600">
-              No rounds yet. Use the sim CLI to create one:
+              No rounds yet. Create one above, or use the sim CLI:
               <pre className="mt-2 rounded bg-stone-100 px-2 py-1 text-[11px] text-stone-800">
                 npm run sim -- --persona=confident_confabulator --turns=8
               </pre>

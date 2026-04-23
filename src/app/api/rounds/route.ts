@@ -5,6 +5,9 @@ import { getTemplate } from "@/lib/templates";
 export const runtime = "nodejs";
 
 export async function GET() {
+  if (process.env.VERCEL) {
+    return NextResponse.json({ rounds: [], hosted: true });
+  }
   try {
     const rounds = await listRounds();
     return NextResponse.json({ rounds });

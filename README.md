@@ -1,6 +1,8 @@
 # CaptainSubtext
 
-> Goal-directed, adaptive interviews. The Host sets *what* to learn; the platform decides *how* the conversation unfolds, turn by turn.
+> **Cross-turn reasoning, rendered live. Both sides leave with something.**
+
+Goal-directed, adaptive interviews at scale. A Host (subject-matter expert) sets interview objectives; the platform runs every conversation live — generating each question from the full session state, producing structured insight *during* the session rather than in an overnight report, and, at session close, handing the participant a reflective takeaway worth keeping.
 
 Built for the Anthropic **"Built with Opus 4.7"** hackathon (April 2026).
 
@@ -8,15 +10,22 @@ Built for the Anthropic **"Built with Opus 4.7"** hackathon (April 2026).
 
 ## What it does
 
-A Host (subject-matter expert) defines interview objectives — hypotheses to probe, things to learn, success criteria. The platform then runs the conversation live: it generates each interviewer turn based on the full session state, extracts structured insight into a live dashboard as the conversation unfolds, and (end of session) produces a reflective takeaway artifact the participant would actually want to keep.
+A Host describes what they want to learn — objectives, hypotheses, success criteria. The platform:
 
-**What it is not:**
+1. **Runs the interview live.** The Conductor decides each turn from state: probe the current objective, switch, deploy a cross-turn observation, or wrap up.
+2. **Catches what a form can't.** A separate Meta-Noticing layer spots contradictions, hedging, implied-not-said, and outside-considerations — each notice must cite at least two turn indices (enforced in code) so a judge can verify the "cross-turn" claim on camera.
+3. **Fills a structured insight dashboard *during* the conversation.** Not after.
+4. **Hands the participant a reflective takeaway** at session close — including a "what you already have that's relevant" section that names resources already in the participant's life they hadn't connected to the question.
+5. **Aggregates across N participants** into a cohort picture — convergent problems, shared assumptions, divergent framings, outliers, and unasked-across-cohort gaps — with routing recommendations ("you should also loop in X about Y").
 
-- **Not a questionnaire.** No pre-written question list. Every conversation is different because the platform picks questions based on state, not a script.
-- **Not post-hoc research.** The structured insight is produced *during* the conversation, not extracted afterwards from a transcript.
-- **Not a chatbot with a system prompt.** A goal-aware conductor, a mechanical extraction layer, a separate observation-only meta-noticing layer (adding Thu), and a closing synthesis call — each doing one job well.
+**What it is NOT** — and where the competitive line actually sits:
 
-**Who it's for (eventually):** academic qualitative researchers, consumer-insights teams, early-stage founders, retiring-expert knowledge capture, civic consultations. The hackathon POC ships with a single fully-wired template (Founder Product Ideation).
+- *Not an AI research moderator that ships an overnight report.* (Outset, Listen Labs, Strella all do that — insight is produced during the conversation, on-screen.)
+- *Not a post-hoc transcript analyzer.* (Dovetail, Condens ingest transcripts; we produce them — and the structured signal — live.)
+- *Not a hiring screener.* (Sapia is scoring-shaped and hiring-only.)
+- *Not "Claude with a long system prompt."* A single chatbot can't enforce cross-turn reasoning the way a four-call architecture with turn-anchored notices can.
+
+**Who it's for:** academic qualitative researchers, consumer-insights teams, civic consultation at scale, clinical patient-values elicitation, retiring-expert knowledge capture, post-incident witness interviewing, manager reflection prep. The hackathon POC wires one brief end-to-end (Founder Investment Evaluation) with a second Civic / Post-Incident brief shipping Fri.
 
 ---
 

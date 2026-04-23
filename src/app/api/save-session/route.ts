@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       transcript: body.transcript,
       extraction: body.extraction,
     };
-    hostedSaveSession(sessionId, payload);
+    await hostedSaveSession(sessionId, payload);
     if (body.roundId && isValidRoundId(body.roundId)) {
       await addSessionToRound(body.roundId, sessionId).catch(() => null);
     }

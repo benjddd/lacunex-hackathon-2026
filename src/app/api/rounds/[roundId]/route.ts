@@ -41,7 +41,7 @@ export async function GET(_req: Request, { params }: Params) {
   const sessions: SessionDoc[] = [];
   if (process.env.VERCEL) {
     for (const sid of round.session_ids) {
-      const doc = hostedGetSession(sid) as SessionDoc | null;
+      const doc = (await hostedGetSession(sid)) as SessionDoc | null;
       if (doc) sessions.push(doc);
     }
   } else {

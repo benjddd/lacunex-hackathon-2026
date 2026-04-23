@@ -134,6 +134,10 @@ export default function RoundDetailPage({
 
       {round && (
         <main className="mx-auto max-w-6xl px-6 py-8 space-y-8">
+
+          {/* Response funnel stats */}
+          <RoundStats round={round} sessions={sessions} />
+
           <section className="rounded-lg border border-stone-200 bg-white p-4">
             <p className="text-xs uppercase tracking-wider text-stone-500 mb-2">Participant link</p>
             <div className="flex items-center gap-2">
@@ -266,6 +270,68 @@ export default function RoundDetailPage({
         </main>
       )}
     </div>
+  );
+}
+
+const COMPLETION_THRESHOLD = 6; // turn_count ≥ this = session treated as completed
+
+function RoundStats({
+  round,
+  sessions,
+}: {
+  round: Round;
+  sessions: SessionDoc[];
+}) {
+  const target = round.target_participant_count;
+  const started = sessions.length;
+  const completed = sessions.filter((s) => s.turn_count >= COMPLETION_THRESHOLD).length;
+  const partial = started - completed;
+  const responseRate = target ? Math.round((started / target) * 100) : null;
+  const completionRate = started > 0 ? Math.round((completed / started) * 100) : null;
+
+  const stat = (label: string, value: string | number, sub?: string, highlight?: boolean) => (
+    <div className="flex flex-col items-center gap-0.5">
+      <span
+        className={`text-2xl font-bold tabular-nums ${highlight ? "text-amber-700" : "text-stone-800"}`}
+      >
+        {value}
+      </span>
+      <span className="text-[10px] uppercase tracking-wider text-stone-500">{label}</span>
+      {sub && <span className="text-[10px] text-stone-400">{sub}</span>}
+    </div>
+  );
+
+  return (
+    <section className="rounded-lg border border-stone-200 bg-white p-4">
+      <div className="flex flex-wrap items-center gap-6 sm:gap-10">
+        {target != null && stat("Target", target)}
+        {stat("Started", started, responseRate != null ? `${responseRate}% of target` : undefined)}
+        {stat("Completed", completed, completionRate != null ? `${completionRate}% of started` : undefined, completed > 0)}
+        {partial > 0 && stat("Partial / abandoned", partial)}
+        <div className="ml-auto flex flex-col items-end gap-0.5">
+          <span className="text-xs text-stone-500">
+            Opened {new Date(round.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+          </span>
+          <span
+            className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
+              round.status === "closed"
+                ? "bg-stone-100 text-stone-500"
+                : "bg-emerald-50 text-emerald-700"
+            }`}
+          >
+            {round.status}
+          </span>
+        </div>
+      </div>
+      {started > 0 && (
+        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
+          <div
+            className="h-full rounded-full bg-amber-500"
+            style={{ width: `${completionRate ?? 0}%` }}
+          />
+        </div>
+      )}
+    </section>
   );
 }
 

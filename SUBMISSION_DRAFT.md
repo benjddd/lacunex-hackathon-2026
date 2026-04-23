@@ -22,7 +22,17 @@ CaptainSubtext
 ## Field 4 — Selected Hackathon Problem Statement
 *(This is a free-text textarea — write your own problem statement)*
 
-Qualitative insight — what someone actually thinks, not what they answered — requires skilled human interviewers who are scarce and expensive to scale. Survey tools capture surface-level responses. Transcript analyzers work from what was said, not what was meant. The result: most organizations run fewer conversations than needed, by people less skilled than the problem deserves, producing reports that arrive too late to change decisions. CaptainSubtext makes goal-directed, cross-turn-aware interviews available at any scale, to any host, across any domain where understanding what someone actually thinks — not just what they answered — is the point.
+The people who run interviews get three things wrong, consistently.
+
+They arrive too early — with a script, with a framework, with the answers they expect to hear. The participant senses this and performs rather than reflects.
+
+They act too late — the synthesis happens the day after the conversation closes, when the signal is cold and the context is gone. Two or more hours of researcher time (transcription, coding, synthesis) per 15-minute interview means insight appears long after the moment when it could have changed the conversation.
+
+They go too shallow — they catch what was said, not what was meant. The hedge ("probably"), the drift ("we *think* customers want…"), the contradiction three turns later — these are the actual data. They disappear in the transcript.
+
+CaptainSubtext fixes all three. The conductor adapts turn-by-turn to what the participant just said. The meta-noticing layer identifies contradictions, hedging, and implied-not-stated beliefs in real time — and the conductor can act on them, within the same conversation, before the window closes. The host's structured extraction fills live during the interview, not after.
+
+The thesis is not "a better way to read a transcript." It is: by the time you're reading the transcript, you've already missed the chance to react.
 
 ---
 
@@ -107,8 +117,12 @@ In the civic consultation brief, most session content is personal experience and
 
 ## Submission checklist before hitting submit
 
-- [ ] Problem Statement (Field 4) — visit form and select closest track
-- [ ] Demo video recorded, edited, uploaded (YouTube/Loom), URL in Field 7
-- [ ] GitHub repo is public and README is readable
+- [x] Problem Statement (Field 4) — rewritten, free-text textarea confirmed
+- [x] Project Description (Field 5) — drafted
+- [x] Managed Agents (Field 9) — two agents: claim verifier + live cohort synthesis
+- [ ] Demo video — record with OBS + Playwright session; upload to YouTube/Loom; paste URL in Field 7
+- [ ] Verify GitHub repo is public, README is judge-readable
 - [ ] Trim Field 5 if over form character limit
-- [ ] Re-read Field 8 for any internal terminology ("conductor", "meta-noticing") — check INTERNAL.md §8 for what's safe to say publicly
+- [ ] Add MAKING_OF.md reference in README so judges can find the build journal
+- [ ] Re-read Field 8 for internal terminology; check INTERNAL.md §8 for what's safe public
+- [ ] Vercel KV: provision KV database in Vercel dashboard, add KV_REST_API_URL + KV_REST_API_TOKEN env vars, redeploy

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
@@ -12,7 +14,6 @@ const BRIEFS: Template[] = [
   civicTemplate as unknown as Template,
 ];
 
-// Sample opening hooks to give the viewer a feel for the conversation
 const HOOKS: Record<string, string> = {
   "founder-product-ideation": "Walk me through the moment you realised you were solving a real problem — not a hypothesis, a moment.",
   "post-incident-witness": "Before we look at any reports — tell me what you personally saw or heard in the minutes before the incident.",
@@ -20,6 +21,44 @@ const HOOKS: Record<string, string> = {
 };
 
 export default function StartPage() {
+  const router = useRouter();
+  const [showGenerator, setShowGenerator] = useState(false);
+  const [description, setDescription] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [generatedBrief, setGeneratedBrief] = useState<Template | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
+
+  const handleGenerate = async () => {
+    if (!description.trim() || generating) return;
+    setGenerating(true);
+    setGenError(null);
+    setGeneratedBrief(null);
+    try {
+      const res = await fetch("/api/generate-brief", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ description: description.trim() }),
+      });
+      const data = (await res.json()) as { template?: Template; error?: string };
+      if (!res.ok || !data.template) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setGeneratedBrief(data.template);
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleStartGenerated = () => {
+    if (!generatedBrief) return;
+    // Store in sessionStorage so the participant page can retrieve it
+    sessionStorage.setItem(
+      `captainsubtext:brief:${generatedBrief.template_id}`,
+      JSON.stringify(generatedBrief)
+    );
+    router.push(`/p/${generatedBrief.template_id}`);
+  };
+
   return (
     <div className="min-h-dvh bg-stone-50">
       <header className="border-b border-stone-200 bg-white px-6 py-4">
@@ -96,6 +135,96 @@ export default function StartPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* NL brief generator */}
+        <div className="mt-8 rounded-xl border border-dashed border-stone-300 bg-white">
+          <button
+            type="button"
+            onClick={() => setShowGenerator((v) => !v)}
+            className="flex w-full items-center justify-between px-6 py-4 text-left"
+          >
+            <div>
+              <p className="text-sm font-medium text-stone-700">
+                Don&apos;t see your use case?
+              </p>
+              <p className="text-xs text-stone-500">
+                Describe what you want to learn — we&apos;ll generate a custom brief.
+              </p>
+            </div>
+            <span className="text-stone-400 text-sm">{showGenerator ? "↑" : "↓"}</span>
+          </button>
+
+          {showGenerator && (
+            <div className="border-t border-stone-100 px-6 pb-6 pt-4 space-y-4">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-stone-500">
+                  What are you trying to learn?
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. I want to understand how frontline nurses make triage decisions under time pressure — specifically what information they use and what they ignore."
+                  rows={3}
+                  disabled={generating}
+                  className="mt-1.5 w-full rounded-md border border-stone-300 px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none resize-none disabled:opacity-50"
+                />
+              </div>
+
+              {genError && (
+                <p className="text-xs text-red-600">{genError}</p>
+              )}
+
+              {!generatedBrief && (
+                <button
+                  type="button"
+                  onClick={() => void handleGenerate()}
+                  disabled={!description.trim() || generating}
+                  className="rounded-md bg-slate-800 px-4 py-2 text-xs font-medium text-white hover:bg-slate-900 disabled:opacity-40"
+                >
+                  {generating ? "Generating brief…" : "Generate custom brief"}
+                </button>
+              )}
+
+              {generatedBrief && (
+                <div className="rounded-lg border border-emerald-200 bg-emerald-50/40 p-4 space-y-3">
+                  <div>
+                    <p className="text-sm font-semibold text-stone-900">{generatedBrief.name}</p>
+                    <p className="mt-0.5 text-[11px] uppercase tracking-wider text-stone-500">
+                      {generatedBrief.role_labels?.host} · {generatedBrief.role_labels?.participant}
+                    </p>
+                    <p className="mt-1.5 text-xs text-stone-600">{generatedBrief.description}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {generatedBrief.objectives.slice(0, 5).map((obj) => (
+                      <span
+                        key={obj.id}
+                        className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] text-stone-700 ring-1 ring-stone-200"
+                      >
+                        {obj.label}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleStartGenerated}
+                      className="rounded-md bg-amber-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-amber-700"
+                    >
+                      Start with this brief →
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setGeneratedBrief(null); setDescription(""); }}
+                      className="text-xs text-stone-500 underline hover:text-stone-700"
+                    >
+                      Try again
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <p className="mt-10 text-center text-[11px] text-stone-400">

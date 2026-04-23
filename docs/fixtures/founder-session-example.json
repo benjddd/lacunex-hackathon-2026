@@ -1,0 +1,201 @@
+{
+  "session_id": "example-founder-2026-04-23",
+  "saved_at": "2026-04-23T14:30:00.000Z",
+  "template_id": "founder-product-ideation",
+  "started_at": "2026-04-23T14:15:00.000Z",
+  "active_objective_id": "unstated_assumptions",
+  "note": "Example session — demonstrates meta-noticing, anchor_return, and extraction convergence",
+  "turn_count": 15,
+  "transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Give me the one-sentence version of what you're building — what it is and who it's for.",
+      "at": "2026-04-23T14:15:10.000Z",
+      "objective_id": "problem_reality"
+    },
+    {
+      "index": 1,
+      "role": "participant",
+      "text": "We're building a compliance monitoring tool for mid-market financial services firms — helps them track regulatory changes and make sure their policies are up to date.",
+      "at": "2026-04-23T14:15:42.000Z"
+    },
+    {
+      "index": 2,
+      "role": "host",
+      "text": "That's a category description, not a problem. Tell me about the last time you watched someone at a firm actually struggle with this — not in general, a specific moment.",
+      "at": "2026-04-23T14:16:05.000Z",
+      "objective_id": "problem_reality",
+      "reasoning": "Founder gave a product description, not a pain description. Needs to anchor in observed behavior."
+    },
+    {
+      "index": 3,
+      "role": "participant",
+      "text": "My co-founder used to be a compliance officer at a regional bank. She had a spreadsheet — literally a spreadsheet — tracking 200+ regulations across three jurisdictions. Every few weeks she'd have to manually check each regulator's website to see if anything had changed. It took her a full day every quarter just to do that sweep.",
+      "at": "2026-04-23T14:16:58.000Z"
+    },
+    {
+      "index": 4,
+      "role": "host",
+      "text": "How many people at that bank had her job — doing that quarterly sweep manually?",
+      "at": "2026-04-23T14:17:15.000Z",
+      "objective_id": "problem_reality",
+      "reasoning": "Strong personal instance. Now need to validate it's not an n=1 — probe scope of who does this work."
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "Just her, basically. Maybe two people at most. It's not a big team.",
+      "at": "2026-04-23T14:17:55.000Z"
+    },
+    {
+      "index": 6,
+      "role": "host",
+      "text": "You've validated this with 20 customers, you said earlier. Walk me through the last three conversations — who were they, what did they tell you?",
+      "at": "2026-04-23T14:18:10.000Z",
+      "objective_id": "problem_reality",
+      "reasoning": "Participant said 'we've validated this' but I didn't probe the validation quality. Need to see what 'validation' actually means.",
+      "deployed_notice": {
+        "type": "implied_not_said",
+        "anchors": [1, 5],
+        "observation": "Participant described the product in terms of regulatory tracking (index 1) but the specific pain (index 3) is a 1-2 person manual process. The stated 20-customer validation hasn't been mentioned for those specific customers — the evidence base may be narrower than implied."
+      }
+    },
+    {
+      "index": 7,
+      "role": "participant",
+      "text": "So the 20 isn't exactly customers — more like discovery conversations. We talked to compliance officers at community banks, credit unions, some insurance companies. They all said yes, this is a problem. The spreadsheet story resonates universally.",
+      "at": "2026-04-23T14:19:10.000Z"
+    },
+    {
+      "index": 8,
+      "role": "host",
+      "text": "What's the difference between someone who says 'yes, this resonates' and someone who's ready to pay $500 a month for a fix?",
+      "at": "2026-04-23T14:19:30.000Z",
+      "objective_id": "market_evidence",
+      "reasoning": "Validation is discovery conversations, not purchase commitments. Classic pre-product confusion. Need to probe willingness-to-pay evidence."
+    },
+    {
+      "index": 9,
+      "role": "participant",
+      "text": "That's a fair question. We haven't actually tried to charge yet — we're still in beta. But we have three firms that have said they'd pay. We haven't invoiced them yet.",
+      "at": "2026-04-23T14:20:22.000Z"
+    },
+    {
+      "index": 10,
+      "role": "host",
+      "text": "Go back to the spreadsheet story for a second — your co-founder's quarterly sweep. What happened when she missed a regulatory change? What was the consequence?",
+      "at": "2026-04-23T14:20:55.000Z",
+      "objective_id": "problem_reality",
+      "anchor_turn": 3,
+      "reasoning": "The urgency claim hinges on consequences of failure. We have the pain but not the stakes. Going back to anchor on turn 3 to probe consequences."
+    },
+    {
+      "index": 11,
+      "role": "participant",
+      "text": "That's actually the thing she never did miss — she was meticulous. But she was worried about it constantly. The stress of knowing you might have missed something was real. She says it was the worst part of the job.",
+      "at": "2026-04-23T14:22:08.000Z"
+    },
+    {
+      "index": 12,
+      "role": "host",
+      "text": "She never actually missed one. The stakes are the anxiety, not a realized consequence — has a customer described an actual miss and what it cost them?",
+      "at": "2026-04-23T14:22:30.000Z",
+      "objective_id": "unstated_assumptions",
+      "reasoning": "The core assumption being tested: is the pain 'anxiety about missing something' or 'actual material consequence of missing something'? These are very different markets."
+    },
+    {
+      "index": 13,
+      "role": "participant",
+      "text": "One of our discovery people — a compliance officer at a credit union — said they got a regulatory notice two years ago because they were slow to implement a change. It cost them a $15,000 fine. So yes, it does happen.",
+      "at": "2026-04-23T14:23:45.000Z"
+    },
+    {
+      "index": 14,
+      "role": "host",
+      "text": "One reported fine in 20 discovery conversations. At $500 a month, your customer pays $6,000 a year to prevent a $15,000 fine that happens — based on what you know — once every few years. What's your best case for why the math works for them?",
+      "at": "2026-04-23T14:24:15.000Z",
+      "objective_id": "unstated_assumptions",
+      "reasoning": "The assumption buried here: frequency of regulatory fines justifies subscription cost. One data point from 20 conversations suggests low frequency. Surfacing this explicitly."
+    }
+  ],
+  "extraction": {
+    "per_objective": {
+      "problem_reality": {
+        "id": "problem_reality",
+        "fields": {
+          "problem_statement": "Mid-market financial services compliance officers manually track 200+ regulatory changes across jurisdictions using spreadsheets, running quarterly sweeps that consume a full day of time per compliance officer.",
+          "target_user_archetype": "Compliance officer at community bank, credit union, or mid-market insurance company (1-2 person compliance function)",
+          "concrete_instances": [
+            "Co-founder (former compliance officer) spent one full day per quarter manually checking 200+ regulations across three jurisdictions",
+            "Credit union compliance officer received $15,000 regulatory fine for slow implementation of a change — one case in 20 discovery conversations"
+          ],
+          "current_workarounds": [
+            "Manual spreadsheet tracking 200+ regulations",
+            "Quarterly manual checks of each regulator's website",
+            "Constant anxiety monitoring (co-founder described as worst part of job)"
+          ],
+          "evidence_strength": "partial"
+        },
+        "completeness": 0.82,
+        "confidence": 0.75,
+        "key_quotes": [
+          { "turn": 3, "text": "She had a spreadsheet — literally a spreadsheet — tracking 200+ regulations across three jurisdictions. Every few weeks she'd have to manually check each regulator's website." },
+          { "turn": 11, "text": "She never did miss — she was meticulous. But she was worried about it constantly." },
+          { "turn": 13, "text": "They got a regulatory notice two years ago because they were slow to implement a change. It cost them a $15,000 fine." }
+        ]
+      },
+      "market_evidence": {
+        "id": "market_evidence",
+        "fields": {
+          "customer_conversations": 20,
+          "paying_customers": 0,
+          "stated_willingness_to_pay": "3 firms said they would pay (not yet invoiced)",
+          "validation_quality": "discovery conversations only — verbal resonance, no financial commitment"
+        },
+        "completeness": 0.55,
+        "confidence": 0.80,
+        "key_quotes": [
+          { "turn": 7, "text": "The 20 isn't exactly customers — more like discovery conversations." },
+          { "turn": 9, "text": "Three firms that have said they'd pay. We haven't invoiced them yet." }
+        ]
+      },
+      "unstated_assumptions": {
+        "id": "unstated_assumptions",
+        "fields": {
+          "assumptions": [
+            {
+              "statement": "Regulatory fines are frequent enough to justify subscription cost — but evidence is 1 case in 20 discovery conversations ($15K fine, once every 2+ years)",
+              "evidence_status": "partial",
+              "would_kill_product_if_false": true
+            },
+            {
+              "statement": "Anxiety about missing a change (not just the miss itself) is worth paying for — compliance officer's pain is the stress, not realized consequence",
+              "evidence_status": "untested",
+              "would_kill_product_if_false": false
+            },
+            {
+              "statement": "The 1–2 person compliance function at a community bank will have budget authority for a $500/month tool",
+              "evidence_status": "untested",
+              "would_kill_product_if_false": true
+            }
+          ]
+        },
+        "completeness": 0.65,
+        "confidence": 0.85,
+        "key_quotes": [
+          { "turn": 11, "text": "She never actually missed one." },
+          { "turn": 13, "text": "It cost them a $15,000 fine... once." }
+        ]
+      }
+    },
+    "cross_objective": {
+      "emerging_themes": [
+        "Pain is validated by co-founder's direct experience but not yet triangulated by customer evidence",
+        "Discovery conversations conflated with validation — 'resonance' ≠ willingness to pay",
+        "Frequency of realized consequence (regulatory fine) is lower than the anxiety narrative implies"
+      ],
+      "session_heat": "High signal — two key assumptions exposed (fine frequency, budget authority). Founder is self-aware but hasn't run the numbers on frequency vs. subscription cost."
+    }
+  }
+}

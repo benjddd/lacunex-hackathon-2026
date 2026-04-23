@@ -16,7 +16,7 @@ interface SessionSummary {
 
 export async function GET() {
   if (process.env.VERCEL) {
-    const sessions = hostedListSessions().map((raw) => {
+    const sessions = (await hostedListSessions()).map((raw) => {
       const s = raw as Record<string, unknown>;
       return {
         session_id: s.session_id ?? null,

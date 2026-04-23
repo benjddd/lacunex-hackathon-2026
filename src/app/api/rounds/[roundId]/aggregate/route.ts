@@ -61,7 +61,7 @@ export async function POST(_req: Request, { params }: Params) {
   const missing: string[] = [];
   if (process.env.VERCEL) {
     for (const sid of round.session_ids) {
-      const doc = hostedGetSession(sid) as SessionDoc | null;
+      const doc = (await hostedGetSession(sid)) as SessionDoc | null;
       if (doc) {
         sessions.push({ session_id: sid, transcript: doc.transcript ?? [], extraction: doc.extraction });
       } else {

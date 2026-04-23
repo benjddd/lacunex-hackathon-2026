@@ -57,7 +57,7 @@ export async function createRound(params: {
     note: params.note ?? null,
   };
   if (process.env.VERCEL) {
-    hostedSaveRound(round);
+    await hostedSaveRound(round);
     return round;
   }
   await fs.mkdir(roundsDir(), { recursive: true });
@@ -97,7 +97,7 @@ export async function readRound(roundId: string): Promise<Round | null> {
 
 export async function writeRound(round: Round): Promise<void> {
   if (process.env.VERCEL) {
-    hostedSaveRound(round);
+    await hostedSaveRound(round);
     return;
   }
   await fs.mkdir(roundsDir(), { recursive: true });

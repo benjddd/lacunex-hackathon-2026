@@ -7,6 +7,7 @@ import {
   readRound,
   setRoundLiveSynthesis,
 } from "@/lib/rounds";
+import { hostedGetSession } from "@/lib/store-hosted";
 import { getTemplate } from "@/lib/templates";
 import type { AggregateInputSession } from "@/lib/prompts/aggregate";
 import type { ExtractionState, Turn } from "@/lib/types";
@@ -37,13 +38,6 @@ export async function POST(_req: Request, { params }: Params) {
   if (!isValidRoundId(roundId)) {
     return NextResponse.json({ error: "invalid round id" }, { status: 400 });
   }
-  if (process.env.VERCEL) {
-    return NextResponse.json(
-      { error: "Live synthesis requires local deployment (filesystem storage)." },
-      { status: 503 }
-    );
-  }
-
   const round = await readRound(roundId);
   if (!round) {
     return NextResponse.json({ error: "round not found" }, { status: 404 });
@@ -62,17 +56,28 @@ export async function POST(_req: Request, { params }: Params) {
     );
   }
 
-  const dir = path.join(process.cwd(), "transcripts");
   const sessions: AggregateInputSession[] = [];
   const missing: string[] = [];
 
-  for (const sid of round.session_ids) {
-    try {
-      const raw = await fs.readFile(path.join(dir, `session-${sid}.json`), "utf-8");
-      const doc = JSON.parse(raw) as SessionDoc;
-      sessions.push({ session_id: sid, transcript: doc.transcript ?? [], extraction: doc.extraction });
-    } catch {
-      missing.push(sid);
+  if (process.env.VERCEL) {
+    for (const sid of round.session_ids) {
+      const doc = (await hostedGetSession(sid)) as SessionDoc | null;
+      if (doc) {
+        sessions.push({ session_id: sid, transcript: doc.transcript ?? [], extraction: doc.extraction });
+      } else {
+        missing.push(sid);
+      }
+    }
+  } else {
+    const dir = path.join(process.cwd(), "transcripts");
+    for (const sid of round.session_ids) {
+      try {
+        const raw = await fs.readFile(path.join(dir, `session-${sid}.json`), "utf-8");
+        const doc = JSON.parse(raw) as SessionDoc;
+        sessions.push({ session_id: sid, transcript: doc.transcript ?? [], extraction: doc.extraction });
+      } catch {
+        missing.push(sid);
+      }
     }
   }
 

@@ -1,34 +1,92 @@
 import type { Round } from "./types";
 
-// In-memory fallback for Vercel / hosted environments.
-// State is per-process (shared within one warm Lambda instance).
-// Sufficient for demo scale; won't survive cold starts or cross-instance requests.
+// Hosted persistence layer for Vercel / serverless environments.
+//
+// When KV_REST_API_URL + KV_REST_API_TOKEN are set (Vercel KV provisioned),
+// all data is durable in Upstash Redis. Falls back to in-process Map when
+// those env vars are absent — sufficient for local preview and cold-start
+// resilience, not cross-instance.
+//
+// KV layout:
+//   round:{id}       → Round JSON
+//   round_idx        → sorted set { member: roundId, score: created_at ms }
+//   session:{id}     → SessionDoc JSON
+//   session_idx      → sorted set { member: sessionId, score: saved_at ms }
 
-const roundStore = new Map<string, Round>();
-const sessionStore = new Map<string, unknown>();
+const hasKV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 
-export function hostedSaveRound(round: Round): void {
-  roundStore.set(round.round_id, round);
+const roundMem = new Map<string, Round>();
+const sessionMem = new Map<string, unknown>();
+
+// ---- KV helpers (lazy import so build doesn't fail when @vercel/kv unavailable) ----
+
+async function kvGet<T>(key: string): Promise<T | null> {
+  const { kv } = await import("@vercel/kv");
+  return kv.get<T>(key);
 }
 
-export function hostedGetRound(id: string): Round | null {
-  return roundStore.get(id) ?? null;
+async function kvSet(key: string, value: unknown): Promise<void> {
+  const { kv } = await import("@vercel/kv");
+  await kv.set(key, value);
 }
 
-export function hostedListRounds(): Round[] {
-  return [...roundStore.values()].sort((a, b) =>
-    b.round_id.localeCompare(a.round_id)
-  );
+async function kvZAdd(idxKey: string, score: number, member: string): Promise<void> {
+  const { kv } = await import("@vercel/kv");
+  await kv.zadd(idxKey, { score, member });
 }
 
-export function hostedSaveSession(id: string, payload: unknown): void {
-  sessionStore.set(id, payload);
+async function kvZRange(idxKey: string): Promise<string[]> {
+  const { kv } = await import("@vercel/kv");
+  const result = await kv.zrange<string[]>(idxKey, 0, -1, { rev: true });
+  return result ?? [];
 }
 
-export function hostedGetSession(id: string): unknown | null {
-  return sessionStore.get(id) ?? null;
+// ---- Round store ----
+
+export async function hostedSaveRound(round: Round): Promise<void> {
+  if (hasKV) {
+    await kvSet(`round:${round.round_id}`, round);
+    await kvZAdd("round_idx", new Date(round.created_at).getTime(), round.round_id);
+  } else {
+    roundMem.set(round.round_id, round);
+  }
 }
 
-export function hostedListSessions(): unknown[] {
-  return [...sessionStore.values()];
+export async function hostedGetRound(id: string): Promise<Round | null> {
+  if (hasKV) return kvGet<Round>(`round:${id}`);
+  return roundMem.get(id) ?? null;
+}
+
+export async function hostedListRounds(): Promise<Round[]> {
+  if (hasKV) {
+    const ids = await kvZRange("round_idx");
+    const rows = await Promise.all(ids.map((id) => hostedGetRound(id)));
+    return rows.filter((r): r is Round => r !== null);
+  }
+  return [...roundMem.values()].sort((a, b) => b.round_id.localeCompare(a.round_id));
+}
+
+// ---- Session store ----
+
+export async function hostedSaveSession(id: string, payload: unknown): Promise<void> {
+  if (hasKV) {
+    await kvSet(`session:${id}`, payload);
+    await kvZAdd("session_idx", Date.now(), id);
+  } else {
+    sessionMem.set(id, payload);
+  }
+}
+
+export async function hostedGetSession(id: string): Promise<unknown | null> {
+  if (hasKV) return kvGet(`session:${id}`);
+  return sessionMem.get(id) ?? null;
+}
+
+export async function hostedListSessions(): Promise<unknown[]> {
+  if (hasKV) {
+    const ids = await kvZRange("session_idx");
+    const rows = await Promise.all(ids.map((id) => hostedGetSession(id)));
+    return rows.filter((r) => r !== null);
+  }
+  return [...sessionMem.values()];
 }

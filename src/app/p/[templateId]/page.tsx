@@ -66,7 +66,19 @@ function ParticipantPageContent({
   const { templateId } = use(params);
   const searchParams = useSearchParams();
   const roundId = searchParams.get("round") ?? undefined;
-  const template = TEMPLATE_MAP[templateId] ?? null;
+
+  // Support dynamically-generated briefs stored in sessionStorage by /start
+  const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
+  useEffect(() => {
+    if (!TEMPLATE_MAP[templateId] && templateId.startsWith("gen-")) {
+      const raw = sessionStorage.getItem(`captainsubtext:brief:${templateId}`);
+      if (raw) {
+        try { setGeneratedTemplate(JSON.parse(raw) as Template); } catch { /* ignore */ }
+      }
+    }
+  }, [templateId]);
+
+  const template = TEMPLATE_MAP[templateId] ?? generatedTemplate;
   const roleLabels = template?.role_labels ?? DEFAULT_ROLE_LABELS;
 
   const [transcript, setTranscript] = useState<Turn[]>([]);
@@ -183,7 +195,7 @@ function ParticipantPageContent({
 
   const handleEndSession = useCallback(async () => {
     setSessionClosed(true);
-    setTakeawayOpen(true);
+    // Don't auto-open — let participant choose when to reveal their reflection.
     if (takeawayMarkdown || !template) return;
     setTakeawayGenerating(true);
     setTakeawayError(null);
@@ -255,25 +267,28 @@ function ParticipantPageContent({
             <button
               type="button"
               onClick={() => setTakeawayOpen(true)}
-              className="rounded-md bg-slate-800 px-3 py-1 text-xs text-white hover:bg-slate-900"
+              className="rounded-md bg-slate-800 px-4 py-1.5 text-xs font-medium text-white hover:bg-slate-900 ring-2 ring-slate-300 ring-offset-1"
             >
-              View reflection
+              See your reflection →
             </button>
+          )}
+          {sessionClosed && takeawayGenerating && (
+            <span className="text-xs text-stone-500 animate-pulse">
+              Preparing your reflection…
+            </span>
+          )}
+          {sessionClosed && takeawayError && !takeawayGenerating && !takeawayMarkdown && (
+            <span className="text-xs text-red-600">Reflection failed — {takeawayError}</span>
           )}
           {!sessionClosed && (
             <button
               type="button"
               onClick={handleEndSession}
-              disabled={participantTurnCount < 2 || takeawayGenerating}
+              disabled={participantTurnCount < 2}
               className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50 disabled:opacity-40"
             >
               End & reflect
             </button>
-          )}
-          {sessionClosed && !takeawayOpen && !takeawayMarkdown && (
-            <span className="rounded-full bg-stone-200 px-3 py-1 text-xs text-stone-700">
-              Session closed
-            </span>
           )}
         </div>
       </header>

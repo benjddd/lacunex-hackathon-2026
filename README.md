@@ -6,6 +6,8 @@ Goal-directed, adaptive interviews at scale. A Host (subject-matter expert) sets
 
 Built for the Anthropic **"Built with Opus 4.7"** hackathon (April 2026).
 
+→ **[MAKING_OF.md](MAKING_OF.md)** — architecture decisions, day-by-day build log, calibrated claims, what Opus 4.7 enables that smaller models don't.
+
 ---
 
 ## What it does
@@ -158,4 +160,6 @@ MIT. See [LICENSE](LICENSE). Every component of this project is open source, per
 
 ## Status
 
-This is a hackathon project in active development. Day-1 milestone: conductor + extraction loop running text-only on the Founder Product Ideation template. See [PROJECT.md](PROJECT.md) for the live tracker and [CALENDAR.md](CALENDAR.md) for upcoming gates.
+Active hackathon build — Day 3 of 5. Three briefs fully wired: Founder Investment Evaluation, Post-Incident Witness, Civic Consultation. Rounds + cohort synthesis live. Managed Agents (claim verification + live synthesis) wired end-to-end.
+
+See [MAKING_OF.md](MAKING_OF.md) for architectural decisions and the full build log. See [PROJECT.md](PROJECT.md) for the live tracker.

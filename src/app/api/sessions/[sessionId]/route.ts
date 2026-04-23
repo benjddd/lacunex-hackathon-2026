@@ -19,7 +19,7 @@ export async function GET(_req: Request, { params }: Params) {
   }
 
   if (process.env.VERCEL) {
-    const session = hostedGetSession(sessionId);
+    const session = await hostedGetSession(sessionId);
     if (!session) {
       return NextResponse.json({ error: "session not found" }, { status: 404 });
     }

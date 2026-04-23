@@ -22,12 +22,14 @@ export default function RoundsListPage() {
   const [label, setLabel] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState(founderTemplate.template_id);
   const [targetCount, setTargetCount] = useState("");
+  const [targetDate, setTargetDate] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [createdRound, setCreatedRound] = useState<Round | null>(null);
 
   const cloneFromRound = (r: Round) => {
     setSelectedTemplateId(r.template_id);
     setTargetCount(r.target_participant_count ? String(r.target_participant_count) : "");
+    setTargetDate(r.target_date ?? "");
     setLabel(`${r.label} (copy)`);
     setCreatedRound(null);
     setShowCreate(true);
@@ -62,6 +64,7 @@ export default function RoundsListPage() {
           templateId: selectedTemplateId,
           label: label.trim(),
           targetParticipantCount: targetCount ? parseInt(targetCount, 10) : null,
+          targetDate: targetDate || null,
         }),
       });
       const data = (await res.json()) as { round?: Round; error?: string };
@@ -82,7 +85,7 @@ export default function RoundsListPage() {
         <div className="flex items-baseline justify-between">
           <div>
             <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              CaptainSubtext
+              Ambitext
             </h1>
             <p className="text-xs text-stone-500">Interview rounds</p>
           </div>
@@ -146,17 +149,29 @@ export default function RoundsListPage() {
                 disabled={creating}
               />
             </div>
-            <div>
-              <label className="text-xs uppercase tracking-wider text-stone-500">Target participants (optional)</label>
-              <input
-                type="number"
-                min={1}
-                value={targetCount}
-                onChange={(e) => setTargetCount(e.target.value)}
-                placeholder="e.g. 10"
-                className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
-                disabled={creating}
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-stone-500">Target participants (optional)</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={targetCount}
+                  onChange={(e) => setTargetCount(e.target.value)}
+                  placeholder="e.g. 10"
+                  className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+                  disabled={creating}
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-stone-500">Target close date (optional)</label>
+                <input
+                  type="date"
+                  value={targetDate}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+                  disabled={creating}
+                />
+              </div>
             </div>
             <div className="flex justify-end">
               <button

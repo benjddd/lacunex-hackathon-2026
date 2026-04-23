@@ -60,6 +60,7 @@ export default function Home() {
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
   const [takeawayError, setTakeawayError] = useState<string | null>(null);
+  const [showWalkthrough, setShowWalkthrough] = useState(false);
   const openedRef = useRef(false);
   const startedAt = useRef(new Date().toISOString());
 
@@ -272,7 +273,7 @@ export default function Home() {
       <header className="flex shrink-0 items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
         <div>
           <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-            CaptainSubtext
+            Ambitext
           </h1>
           <p className="text-xs text-stone-500">
             Goal-directed interview · {TEMPLATE.name}
@@ -300,6 +301,14 @@ export default function Home() {
           >
             Past sessions
           </Link>
+          <button
+            type="button"
+            onClick={() => setShowWalkthrough(true)}
+            title="Feature walkthrough"
+            className="rounded-full border border-stone-300 bg-white w-6 h-6 text-xs text-stone-500 hover:bg-stone-50 flex items-center justify-center"
+          >
+            ?
+          </button>
           <button
             type="button"
             onClick={handleSave}

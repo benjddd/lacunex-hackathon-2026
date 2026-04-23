@@ -1,4 +1,4 @@
-# CaptainSubtext
+# Ambitext
 
 > **Cross-turn reasoning, rendered live. Both sides leave with something.**
 

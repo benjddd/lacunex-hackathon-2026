@@ -1,4 +1,4 @@
-# Making of CaptainSubtext
+# Making of Ambitext
 
 A build journal for the Anthropic "Built with Opus 4.7" hackathon, Apr 21–26 2026.
 
@@ -12,7 +12,7 @@ Qualitative research is the canonical victim. A researcher spends two hours prep
 
 But the more subtle failure mode is conversational: the moment the participant says something surprising — hedges, contradicts themselves, implies something they didn't say — the interviewer doesn't notice, because they're reading from their script. The signal is there in the room. Nobody catches it.
 
-CaptainSubtext is an attempt to build the interviewer that doesn't miss things.
+Ambitext is an attempt to build the interviewer that doesn't miss things.
 
 ---
 
@@ -122,7 +122,7 @@ This is from PubMed 2025 on qualitative interview costs:
 
 The first two (1.5h + 0.5h = 2h) happen before any synthesis begins. We've been conservative and say "2+ hours" not "3 hours." The specific claim is about the before-synthesis work that happens entirely before insight emerges.
 
-What CaptainSubtext does: extraction runs in parallel with the interview. By the time the interview ends, the structured extraction state exists — fields filled, completeness scored, key quotes indexed. The researcher still needs to read and interpret. But transcription and mechanical coding are done.
+What Ambitext does: extraction runs in parallel with the interview. By the time the interview ends, the structured extraction state exists — fields filled, completeness scored, key quotes indexed. The researcher still needs to read and interpret. But transcription and mechanical coding are done.
 
 The harder claim is the architectural one: conventional tools read the transcript *after* the conversation. We read it *during* — and can redirect the conversation based on what we're extracting in real time. That's not a speed claim. It's a capability claim.
 

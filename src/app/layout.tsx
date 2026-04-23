@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CaptainSubtext",
+  title: "Ambitext",
   description:
     "Goal-directed, adaptive interviews. Host sets goals; platform runs the conversation live and produces insight for both sides.",
 };

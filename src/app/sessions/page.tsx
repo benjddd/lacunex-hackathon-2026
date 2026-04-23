@@ -42,7 +42,7 @@ export default function SessionsListPage() {
         <div className="flex items-baseline justify-between">
           <div>
             <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              CaptainSubtext
+              Ambitext
             </h1>
             <p className="text-xs text-stone-500">Past sessions</p>
           </div>

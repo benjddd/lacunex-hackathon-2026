@@ -4,7 +4,7 @@ Read this first every session.
 
 ## What this repo is
 
-**CaptainSubtext** — Anthropic "Built with Opus 4.7" hackathon entry (Apr 21–26, 2026). A platform for goal-directed, adaptive interviews. A Host defines objectives; the platform runs the conversation live (not a pre-written script), extracts structured insights for the Host, and produces a reflective takeaway for the participant.
+**Ambitext** — Anthropic "Built with Opus 4.7" hackathon entry (Apr 21–26, 2026). A platform for goal-directed, adaptive interviews. A Host defines objectives; the platform runs the conversation live (not a pre-written script), extracts structured insights for the Host, and produces a reflective takeaway for the participant.
 
 ## Key docs in this repo
 

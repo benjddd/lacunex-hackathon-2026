@@ -53,7 +53,7 @@ export default function StartPage() {
     if (!generatedBrief) return;
     // Store in sessionStorage so the participant page can retrieve it
     sessionStorage.setItem(
-      `captainsubtext:brief:${generatedBrief.template_id}`,
+      `ambitext:brief:${generatedBrief.template_id}`,
       JSON.stringify(generatedBrief)
     );
     router.push(`/p/${generatedBrief.template_id}`);
@@ -65,7 +65,7 @@ export default function StartPage() {
         <div className="flex items-baseline justify-between">
           <div>
             <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              CaptainSubtext
+              Ambitext
             </h1>
             <p className="text-xs text-stone-500">Start a conversation</p>
           </div>

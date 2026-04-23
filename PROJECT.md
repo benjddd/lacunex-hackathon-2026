@@ -1,4 +1,4 @@
-# CaptainSubtext — Project State & Tracker
+# Ambitext — Project State & Tracker
 
 Living document. Update whenever scope, timeline, decisions, or risks change.
 
@@ -6,7 +6,7 @@ Living document. Update whenever scope, timeline, decisions, or risks change.
 
 ## 1. What we're building
 
-**CaptainSubtext** — platform for goal-directed, adaptive interviews.
+**Ambitext** — platform for goal-directed, adaptive interviews.
 
 The platform thesis rests on three beats:
 
@@ -73,7 +73,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 | # | Decision | Value |
 |---|---|---|
-| D1 | Platform name | **CaptainSubtext** (tentative; reopenable post-dry-run) |
+| D1 | Platform name | **Ambitext** — domain `ambitext.com` registered Apr 23 2026; `.io`/`.ai` also available; Vercel wired |
 | D2 | Demo template | Founder Product Ideation fully wired + 2–3 **stub** templates visible in selector (not functional) to show range |
 | D3 | No template editor in POC | JSON config on disk; may be augmented by a one-shot natural-language authoring flow (see Q1 below) |
 | D4 | Text-first | Ship text cleanly before voice; voice decision revisited Thu |

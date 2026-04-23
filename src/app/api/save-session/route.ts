@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { addSessionToRound, isValidRoundId } from "@/lib/rounds";
 import type { ExtractionState, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -12,6 +13,7 @@ interface SaveRequest {
   activeObjectiveId: string | null;
   startedAtIso?: string;
   note?: string;
+  roundId?: string; // if provided, the saved session is added to the round
 }
 
 export async function POST(req: Request) {
@@ -50,10 +52,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 
+  let attachedToRound: string | null = null;
+  if (body.roundId && isValidRoundId(body.roundId)) {
+    const updated = await addSessionToRound(body.roundId, sessionId);
+    attachedToRound = updated ? body.roundId : null;
+  }
+
   return NextResponse.json({
     ok: true,
     sessionId,
     path: `transcripts/${filename}`,
     turns: body.transcript.length,
+    roundId: attachedToRound,
   });
 }

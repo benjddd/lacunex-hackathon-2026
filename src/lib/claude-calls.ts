@@ -65,22 +65,48 @@ export async function callConductor(params: {
   const systemText = buildConductorSystem(params.template);
   const userText = buildConductorUser(params);
 
-  // The system prompt is identical every turn within a session → mark for caching.
-  const response = await anthropic.messages.create({
-    model: MODELS.conductor,
-    max_tokens: CONDUCTOR_MAX_TOKENS,
-    system: [
+  // The conductor has a recurring failure mode: occasionally it returns
+  // two questions in one turn, which parseConductorOutput rejects via the
+  // hard-rule validator. Rather than 500 the live turn, we retry once with
+  // an emphatic reminder — cheap under prompt caching since the system block
+  // is still warm. If the retry also fails, propagate the error.
+  const attempt = async (extraSystemNudge?: string): Promise<ConductorDecision> => {
+    const systemBlocks: Array<{
+      type: "text";
+      text: string;
+      cache_control?: { type: "ephemeral" };
+    }> = [
       {
         type: "text",
         text: systemText,
         cache_control: { type: "ephemeral" },
       },
-    ],
-    messages: [{ role: "user", content: userText }],
-  });
+    ];
+    if (extraSystemNudge) {
+      systemBlocks.push({ type: "text", text: extraSystemNudge });
+    }
+    const response = await anthropic.messages.create({
+      model: MODELS.conductor,
+      max_tokens: CONDUCTOR_MAX_TOKENS,
+      system: systemBlocks,
+      messages: [{ role: "user", content: userText }],
+    });
+    const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
+    return parseConductorOutput(raw);
+  };
 
-  const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
-  return parseConductorOutput(raw);
+  try {
+    return await attempt();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes("questions in one turn")) {
+      console.warn("[callConductor] 2-question violation — retrying once with nudge");
+      return await attempt(
+        "<critical>Previous attempt included multiple questions in one turn — hard-rule violation. Rewrite so next_utterance contains EXACTLY ONE question mark. Everything before or after must be statement, not question.</critical>"
+      );
+    }
+    throw err;
+  }
 }
 
 export async function callExtraction(params: {

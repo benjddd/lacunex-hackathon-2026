@@ -25,6 +25,7 @@ interface Args {
   turns: number;
   template: string;
   note?: string;
+  round?: string; // if provided, the saved session is attached to this round_id
 }
 
 function parseArgs(argv: string[]): Args {
@@ -37,6 +38,7 @@ function parseArgs(argv: string[]): Args {
     else if (key === "turns") out.turns = parseInt(value, 10);
     else if (key === "template") out.template = value;
     else if (key === "note") out.note = value;
+    else if (key === "round") out.round = value;
   }
   if (!out.persona) {
     throw new Error("missing required arg: --persona=<id>");
@@ -196,9 +198,18 @@ async function main() {
     activeObjectiveId,
     startedAtIso,
     note: args.note ?? `sim:${args.persona}`,
+    roundId: args.round,
   });
 
   process.stdout.write(`# saved ${saveRes.turns} turns → ${saveRes.path}\n`);
+  if (args.round) {
+    const attached = (saveRes as { roundId?: string | null }).roundId ?? null;
+    if (attached) {
+      process.stdout.write(`# attached to round ${attached}\n`);
+    } else {
+      process.stderr.write(`# WARNING: round ${args.round} not found — session saved but not attached\n`);
+    }
+  }
 }
 
 main().catch((err) => {

@@ -85,7 +85,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D10 | Original scoping docs stay out of repo | They're thinking material, not product. The repo contains only work authored in-session. |
 | D11 | Git initialized locally today | Commits timestamped to establish the in-window build record |
 | D12 | Role naming | **Host** (was "designer"). **Participant** retained (rejects "guest" — would hurt credibility with research / policy / expert-elicitation operators). |
-| D13 | Natural-language template authoring | **CLOSED — formally cut.** Thu calendar was compressed to meta-noticing only; authoring was never built and is not in scope for this submission. The 3 fully-functional briefs + host journey prove the platform without it. |
+| D13 | Natural-language template authoring | **REVERSED AND SHIPPED.** Initially cut; rebuilt Day 4 as `/start` page with Opus 4.7 generator. User describes use case in plain text → Opus generates brief schema → structural defaults merged server-side → stored in sessionStorage → participant page loads it. |
 | D14 | GitHub remote | **github.com/Attius-Digital-Art/captainsubtext**, public from Day 1. |
 | D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** |
 | D16 | Founder brief reframed to **Founder Investment Evaluation** | Host = Investor, Participant = Founder. Fixes the Host/Participant separation the original framing collapsed (the founder was both roles). Objectives unchanged; persona updated to investor-doing-DD; `role_labels` field added to brief schema and UI reads it. Same `template_id`. |
@@ -122,7 +122,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 |---|---|---|---|
 | Q4 | Demo subject for recorded video | User | Blocks Sat |
 | Q8 | Video recording tool (Loom vs OBS vs screen-rec + separate audio) | User | Blocks Sat |
-| Q10 | Submission platform link — the actual URL | User | Needed before Sun |
+| Q10 | Submission platform link | Resolved | `https://cerebralvalley.ai/e/built-with-4-7-hackathon/hackathon/submit` (in SUBMISSION_DRAFT.md) |
 
 *Resolved: Q1 (NL authoring cut, D13), Q2 (Host, D12), Q3 (voice cut, D23), Q5 (API key live), Q6 (github.com/Attius-Digital-Art/captainsubtext, D14), Q7 (Vercel, D5), Q9 (2 functional briefs, D18).*
 
@@ -229,3 +229,40 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 - **Sat:** Record demo video. Tool recommendation: ScreenApp (free) + ElevenLabs voiceover OR one month Pictory (~$30).
 - **Sun:** Final video edit + written summary + submit.
 - Sun: Submit.
+
+---
+
+## 12. Current status — Day 4 / Thu 2026-04-23 (late session)
+
+**Shipped this session (autonomous):**
+- NL brief generator: `POST /api/generate-brief` + `/start` page with collapsible generator panel, preview card, stores to `sessionStorage`, `/p/[templateId]` reads `gen-` prefix and loads from sessionStorage. D13 status: **REVERSED — NL authoring built after all.**
+- `@vercel/kv` persistence: `src/lib/store-hosted.ts` rewritten to async KV-backed store (Upstash Redis via REST API) with in-memory fallback. All hostedSave/Get/List functions async; all callers updated.
+- Takeaway peek flow: `handleEndSession` no longer auto-opens takeaway; animates "Preparing your reflection…"; "See your reflection →" button appears when ready. Reduces cognitive interruption at session close.
+- Round stats panel in `/rounds/[id]`: sent/started/completed/abandoned counts + progress bar (completion threshold = 6 turns) + response rate + "Closes [date]" if target date set.
+- Round target date: `target_date: string | null` on Round, form field in `/rounds`, shown in RoundStats.
+- Judges walkthrough overlay: `?` button on `/`, 5-panel modal explaining participant chat, host dashboard, tracking strip, ◆ meta-notice badges, ↩ anchor-return chips.
+- MAKING_OF.md: 200+ line build journal — architecture rationale, Opus-as-partner narrative across 6 layers, what cross-turn reasoning does that a single prompt can't.
+- SUBMISSION_DRAFT.md: Field 4 (problem statement) rewritten with "too late / too shallow / react in real time" framing; Option A (Cloudflare/Boeing hook, verify flag) + Option B (clean version).
+- Domain knowledge docs in `docs/domain/`: memory-science-for-interviewing.md, vc-failure-patterns.md, participation-frameworks.md.
+- Fixture: `docs/fixtures/founder-session-example.json` — 15-turn curated session with annotated meta-notice and anchor_return.
+- README updated: repository layout reflects actual routes and files; status section updated.
+
+**Simulations running (autonomous):**
+- 7 post-incident sessions in progress (incident_witness × 2, evasive_pm, thoughtful_but_scattered, retiring_domain_expert, confident_confabulator, overconfident_researcher).
+- Purpose: produce demo-quality post-incident transcripts (brief was missing all synthetic data).
+
+**Blockers — requires user action:**
+- Upstash Redis provisioning: upstash.com → create Redis DB → copy `KV_REST_API_URL` + `KV_REST_API_TOKEN` → set in Vercel env vars → redeploy.
+- Smoke-test live URL after redeploy.
+- Demo video recording (Saturday).
+- Verify/update GitHub URL in SUBMISSION_DRAFT Field 6 (repo currently still named `captainsubtext`).
+
+**Pending autonomous tasks:**
+- Evaluate simulation quality; commit best post-incident sessions as fixtures.
+- Run synthesis on new post-incident round (after sessions save).
+- Write Playwright demo script outline (for Saturday recording).
+
+**Dates:**
+- Deadline: **Sun 2026-04-26 20:00 EST = Mon 2026-04-27 03:00 IST**
+- Sat: demo video recording
+- Sun: final edit + submit

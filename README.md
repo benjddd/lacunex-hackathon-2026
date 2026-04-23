@@ -27,7 +27,7 @@ A Host describes what they want to learn — objectives, hypotheses, success cri
 - *Not a hiring screener.* (Sapia is scoring-shaped and hiring-only.)
 - *Not "Claude with a long system prompt."* A single chatbot can't enforce cross-turn reasoning the way a four-call architecture with turn-anchored notices can.
 
-**Who it's for:** academic qualitative researchers, consumer-insights teams, civic consultation at scale, clinical patient-values elicitation, retiring-expert knowledge capture, post-incident witness interviewing, manager reflection prep. The hackathon POC wires one brief end-to-end (Founder Investment Evaluation) with a second Civic / Post-Incident brief shipping Fri.
+**Who it's for:** academic qualitative researchers, consumer-insights teams, civic consultation at scale, clinical patient-values elicitation, retiring-expert knowledge capture, post-incident witness interviewing, manager reflection prep.
 
 ---
 
@@ -127,24 +127,51 @@ The opening turn fires on first render. Type a response, press Enter, watch the 
 ```
 src/
   app/
-    api/turn/route.ts      # Stateless turn endpoint — takes full transcript, returns next utterance + new extraction state
-    page.tsx               # Split-screen orchestrator
-    layout.tsx
-    globals.css
-  components/
-    ChatPane.tsx           # Left panel: transcript + input
-    DashboardPane.tsx      # Right panel: objective cards, progress, key quotes, themes
+    page.tsx                         # / — brief selection + single-session start
+    start/page.tsx                   # /start — multi-brief selector + NL brief generator
+    host/page.tsx                    # /host — host hub (all sessions/rounds)
+    p/[templateId]/page.tsx          # /p/:id — participant interview (split-screen)
+    sessions/page.tsx                # /sessions — session list
+    sessions/[sessionId]/page.tsx    # /sessions/:id — session detail + claim verifier
+    rounds/page.tsx                  # /rounds — round management
+    rounds/[roundId]/page.tsx        # /rounds/:id — round detail + cohort synthesis
+    api/
+      turn/route.ts                  # POST — stateless turn: takes transcript, returns utterance + extraction state
+      save-session/route.ts          # POST — persist session to filesystem or KV
+      rounds/route.ts                # GET/POST — list and create rounds
+      rounds/[roundId]/route.ts      # GET/PATCH — round detail + add session
+      rounds/[roundId]/synthesize/route.ts  # POST — trigger cohort synthesis (Managed Agents)
+      sessions/[id]/research/route.ts       # POST — trigger claim verification (Managed Agents)
+      simulate-participant/route.ts  # POST — dev-only synthetic participant
+      generate-brief/route.ts        # POST — NL brief → Template via Opus 4.7
   lib/
+    models.ts              # Model IDs — one edit to swap
+    types.ts               # Shared types (Turn, Template, Round, ExtractionState, …)
     anthropic.ts           # SDK client singleton
-    models.ts              # Model IDs — one place to swap
-    templates.ts           # Template registry
-    types.ts               # Shared types
-    claude-calls.ts        # callConductor / callExtraction
+    claude-calls.ts        # callConductor / callExtraction / callMetaNoticing / callTakeaway
+    rounds.ts              # Round lifecycle helpers
+    store-hosted.ts        # KV-backed persistence (Vercel/Upstash or in-memory fallback)
+    personas.ts            # Synthetic participant personas (dev only)
     prompts/
-      conductor.ts         # System prompt + output parser
-      extraction.ts        # System prompt + output parser
+      conductor.ts         # Conductor system prompt + JSON parser
+      extraction.ts        # Extraction system prompt + JSON parser
+      meta-noticing.ts     # Meta-noticing system prompt + JSON parser
   templates/
     founder-product-ideation.json
+    post-incident-witness.json
+    civic-consultation.json
+  components/              # Shared UI pieces
+docs/
+  domain/
+    memory-science-for-interviewing.md   # Loftus axioms → operational interview rules
+    vc-failure-patterns.md               # CB Insights taxonomy + diagnostic probes
+    participation-frameworks.md          # Arnstein's Ladder, IAP2, failure modes
+  fixtures/
+    founder-session-example.json         # Annotated 15-turn curated session
+scripts/
+  simulate-session.ts      # Drive a synthetic interview against localhost:3000
+  eval-noticing.ts         # Evaluate meta-noticing quality against saved sessions
+MAKING_OF.md               # Build journal — architecture, day-by-day, Opus-as-partner
 CALENDAR.md                # Hackathon gates (IST)
 PROJECT.md                 # Live project tracker
 CLAUDE.md                  # Context for AI assistants in this repo
@@ -160,6 +187,6 @@ MIT. See [LICENSE](LICENSE). Every component of this project is open source, per
 
 ## Status
 
-Active hackathon build — Day 3 of 5. Three briefs fully wired: Founder Investment Evaluation, Post-Incident Witness, Civic Consultation. Rounds + cohort synthesis live. Managed Agents (claim verification + live synthesis) wired end-to-end.
+Three briefs fully wired: **Founder Investment Evaluation**, **Post-Incident Witness**, **Civic Consultation**. Rounds + cohort synthesis live. Two Managed Agents wired: claim verifier + live cohort synthesis. NL brief generator (describe your use case in plain language → custom brief).
 
-See [MAKING_OF.md](MAKING_OF.md) for architectural decisions and the full build log. See [PROJECT.md](PROJECT.md) for the live tracker.
+See [MAKING_OF.md](MAKING_OF.md) for architectural decisions, day-by-day build log, and the calibrated claims about what Opus 4.7 enables. See [PROJECT.md](PROJECT.md) for the live tracker.

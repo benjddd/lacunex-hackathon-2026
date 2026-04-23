@@ -22,9 +22,8 @@ interface TurnRequest {
   extraction?: ExtractionState;
   activeObjectiveId?: string | null;
   startedAtIso?: string;
-  // New: full history of deployed notices so meta-noticing can avoid
-  // re-proposing them and so the conductor knows rate-cap state.
   deployedNotices?: DeployedNoticeRef[];
+  objectiveStallTurns?: number;
 }
 
 export async function POST(req: Request) {
@@ -56,6 +55,7 @@ export async function POST(req: Request) {
     Math.round((Date.now() - startedAt.getTime()) / 60000)
   );
   const deployedNotices = body.deployedNotices ?? [];
+  const objectiveStallTurns = body.objectiveStallTurns ?? 0;
   const lastNoticeTurn =
     deployedNotices.length > 0
       ? deployedNotices[deployedNotices.length - 1].turn
@@ -113,6 +113,7 @@ export async function POST(req: Request) {
       deployedNoticesCount: deployedNotices.length,
       lastNoticeTurn,
       candidateNotices,
+      objectiveStallTurns,
     });
 
     // If the conductor chose deploy_meta_notice, match to the specific

@@ -61,6 +61,7 @@ export default function ParticipantPage({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [sessionClosed, setSessionClosed] = useState(false);
   const [deployedNotices, setDeployedNotices] = useState<{ turn: number; type: string }[]>([]);
+  const [objectiveStallTurns, setObjectiveStallTurns] = useState(0);
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
@@ -88,6 +89,7 @@ export default function ParticipantPage({
             activeObjectiveId: withActive,
             startedAtIso: startedAt.current,
             deployedNotices,
+            objectiveStallTurns,
           }),
         });
         const data = (await res.json()) as TurnResponse;
@@ -115,6 +117,9 @@ export default function ParticipantPage({
         };
         setTranscript([...withTranscript, hostTurn]);
         setExtraction(data.extraction);
+        setObjectiveStallTurns((prev) =>
+          data.activeObjectiveId === withActive ? prev + 1 : 0
+        );
         setActiveObjectiveId(data.activeObjectiveId);
         if (deployed) {
           setDeployedNotices((prev) => [

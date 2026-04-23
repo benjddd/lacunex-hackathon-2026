@@ -67,6 +67,7 @@ Soft guidance:
 - Prefer Socratic pressure over direct challenge. Reflect back an implicit premise rather than asserting it.
 - Mood and tone adaptation: read the register of the last 1-2 participant turns. If the participant sounds pressured, defensive, or flat, soften the next question's framing — ask from curiosity, not from challenge. If they sound energised and expansive, follow their energy and press deeper. Never diagnose or name the emotional state; just adjust pacing accordingly.
 - Defensiveness handling: if a participant responds to a meta-notice or direct probe with pushback ("that's not really what I meant", "I don't think that's fair"), do NOT repeat or double-down on the notice. Acknowledge the correction briefly ("Fair — let me take that differently") and redirect with a neutral, forward-facing question. One graceful retreat is correct. Pressing again is not.
+- Objective stall: if 'stall_turns' in current_state reaches ≥4, the current objective has been held long. Check its success_criteria: if substantially met, switch objectives. If not, try a genuinely different sub-question angle — not the same probe rephrased. At ≥6 stall turns, switch regardless unless the participant is actively expanding.
 </decision_rules>
 
 <forbidden>
@@ -98,6 +99,7 @@ export function buildConductorUser(params: {
   deployedNoticesCount: number;
   lastNoticeTurn: number | null;
   candidateNotices?: MetaNotice[];
+  objectiveStallTurns?: number;
 }): string {
   const {
     transcript,
@@ -108,6 +110,7 @@ export function buildConductorUser(params: {
     deployedNoticesCount,
     lastNoticeTurn,
     candidateNotices,
+    objectiveStallTurns = 0,
   } = params;
 
   const transcriptBlock =
@@ -135,6 +138,7 @@ export function buildConductorUser(params: {
 Turn number (interviewer turns so far): ${turnNumber}
 Minutes elapsed: ${minutesElapsed}
 Active objective: ${activeObjectiveId ?? "(none yet)"}
+stall_turns: ${objectiveStallTurns} (consecutive host turns on this objective without switching)
 Completeness snapshot:
 ${completeness}
 Meta-notices deployed so far: count=${deployedNoticesCount}, last at turn ${lastNoticeTurn ?? "never"}

@@ -61,6 +61,7 @@ export async function callConductor(params: {
   deployedNoticesCount: number;
   lastNoticeTurn: number | null;
   candidateNotices?: MetaNotice[];
+  objectiveStallTurns?: number;
 }): Promise<ConductorDecision> {
   const anthropic = getAnthropic();
   const systemText = buildConductorSystem(params.template);

@@ -254,6 +254,12 @@ export default function Home() {
             <span className="text-[11px] text-stone-500">{saveStatus}</span>
           )}
           <Link
+            href="/host"
+            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+          >
+            Host hub
+          </Link>
+          <Link
             href="/rounds"
             className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
           >
@@ -288,6 +294,22 @@ export default function Home() {
           )}
         </div>
       </header>
+
+      {/* Demo-mode notice — this combined view is for evaluation convenience.
+          In production the participant gets /p/[brief] and sees no dashboard. */}
+      <div className="flex items-center justify-between border-b border-amber-100 bg-amber-50/60 px-6 py-1.5 text-[11px] text-amber-800">
+        <span>
+          <span className="font-medium">Demo view</span> — host dashboard and participant chat shown together.
+          In production, participants use{" "}
+          <Link href={`/p/${TEMPLATE.template_id}`} className="underline hover:text-amber-900">
+            /p/{TEMPLATE.template_id}
+          </Link>{" "}
+          (no dashboard visible to them).
+        </span>
+        <Link href="/host" className="ml-4 shrink-0 font-medium underline hover:text-amber-900">
+          Host hub →
+        </Link>
+      </div>
 
       {errorMsg && (
         <div className="border-b border-red-200 bg-red-50 px-6 py-2 text-xs text-red-800">

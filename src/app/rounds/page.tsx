@@ -21,15 +21,17 @@ export default function RoundsListPage() {
   const [creating, setCreating] = useState(false);
   const [label, setLabel] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState(founderTemplate.template_id);
+  const [targetCount, setTargetCount] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [createdRound, setCreatedRound] = useState<Round | null>(null);
 
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/rounds");
-      const data = (await res.json()) as { rounds?: Round[]; error?: string };
+      const data = (await res.json()) as { rounds?: Round[]; hosted?: boolean; error?: string };
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
       setRounds(data.rounds ?? []);
+      if (data.hosted) setError("Rounds require local deployment (filesystem storage). Run locally to use this feature.");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
@@ -51,6 +53,7 @@ export default function RoundsListPage() {
         body: JSON.stringify({
           templateId: selectedTemplateId,
           label: label.trim(),
+          targetParticipantCount: targetCount ? parseInt(targetCount, 10) : null,
         }),
       });
       const data = (await res.json()) as { round?: Round; error?: string };
@@ -131,6 +134,18 @@ export default function RoundsListPage() {
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
                 placeholder="e.g. Q2 founder due-diligence cohort"
+                className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+                disabled={creating}
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-wider text-stone-500">Target participants (optional)</label>
+              <input
+                type="number"
+                min={1}
+                value={targetCount}
+                onChange={(e) => setTargetCount(e.target.value)}
+                placeholder="e.g. 10"
                 className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
                 disabled={creating}
               />

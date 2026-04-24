@@ -12,6 +12,7 @@ import path from "node:path";
 import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
 import { hostedGetSession } from "@/lib/store-hosted";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { Template, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -246,7 +247,10 @@ async function generateBriefFromDescription(description: string): Promise<Templa
 
 // ---- Route handler ----
 
-export async function POST(_req: Request, { params }: Params) {
+export async function POST(req: Request, { params }: Params) {
+  const rl = await checkRateLimit(req, "moderate");
+  if (!rl.ok && rl.response) return rl.response;
+
   const { sessionId } = await params;
 
   if (!/^[A-Za-z0-9._-]+$/.test(sessionId)) {

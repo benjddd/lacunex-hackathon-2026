@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createInvite } from "@/lib/invites";
 import { getTemplate } from "@/lib/templates";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -10,6 +11,9 @@ interface CreateInviteBody {
 }
 
 export async function POST(req: Request) {
+  const rl = await checkRateLimit(req, "light");
+  if (!rl.ok && rl.response) return rl.response;
+
   let body: CreateInviteBody;
   try {
     body = (await req.json()) as CreateInviteBody;

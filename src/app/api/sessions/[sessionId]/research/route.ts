@@ -4,6 +4,7 @@ import path from "node:path";
 import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
 import { hostedGetSession, hostedGetResearch, hostedSaveResearch } from "@/lib/store-hosted";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -82,7 +83,10 @@ async function saveResearch(sessionId: string, report: string): Promise<void> {
   );
 }
 
-export async function POST(_req: Request, { params }: Params) {
+export async function POST(req: Request, { params }: Params) {
+  const rl = await checkRateLimit(req, "expensive");
+  if (!rl.ok && rl.response) return rl.response;
+
   const { sessionId } = await params;
   if (!/^[A-Za-z0-9._-]+$/.test(sessionId)) {
     return NextResponse.json({ error: "invalid session id" }, { status: 400 });

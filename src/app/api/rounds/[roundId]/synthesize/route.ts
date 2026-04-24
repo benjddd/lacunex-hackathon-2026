@@ -9,6 +9,7 @@ import {
 } from "@/lib/rounds";
 import { hostedGetSession } from "@/lib/store-hosted";
 import { getTemplate } from "@/lib/templates";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { AggregateInputSession } from "@/lib/prompts/aggregate";
 import type { ExtractionState, Turn } from "@/lib/types";
 
@@ -33,7 +34,10 @@ interface SessionDoc {
 //
 // Uses the same Opus model as aggregate — quality is the value, not speed.
 // Agents story: an agent that maintains a living picture as evidence accumulates.
-export async function POST(_req: Request, { params }: Params) {
+export async function POST(req: Request, { params }: Params) {
+  const rl = await checkRateLimit(req, "expensive");
+  if (!rl.ok && rl.response) return rl.response;
+
   const { roundId } = await params;
   if (!isValidRoundId(roundId)) {
     return NextResponse.json({ error: "invalid round id" }, { status: 400 });

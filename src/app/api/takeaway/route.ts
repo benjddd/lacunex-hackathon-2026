@@ -4,6 +4,7 @@ import path from "node:path";
 import { callTakeaway } from "@/lib/claude-calls";
 import { getTemplate } from "@/lib/templates";
 import { hostedSaveTakeaway } from "@/lib/store-hosted";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { ExtractionState, Template, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -42,6 +43,9 @@ async function persistTakeaway(
 }
 
 export async function POST(req: Request) {
+  const rl = await checkRateLimit(req, "takeaway");
+  if (!rl.ok && rl.response) return rl.response;
+
   let body: TakeawayRequest;
   try {
     body = (await req.json()) as TakeawayRequest;

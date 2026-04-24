@@ -66,6 +66,7 @@ function ParticipantPageContent({
   const { templateId } = use(params);
   const searchParams = useSearchParams();
   const roundId = searchParams.get("round") ?? undefined;
+  const inviteToken = searchParams.get("invite") ?? undefined;
 
   // Support dynamically-generated briefs stored in sessionStorage by /start
   const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
@@ -138,6 +139,7 @@ function ParticipantPageContent({
             deployedNotices,
             objectiveStallTurns,
             liveSessionId: liveSessionId.current,
+            inviteToken,
           }),
         });
         const data = (await res.json()) as TurnResponse;

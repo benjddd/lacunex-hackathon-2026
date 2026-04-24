@@ -137,6 +137,11 @@ export interface InviteRecord {
   template_id: string;
   created_at: string;
   note: string | null;
+  // Per-invite turn budget (Layer 3 of credit-burn protection). When a
+  // request to /api/turn carries this invite's token, the server rejects
+  // once `turns_used >= turn_budget`, independent of per-IP rate limits.
+  turn_budget: number;
+  turns_used: number;
 }
 
 const inviteMem = new Map<string, InviteRecord>();

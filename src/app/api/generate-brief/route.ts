@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { MODELS } from "@/lib/models";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { Template } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -44,6 +45,9 @@ interface GenerateRequest {
 }
 
 export async function POST(req: Request) {
+  const rl = await checkRateLimit(req, "moderate");
+  if (!rl.ok && rl.response) return rl.response;
+
   let body: GenerateRequest;
   try {
     body = (await req.json()) as GenerateRequest;

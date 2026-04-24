@@ -8,6 +8,8 @@ import { getTemplate } from "@/lib/templates";
 import type { MetaNotice } from "@/lib/prompts/meta-noticing";
 import { emptyExtraction, type ExtractionState, type Turn } from "@/lib/types";
 import { hostedSaveLiveSession } from "@/lib/store-hosted";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { consumeInviteTurn, isValidToken } from "@/lib/invites";
 
 export const runtime = "nodejs";
 export const maxDuration = 90;
@@ -27,9 +29,15 @@ interface TurnRequest {
   deployedNotices?: DeployedNoticeRef[];
   objectiveStallTurns?: number;
   liveSessionId?: string;
+  // Layer 3: when present, caps turns to this invite's budget and ignores
+  // any client-supplied templateId that doesn't match the invite's.
+  inviteToken?: string | null;
 }
 
 export async function POST(req: Request) {
+  const rl = await checkRateLimit(req, "turn");
+  if (!rl.ok && rl.response) return rl.response;
+
   let body: TurnRequest;
   try {
     body = (await req.json()) as TurnRequest;
@@ -37,12 +45,35 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid json" }, { status: 400 });
   }
 
+  // Layer 3: if an invite token was supplied, bind to its budget and use its
+  // template_id as authoritative (prevents a client from swapping briefs
+  // mid-session to drain a cheap-brief budget through an expensive brief).
+  let effectiveTemplateId = body.templateId;
+  if (body.inviteToken) {
+    if (!isValidToken(body.inviteToken)) {
+      return NextResponse.json({ error: "invalid invite token" }, { status: 400 });
+    }
+    const result = await consumeInviteTurn(body.inviteToken);
+    if (!result.ok) {
+      const status = result.reason === "budget_exhausted" ? 429 : 404;
+      return NextResponse.json(
+        {
+          error: result.reason,
+          budget: result.invite?.turn_budget,
+          used: result.invite?.turns_used,
+        },
+        { status }
+      );
+    }
+    effectiveTemplateId = result.invite.template_id;
+  }
+
   const template =
-    getTemplate(body.templateId) ??
+    getTemplate(effectiveTemplateId) ??
     (body.templateJson ? (body.templateJson as import("@/lib/types").Template) : null);
   if (!template) {
     return NextResponse.json(
-      { error: `unknown template: ${body.templateId}` },
+      { error: `unknown template: ${effectiveTemplateId}` },
       { status: 400 }
     );
   }

@@ -9,6 +9,7 @@ import {
   setRoundAggregate,
 } from "@/lib/rounds";
 import { getTemplate } from "@/lib/templates";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { AggregateInputSession } from "@/lib/prompts/aggregate";
 import type { ExtractionState, Turn } from "@/lib/types";
 
@@ -28,7 +29,10 @@ interface SessionDoc {
 // POST /api/rounds/[roundId]/aggregate — compute or re-compute the round's
 // cross-participant aggregate. Loads each session from disk, calls Opus 4.7,
 // writes the result back into the round record, returns the updated round.
-export async function POST(_req: Request, { params }: Params) {
+export async function POST(req: Request, { params }: Params) {
+  const rl = await checkRateLimit(req, "expensive");
+  if (!rl.ok && rl.response) return rl.response;
+
   const { roundId } = await params;
   if (!isValidRoundId(roundId)) {
     return NextResponse.json({ error: "invalid round id" }, { status: 400 });

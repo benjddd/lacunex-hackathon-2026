@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
 import { getPersona } from "@/lib/personas";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type { Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -17,6 +18,9 @@ interface SimulateRequest {
 // Claude message history the HOST lines are role="assistant" and the
 // PARTICIPANT lines are role="user". No structured output — plain text reply.
 export async function POST(req: Request) {
+  const rl = await checkRateLimit(req, "moderate");
+  if (!rl.ok && rl.response) return rl.response;
+
   let body: SimulateRequest;
   try {
     body = (await req.json()) as SimulateRequest;

@@ -8,8 +8,8 @@ import { getTemplate } from "@/lib/templates";
 import type { MetaNotice } from "@/lib/prompts/meta-noticing";
 import { emptyExtraction, type ExtractionState, type Turn } from "@/lib/types";
 import { hostedSaveLiveSession } from "@/lib/store-hosted";
-import { checkRateLimit } from "@/lib/rate-limit";
-import { consumeInviteTurn, isValidToken } from "@/lib/invites";
+import { checkRateLimit, isBypassRequest } from "@/lib/rate-limit";
+import { consumeInviteTurn, isValidToken, resolveInvite } from "@/lib/invites";
 
 export const runtime = "nodejs";
 export const maxDuration = 90;
@@ -48,24 +48,34 @@ export async function POST(req: Request) {
   // Layer 3: if an invite token was supplied, bind to its budget and use its
   // template_id as authoritative (prevents a client from swapping briefs
   // mid-session to drain a cheap-brief budget through an expensive brief).
+  // Bypass requests skip budget consumption but still honor the invite's
+  // template_id so the team can rehearse invite-flow sessions without drain.
   let effectiveTemplateId = body.templateId;
   if (body.inviteToken) {
     if (!isValidToken(body.inviteToken)) {
       return NextResponse.json({ error: "invalid invite token" }, { status: 400 });
     }
-    const result = await consumeInviteTurn(body.inviteToken);
-    if (!result.ok) {
-      const status = result.reason === "budget_exhausted" ? 429 : 404;
-      return NextResponse.json(
-        {
-          error: result.reason,
-          budget: result.invite?.turn_budget,
-          used: result.invite?.turns_used,
-        },
-        { status }
-      );
+    if (isBypassRequest(req)) {
+      const invite = await resolveInvite(body.inviteToken);
+      if (!invite) {
+        return NextResponse.json({ error: "not_found" }, { status: 404 });
+      }
+      effectiveTemplateId = invite.template_id;
+    } else {
+      const result = await consumeInviteTurn(body.inviteToken);
+      if (!result.ok) {
+        const status = result.reason === "budget_exhausted" ? 429 : 404;
+        return NextResponse.json(
+          {
+            error: result.reason,
+            budget: result.invite?.turn_budget,
+            used: result.invite?.turns_used,
+          },
+          { status }
+        );
+      }
+      effectiveTemplateId = result.invite.template_id;
     }
-    effectiveTemplateId = result.invite.template_id;
   }
 
   const template =

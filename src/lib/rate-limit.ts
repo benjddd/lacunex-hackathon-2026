@@ -66,6 +66,30 @@ function getLimiter(bucket: Bucket): Ratelimit | null {
   return cached;
 }
 
+// Constant-time equality — tiny cost, kills timing side-channels on token
+// compares. Secrets here are 32 chars so this runs in microseconds.
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let out = 0;
+  for (let i = 0; i < a.length; i++) out |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return out === 0;
+}
+
+// Returns true when the request carries the bypass secret — either via
+// `x-bypass-token` header or a `lacunex_bypass` cookie. Used to let the
+// team run tests / rehearsals without tripping rate limits or draining
+// invite turn budgets. Silent if RATE_LIMIT_BYPASS_TOKEN isn't set.
+export function isBypassRequest(req: Request): boolean {
+  const secret = process.env.RATE_LIMIT_BYPASS_TOKEN;
+  if (!secret) return false;
+  const header = req.headers.get("x-bypass-token");
+  if (header && constantTimeEqual(header, secret)) return true;
+  const cookie = req.headers.get("cookie") ?? "";
+  const match = cookie.match(/(?:^|;\s*)lacunex_bypass=([^;]+)/);
+  if (match && constantTimeEqual(decodeURIComponent(match[1]), secret)) return true;
+  return false;
+}
+
 export function getClientIp(req: Request): string {
   const fwd = req.headers.get("x-forwarded-for");
   if (fwd) {
@@ -90,6 +114,7 @@ export async function checkRateLimit(
   bucket: Bucket,
   extraKey?: string
 ): Promise<RateLimitDecision> {
+  if (isBypassRequest(req)) return { ok: true };
   const limiter = getLimiter(bucket);
   if (!limiter) return { ok: true };
   const ip = getClientIp(req);

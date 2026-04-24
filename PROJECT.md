@@ -79,7 +79,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D4 | Text-first | Ship text cleanly before voice; voice decision revisited Thu |
 | D5 | Stack | Next.js 15 App Router + TypeScript + Tailwind, deployed to Vercel |
 | D6 | License | **MIT** |
-| D7 | Model mapping (initial) | Meta-noticing + Conductor + Takeaway = `claude-opus-4-7`; Extraction = `claude-haiku-4-5`. Verify availability before first wiring. |
+| D7 | Model mapping (initial) | Meta-noticing + Conductor + Takeaway = `claude-opus-4-7`; Extraction = `claude-haiku-4-5`. Verify availability before first wiring. Apr 24 cost review considered downgrading Meta-noticing to Sonnet 4.6 (saves ~$0.06/session); reverted because MAKING_OF.md documents tested evidence that Sonnet produces surface patterns vs Opus's anchored cross-turn observations — submission narrative under 25% Opus-4.7-usage criterion outweighs the saving. Gate tightened instead: Meta-noticing skipped when latest participant turn < 40 chars (no new cross-turn signal to process). |
 | D8 | Prompt caching | On for system + template + examples; transcript appended per turn |
 | D9 | No auth / no DB for POC | Session state in memory per browser tab |
 | D10 | Original scoping docs stay out of repo | They're thinking material, not product. The repo contains only work authored in-session. |

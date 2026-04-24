@@ -75,9 +75,19 @@ export async function POST(req: Request) {
   //   - the opening turn (no transcript yet)
   //   - while participant turn count < 2 (rapport phase; nothing cross-turn
   //     to notice yet — matches the conductor's suppression rule)
+  //   - when the latest participant turn is too short to carry new signal
+  //     ("yes", "not really", "I guess so"). Any notice available now was
+  //     available last turn; skipping saves a model call with ~0 precision
+  //     loss. 40 chars chosen empirically.
   // Past that, runs in parallel with extraction. Non-fatal — a failure
   // degrades to "no candidates" rather than killing the turn.
-  const shouldRunNoticing = participantTurnCount >= 2;
+  const lastParticipantTurn = [...transcript]
+    .reverse()
+    .find((t) => t.role === "participant");
+  const lastParticipantIsSubstantive =
+    (lastParticipantTurn?.text.trim().length ?? 0) >= 40;
+  const shouldRunNoticing =
+    participantTurnCount >= 2 && lastParticipantIsSubstantive;
   const noticingPromise: Promise<MetaNotice[]> = shouldRunNoticing
     ? callMetaNoticing({
         template,

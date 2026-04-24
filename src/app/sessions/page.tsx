@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
+import briefDesignerTemplate from "@/templates/brief-designer.json";
 
 const TEMPLATE_NAMES: Record<string, string> = {
   [founderTemplate.template_id]: founderTemplate.name,
   [postIncidentTemplate.template_id]: postIncidentTemplate.name,
   [civicTemplate.template_id]: civicTemplate.name,
+  [briefDesignerTemplate.template_id]: briefDesignerTemplate.name,
 };
 
 interface SessionSummary {

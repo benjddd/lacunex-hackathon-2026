@@ -97,8 +97,12 @@ function ParticipantPageContent({
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
   const [takeawayError, setTakeawayError] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
   const openedRef = useRef(false);
   const startedAt = useRef(new Date().toISOString());
+  const liveSessionId = useRef(
+    new Date().toISOString().replace(/[:.]/g, "-") + "-live"
+  );
 
   const fetchTurn = useCallback(
     async (
@@ -121,6 +125,7 @@ function ParticipantPageContent({
             startedAtIso: startedAt.current,
             deployedNotices,
             objectiveStallTurns,
+            liveSessionId: liveSessionId.current,
           }),
         });
         const data = (await res.json()) as TurnResponse;
@@ -275,6 +280,19 @@ function ParticipantPageContent({
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              const url = `${window.location.origin}/host/live/${liveSessionId.current}`;
+              void navigator.clipboard.writeText(url).then(() => {
+                setLinkCopied(true);
+                setTimeout(() => setLinkCopied(false), 2000);
+              });
+            }}
+            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-500 hover:bg-stone-50"
+          >
+            {linkCopied ? "Copied!" : "Share host view"}
+          </button>
           {sessionClosed && !takeawayOpen && takeawayMarkdown && (
             <button
               type="button"

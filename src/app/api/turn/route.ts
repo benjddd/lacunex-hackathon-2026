@@ -7,6 +7,7 @@ import {
 import { getTemplate } from "@/lib/templates";
 import type { MetaNotice } from "@/lib/prompts/meta-noticing";
 import { emptyExtraction, type ExtractionState, type Turn } from "@/lib/types";
+import { hostedSaveLiveSession } from "@/lib/store-hosted";
 
 export const runtime = "nodejs";
 export const maxDuration = 90;
@@ -18,12 +19,14 @@ interface DeployedNoticeRef {
 
 interface TurnRequest {
   templateId: string;
+  templateJson?: unknown; // full Template for gen-* briefs not in static registry
   transcript: Turn[];
   extraction?: ExtractionState;
   activeObjectiveId?: string | null;
   startedAtIso?: string;
   deployedNotices?: DeployedNoticeRef[];
   objectiveStallTurns?: number;
+  liveSessionId?: string;
 }
 
 export async function POST(req: Request) {
@@ -132,6 +135,16 @@ export async function POST(req: Request) {
         : decision.move_type === "anchor_return" && decision.move_target
           ? decision.move_target
           : activeObjectiveId;
+
+    // Best-effort live state save for /host/live/[sessionId] polling page.
+    if (body.liveSessionId) {
+      hostedSaveLiveSession(body.liveSessionId, {
+        extraction: newExtraction,
+        activeObjectiveId: nextActive,
+        turn_count: transcript.length + 1,
+        updated_at: new Date().toISOString(),
+      }).catch(() => {});
+    }
 
     return NextResponse.json({
       decision,

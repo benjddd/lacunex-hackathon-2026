@@ -30,6 +30,11 @@ async function kvSet(key: string, value: unknown): Promise<void> {
   await kv.set(key, value);
 }
 
+async function kvSetEx(key: string, value: unknown, ex: number): Promise<void> {
+  const { kv } = await import("@vercel/kv");
+  await kv.set(key, value, { ex });
+}
+
 async function kvZAdd(idxKey: string, score: number, member: string): Promise<void> {
   const { kv } = await import("@vercel/kv");
   await kv.zadd(idxKey, { score, member });
@@ -123,4 +128,21 @@ export async function hostedSaveResearch(sessionId: string, report: string): Pro
   } else {
     researchMem.set(sessionId, report);
   }
+}
+
+// ---- Live session store (2h TTL) ----
+
+const liveSessionMem = new Map<string, unknown>();
+
+export async function hostedSaveLiveSession(sessionId: string, state: unknown): Promise<void> {
+  if (hasKV) {
+    await kvSetEx(`live:${sessionId}`, state, 7200);
+  } else {
+    liveSessionMem.set(sessionId, state);
+  }
+}
+
+export async function hostedGetLiveSession(sessionId: string): Promise<unknown | null> {
+  if (hasKV) return kvGet(`live:${sessionId}`);
+  return liveSessionMem.get(sessionId) ?? null;
 }

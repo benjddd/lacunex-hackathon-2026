@@ -141,6 +141,7 @@ export async function POST(req: Request) {
     // Best-effort live state save for /host/live/[sessionId] polling page.
     if (body.liveSessionId) {
       hostedSaveLiveSession(body.liveSessionId, {
+        template_id: template.template_id,
         extraction: newExtraction,
         activeObjectiveId: nextActive,
         turn_count: transcript.length + 1,

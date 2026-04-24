@@ -49,32 +49,6 @@ export default function LiveHostPage({
     }
   };
 
-  // Fetch saved session once to get template_id as fallback.
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch(`/api/sessions/${encodeURIComponent(sessionId)}`);
-        if (!res.ok) return;
-        const data = (await res.json()) as {
-          session?: { template?: Template; template_id?: string };
-        };
-        if (cancelled) return;
-        const t =
-          data.session?.template ??
-          (data.session?.template_id
-            ? TEMPLATE_MAP[data.session.template_id]
-            : null);
-        if (t) setTemplate(t as Template);
-      } catch {
-        // non-fatal
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [sessionId]);
-
   // Poll live state every 4 seconds.
   useEffect(() => {
     let cancelled = false;

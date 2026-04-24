@@ -97,12 +97,23 @@ function ParticipantPageContent({
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
   const [takeawayError, setTakeawayError] = useState<string | null>(null);
+  // Live "peek at your reflection" — a Sonnet-generated draft that refreshes
+  // every 3 participant turns. Participant can open the drawer to peek and
+  // close to continue. Final Opus pass still runs at session close.
+  const [previewMarkdown, setPreviewMarkdown] = useState<string | null>(null);
+  const [previewGenerating, setPreviewGenerating] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewLastTurn, setPreviewLastTurn] = useState<number | null>(null);
+  const previewLastTurnRef = useRef(0);
   const [linkCopied, setLinkCopied] = useState(false);
   const openedRef = useRef(false);
   const startedAt = useRef(new Date().toISOString());
   const liveSessionId = useRef(
     new Date().toISOString().replace(/[:.]/g, "-") + "-live"
   );
+
+  const PREVIEW_MIN_TURNS = 4;
+  const PREVIEW_EVERY = 3;
 
   const fetchTurn = useCallback(
     async (
@@ -153,7 +164,8 @@ function ParticipantPageContent({
               }
             : undefined,
         };
-        setTranscript([...withTranscript, hostTurn]);
+        const updatedTranscript = [...withTranscript, hostTurn];
+        setTranscript(updatedTranscript);
         setExtraction(data.extraction);
         setObjectiveStallTurns((prev) =>
           data.activeObjectiveId === withActive ? prev + 1 : 0
@@ -166,6 +178,22 @@ function ParticipantPageContent({
           ]);
         }
         if (data.decision.move_type === "wrap_up") setSessionClosed(true);
+
+        // Trigger a background takeaway preview regen every PREVIEW_EVERY
+        // participant turns, once we have PREVIEW_MIN_TURNS of content. The
+        // preview regen doesn't block the UI; participant keeps talking while
+        // Sonnet works. Skipped on wrap_up (final Opus pass handles that).
+        const participantCount = updatedTranscript.filter(
+          (t) => t.role === "participant"
+        ).length;
+        const shouldRegenPreview =
+          data.decision.move_type !== "wrap_up" &&
+          participantCount >= PREVIEW_MIN_TURNS &&
+          participantCount - previewLastTurnRef.current >= PREVIEW_EVERY;
+        if (shouldRegenPreview) {
+          previewLastTurnRef.current = participantCount;
+          void regeneratePreview(updatedTranscript, data.extraction, participantCount);
+        }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         setErrorMsg(msg);
@@ -173,7 +201,48 @@ function ParticipantPageContent({
         setIsLoading(false);
       }
     },
+    // regeneratePreview is declared below; JS closure captures it by binding.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [template, generatedTemplate, deployedNotices]
+  );
+
+  // Declared after fetchTurn for readability, but referenced from inside
+  // fetchTurn via closure. Safe because regeneratePreview is only *called*
+  // at fetchTurn invocation time (user interaction), by which point all
+  // useCallback bindings have been assigned for this render.
+  const regeneratePreview = useCallback(
+    async (
+      withTranscript: Turn[],
+      withExtraction: ExtractionState,
+      atParticipantCount: number
+    ) => {
+      if (!template) return;
+      setPreviewGenerating(true);
+      try {
+        const res = await fetch("/api/takeaway", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            templateId: template.template_id,
+            templateJson: generatedTemplate ?? undefined,
+            transcript: withTranscript,
+            extraction: withExtraction,
+            mode: "preview",
+          }),
+        });
+        const data = (await res.json()) as { markdown?: string; error?: string };
+        if (res.ok && data.markdown) {
+          setPreviewMarkdown(data.markdown);
+          setPreviewLastTurn(atParticipantCount);
+        }
+        // Preview failures are silent — the button just stays in its current state.
+      } catch {
+        // non-fatal
+      } finally {
+        setPreviewGenerating(false);
+      }
+    },
+    [template, generatedTemplate]
   );
 
   useEffect(() => {
@@ -238,9 +307,11 @@ function ParticipantPageContent({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           templateId: template.template_id,
+          templateJson: generatedTemplate ?? undefined,
           sessionId,
           transcript,
           extraction,
+          mode: "final",
         }),
       });
       const data = (await res.json()) as { markdown?: string; error?: string };
@@ -294,6 +365,19 @@ function ParticipantPageContent({
           >
             {linkCopied ? "Copied!" : "Share host view"}
           </button>
+          {!sessionClosed && previewMarkdown && (
+            <button
+              type="button"
+              onClick={() => setPreviewOpen(true)}
+              title="Your reflection is forming — take a peek, then come back to the conversation."
+              className="rounded-md border border-amber-300 bg-amber-50 px-3 py-1 text-xs text-amber-800 hover:bg-amber-100"
+            >
+              Peek at reflection
+              {previewGenerating && (
+                <span className="ml-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-600 align-middle" />
+              )}
+            </button>
+          )}
           {sessionClosed && !takeawayOpen && takeawayMarkdown && (
             <button
               type="button"
@@ -346,6 +430,18 @@ function ParticipantPageContent({
           isGenerating={takeawayGenerating}
           error={takeawayError}
           onClose={() => setTakeawayOpen(false)}
+          mode="final"
+        />
+      )}
+
+      {previewOpen && !takeawayOpen && (
+        <TakeawayArtifact
+          markdown={previewMarkdown}
+          isGenerating={previewGenerating}
+          error={null}
+          onClose={() => setPreviewOpen(false)}
+          mode="preview"
+          lastUpdatedTurn={previewLastTurn}
         />
       )}
     </div>

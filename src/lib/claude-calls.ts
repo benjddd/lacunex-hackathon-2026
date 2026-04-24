@@ -147,6 +147,7 @@ export async function callTakeaway(params: {
   template: Template;
   transcript: Turn[];
   extraction: ExtractionState;
+  mode?: "preview" | "final";
 }): Promise<string> {
   const anthropic = getAnthropic();
   const systemText = buildTakeawaySystem(params.template);
@@ -158,9 +159,12 @@ export async function callTakeaway(params: {
     participantLabel,
   });
 
+  const mode = params.mode ?? "final";
+  const model = mode === "preview" ? MODELS.takeawayPreview : MODELS.takeaway;
+
   const t0 = Date.now();
   const response = await anthropic.messages.create({
-    model: MODELS.takeaway,
+    model,
     max_tokens: TAKEAWAY_MAX_TOKENS,
     system: [
       {
@@ -172,7 +176,7 @@ export async function callTakeaway(params: {
     messages: [{ role: "user", content: userText }],
   });
   const tu = response.usage as { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
-  console.log(`[takeaway] ${Date.now() - t0}ms | in=${tu.input_tokens} out=${tu.output_tokens} cache_read=${tu.cache_read_input_tokens ?? 0} cache_write=${tu.cache_creation_input_tokens ?? 0}`);
+  console.log(`[takeaway:${mode}] ${Date.now() - t0}ms | model=${model} in=${tu.input_tokens} out=${tu.output_tokens} cache_read=${tu.cache_read_input_tokens ?? 0} cache_write=${tu.cache_creation_input_tokens ?? 0}`);
 
   // Plain markdown, not JSON. Strip any fences the model might sneak in.
   const raw = textFromMessage(response.content as Array<{ type: string; text?: string }>);
@@ -185,8 +189,9 @@ export async function callTakeaway(params: {
 // notices that fail the orchestrator-level kill rule (ex: fewer than 2
 // distinct transcript_anchors for non-exempt notice types).
 //
-// Not yet wired into the live turn loop — this is exercised by the
-// scripts/eval-noticing.ts harness until the prompt is stable.
+// Wired into /api/turn: runs in parallel with extraction once the participant
+// has spoken at least twice and the latest turn is substantive. Candidates
+// are handed to the conductor, which decides whether to deploy.
 export async function callMetaNoticing(params: {
   template: Template;
   transcript: Turn[];

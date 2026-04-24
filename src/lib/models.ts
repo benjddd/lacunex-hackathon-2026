@@ -16,6 +16,13 @@ export const MODELS = {
   // Used for the end-of-session takeaway artifact. Literary output, runs
   // once per session, quality trumps cost.
   takeaway: "claude-opus-4-7",
+
+  // Used for the mid-session takeaway preview (live "peek at your reflection"
+  // drawer on the participant side). Sonnet for speed + cost — the preview
+  // is ephemeral and regenerates every 3 participant turns; the final Opus
+  // pass still runs at session close. Quality delta vs Opus is not
+  // perceptible for a progressively-built preview.
+  takeawayPreview: "claude-sonnet-4-6",
 } as const;
 
 export type ModelKey = keyof typeof MODELS;

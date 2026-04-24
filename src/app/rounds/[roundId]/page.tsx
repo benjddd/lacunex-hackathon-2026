@@ -59,6 +59,9 @@ export default function RoundDetailPage({
   }, [roundId]);
 
   useEffect(() => {
+    // load() fetches from REST and commits via setState — canonical client
+    // hydration pattern. React 19's set-state-in-effect rule flags it; safe.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
 

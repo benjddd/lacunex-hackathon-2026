@@ -37,7 +37,10 @@ export default function LiveHostPage({
   const [notStarted, setNotStarted] = useState(false);
   const [secondsSinceUpdate, setSecondsSinceUpdate] = useState<number | null>(null);
 
-  const firstFetchAt = useRef<number>(Date.now());
+  // Lazy-init via useState so we capture a mount-time timestamp without
+  // calling Date.now() during render (flagged by react-compiler). We read
+  // but never setState on this — it's a stable sentinel for timeout logic.
+  const [firstFetchAt] = useState<number>(() => Date.now());
   const lastUpdatedAt = useRef<string | null>(null);
 
   // Try to resolve the template: check live state's template_id, or
@@ -60,7 +63,7 @@ export default function LiveHostPage({
         );
         if (cancelled) return;
         if (res.status === 404) {
-          const elapsed = (Date.now() - firstFetchAt.current) / 1000;
+          const elapsed = (Date.now() - firstFetchAt) / 1000;
           if (elapsed > 10) {
             setNotStarted(true);
           }
@@ -85,8 +88,7 @@ export default function LiveHostPage({
       cancelled = true;
       clearInterval(interval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId]);
+  }, [sessionId, firstFetchAt]);
 
   // Update "seconds ago" every second.
   useEffect(() => {

@@ -1,4 +1,4 @@
-import type { ExtractionState, Template, Turn } from "@/lib/types";
+import type { Template, Turn } from "@/lib/types";
 
 // The meta-noticing layer. Observation-only — does NOT generate questions.
 // Runs after each participant turn. Returns zero or more candidate notices;

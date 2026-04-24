@@ -164,7 +164,7 @@ function ObjectiveCard({
         className="mt-1 flex items-center gap-1 text-[10px] text-stone-400 hover:text-stone-600 transition-colors"
       >
         <span className="text-[8px]">{goalOpen ? "▾" : "▸"}</span>
-        what we're trying to learn
+        what we&apos;re trying to learn
         {turnIndices.length > 0 && (
           <span className="ml-1 text-stone-400">
             · turns {turnIndices.join(", ")}

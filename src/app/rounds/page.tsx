@@ -47,6 +47,10 @@ export default function RoundsListPage() {
   }, []);
 
   useEffect(() => {
+    // load() runs a fetch and commits the result via setState. React 19's
+    // set-state-in-effect rule flags this; the pattern is the canonical
+    // way to hydrate a client component from a REST endpoint and is safe.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
 

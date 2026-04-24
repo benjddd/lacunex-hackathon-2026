@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Dev script: evaluate the meta-noticing layer against saved session files.
 // Standalone — imports the lib directly (no HTTP hop), so the Next.js dev
 // server does NOT need to be running.
@@ -26,7 +25,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { getTemplate } from "../src/lib/templates";
-import { callMetaNoticing } from "../src/lib/claude-calls";
 import {
   parseMetaNoticingCandidates,
   validateMetaNotices,

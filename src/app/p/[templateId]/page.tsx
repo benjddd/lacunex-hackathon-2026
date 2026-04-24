@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, use, useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ChatPane } from "@/components/ChatPane";
 import { TakeawayArtifact } from "@/components/TakeawayArtifact";
@@ -71,10 +72,17 @@ function ParticipantPageContent({
   // Support dynamically-generated briefs stored in sessionStorage by /start
   const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
   useEffect(() => {
+    // Hydrate a dynamically-generated brief from sessionStorage on mount.
+    // sessionStorage is a platform API outside React; reading it in an
+    // effect is the correct place. React 19's set-state-in-effect rule
+    // still flags the setState — safe here.
     if (!TEMPLATE_MAP[templateId] && templateId.startsWith("gen-")) {
       const raw = sessionStorage.getItem(`lacunex:brief:${templateId}`);
       if (raw) {
-        try { setGeneratedTemplate(JSON.parse(raw) as Template); } catch { /* ignore */ }
+        try {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setGeneratedTemplate(JSON.parse(raw) as Template);
+        } catch { /* ignore */ }
       }
     }
   }, [templateId]);
@@ -115,6 +123,46 @@ function ParticipantPageContent({
 
   const PREVIEW_MIN_TURNS = 4;
   const PREVIEW_EVERY = 3;
+
+  // Lighter Sonnet pass regenerating the participant's preview reflection
+  // every PREVIEW_EVERY turns. Called from inside fetchTurn; declared first
+  // here so the reference in fetchTurn's closure resolves at definition
+  // time rather than via forward-capture (satisfies React 19's use-before-
+  // declare rule).
+  const regeneratePreview = useCallback(
+    async (
+      withTranscript: Turn[],
+      withExtraction: ExtractionState,
+      atParticipantCount: number
+    ) => {
+      if (!template) return;
+      setPreviewGenerating(true);
+      try {
+        const res = await fetch("/api/takeaway", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            templateId: template.template_id,
+            templateJson: generatedTemplate ?? undefined,
+            transcript: withTranscript,
+            extraction: withExtraction,
+            mode: "preview",
+          }),
+        });
+        const data = (await res.json()) as { markdown?: string; error?: string };
+        if (res.ok && data.markdown) {
+          setPreviewMarkdown(data.markdown);
+          setPreviewLastTurn(atParticipantCount);
+        }
+        // Preview failures are silent — the button just stays in its current state.
+      } catch {
+        // non-fatal
+      } finally {
+        setPreviewGenerating(false);
+      }
+    },
+    [template, generatedTemplate]
+  );
 
   const fetchTurn = useCallback(
     async (
@@ -214,48 +262,7 @@ function ParticipantPageContent({
         setIsLoading(false);
       }
     },
-    // regeneratePreview is declared below; JS closure captures it by binding.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [template, generatedTemplate, deployedNotices]
-  );
-
-  // Declared after fetchTurn for readability, but referenced from inside
-  // fetchTurn via closure. Safe because regeneratePreview is only *called*
-  // at fetchTurn invocation time (user interaction), by which point all
-  // useCallback bindings have been assigned for this render.
-  const regeneratePreview = useCallback(
-    async (
-      withTranscript: Turn[],
-      withExtraction: ExtractionState,
-      atParticipantCount: number
-    ) => {
-      if (!template) return;
-      setPreviewGenerating(true);
-      try {
-        const res = await fetch("/api/takeaway", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            templateId: template.template_id,
-            templateJson: generatedTemplate ?? undefined,
-            transcript: withTranscript,
-            extraction: withExtraction,
-            mode: "preview",
-          }),
-        });
-        const data = (await res.json()) as { markdown?: string; error?: string };
-        if (res.ok && data.markdown) {
-          setPreviewMarkdown(data.markdown);
-          setPreviewLastTurn(atParticipantCount);
-        }
-        // Preview failures are silent — the button just stays in its current state.
-      } catch {
-        // non-fatal
-      } finally {
-        setPreviewGenerating(false);
-      }
-    },
-    [template, generatedTemplate]
+    [template, generatedTemplate, deployedNotices, objectiveStallTurns, inviteToken, regeneratePreview]
   );
 
   useEffect(() => {
@@ -343,9 +350,9 @@ function ParticipantPageContent({
       <div className="flex h-dvh items-center justify-center bg-stone-50">
         <div className="text-center">
           <p className="text-stone-600 text-sm">Unknown brief: {templateId}</p>
-          <a href="/" className="mt-3 block text-xs text-amber-700 underline">
+          <Link href="/" className="mt-3 block text-xs text-amber-700 underline">
             Return home
-          </a>
+          </Link>
         </div>
       </div>
     );

@@ -48,6 +48,7 @@ Thumbs.db
 # Scratch / internal (hackathon-specific)
 tmp/
 INTERNAL.md
+INTERNAL_VIDEO.md
 scratch/
 notes-private/
 

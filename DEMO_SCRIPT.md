@@ -18,15 +18,29 @@
 
 ## Narration (voiceover, recorded separately)
 
-### 0:00 – 0:12 | Setup
+### 0:00 – 0:12 | Cold-open — real-world hook
 
-> "Lacunex runs structured interviews where the platform does the intellectual work — deciding each question from the full conversation state, surfacing what was implied but not said, and producing structured insight live, not in an overnight report."
+> "In November 2025, Cloudflare's postmortem named 'unchallenged assumptions' as the root cause of a major outage. The assumption was in the conversation. Nobody noticed it across turns. That's what Lacunex builds for."
 
-*Screen: host view (`/`) showing the brief selector. Click "Founder Investment Evaluation", then "Start interview."*
+*Screen: static title card or slow zoom on the Lacunex logo. No product UI yet — the problem lands first.*
+
+**On-screen callout (subtle, bottom-right):**
+> Source: Cloudflare postmortem · 18 Nov 2025
 
 ---
 
-### 0:12 – 0:35 | Interview opens
+### 0:12 – 0:25 | Host sets a goal
+
+> "A Host describes their use case in plain language. Opus 4.7 generates the interview brief."
+
+*Screen: `/start` page — NL generator open. Type a short description; watch the brief card appear. Click "Start interview."*
+
+**On-screen callout (appears as brief card renders):**
+> 5 objectives · schema-bound extraction · meta-noticing hints
+
+---
+
+### 0:25 – 0:45 | Interview opens
 
 *Screen: participant view. The opening question appears.*
 
@@ -44,9 +58,12 @@
 
 > "Notice that the extraction already flags the evidence gap — not through a checklist, but from what the participant actually said."
 
+**On-screen callout (during dashboard fill, appears and fades):**
+> Extraction: live, not post-hoc — Haiku 4.5
+
 ---
 
-### 0:35 – 1:10 | Conductor adapts + meta-notice fires
+### 0:45 – 1:20 | PEAK 1 — Conductor adapts + meta-notice fires
 
 *A question arrives that probes the evidence gap — something like: "When you say the feedback has been strong — can you say more about what specific problem they described?"*
 
@@ -59,9 +76,24 @@
 
 *Show the notice panel: something like "Witness described 'strong feedback' at turn 1, then concedes limited depth of validation at turn 5. These two claims sit in tension — the strength of signal claimed at the top may rest on a thinner base than stated."*
 
+**On-screen callouts (hold ~3s — this is the peak):**
+
+Overlay 1 — next to the ◆ badge as it appears:
+> ◆ META-NOTICE · hedging_pattern
+> anchors: turn 1, turn 5
+
+Overlay 2 — below the host bubble, showing the observation verbatim:
+> "really strong" (turn 1) ↔ "haven't done a super deep dive" (turn 5)
+> Evidence softened across turns.
+
+Overlay 3 — tiny, bottom-right, citing source of truth:
+> Captured in session audit (/sessions/[id]) — exact platform output
+
+*Note to editor: pull exact observation text from the recorded session's audit panel. Do not paraphrase. If the live take's notice text reads flat, use alternate P1 (`outside_consideration`) — see §2 alternates.*
+
 ---
 
-### 1:10 – 1:45 | Anchor return
+### 1:20 – 1:50 | PEAK 2 — Anchor return
 
 *The conductor returns to an earlier claim. Question arrives like: "You said at the start that feedback has been really strong. You've just described it as 'they find retrospectives painful in general' — is that the same thing, or did you mean something different earlier?"*
 
@@ -76,50 +108,75 @@
 
 > "That's the insight. It didn't come from a form. It came from a follow-up the platform knew to ask."
 
+**On-screen callouts (hold ~3s):**
+
+Overlay 1 — next to the ↩ chip:
+> ↩ ANCHOR RETURN → turn 1
+> conductor.move_type: anchor_return
+
+Overlay 2 — below the host bubble, quoting the conductor's reasoning verbatim:
+> "The strength claim has softened twice.
+> Surfacing before it hardens into context."
+
+*Note to editor: pull the reasoning from the recorded session's audit panel — it's the "why this move" field on the host turn where the ↩ chip appears.*
+
 ---
 
-### 1:45 – 2:15 | Session close — bilateral artifacts
+### 1:50 – 2:00 | Host dashboard — fully populated
 
-*Narrator types: "That's enough — let's close the session."*
-
-*Click "End session" on participant side. "See your reflection →" appears.*
-*Click it. Show the takeaway — especially the "what you already have that's relevant" section.*
-
-> "The participant gets a reflective takeaway — not a summary, but something they can act on. This section names specific resources already in their life they hadn't connected to the problem."
-
-*Switch to host view. Show the fully-filled extraction dashboard.*
+*Switch to host view. Show the fully-filled extraction dashboard — columns, not a transcript.*
 
 > "The host has structured signal — live, during the conversation. Not two hours of transcript work later."
 
+**On-screen callout (brief, as dashboard columns fade in):**
+> 5 objectives · N turns · grounded in participant quotes
+
 ---
 
-### 2:15 – 2:50 | Rounds — cohort view
+### 2:00 – 2:35 | PEAK 3 — Participant takeaway: what you already have
 
-*Navigate to `/rounds`. Show a round with 10+ sessions aggregated.*
-*Click "View aggregate".*
+*Participant side: click "End session". "See your reflection →" appears. Click it.*
+*Scroll slowly to the **"What you already have that's relevant"** section. Hold on it for ~3 seconds.*
 
-> "Run the same brief across any number of participants. The platform synthesizes across sessions — convergent problems, shared assumptions, divergent framings, outliers. Patterns a stack of transcripts can't surface."
+> "The participant gets a reflective takeaway — not a summary, but something they can act on. This section names specific resources already in their life they hadn't connected to the problem. No other tool in this category offers the participant anything to keep."
 
-*Show one pattern block with quoted evidence.*
+**On-screen callouts (sparing — don't overload the emotional beat):**
 
-> "Everything the investigator needs to act, routed to the right team."
+Subtle underline animation under the section heading "What you already have that's relevant" as narration lands.
+
+Near end of beat (tiny, non-intrusive):
+> 4 Claude calls per session: conductor · meta-noticing · extraction · takeaway
+
+---
+
+### 2:35 – 2:50 | Rounds — cohort scale (compressed)
+
+*Navigate briefly to `/rounds`. Show a round with 10+ sessions. Click "View aggregate". Show one pattern block with quoted evidence — don't pause.*
+
+> "Run the same brief across any number of participants — convergent problems, shared assumptions, outliers. Comparable structured signal, not a pile of idiosyncratic transcripts."
+
+**On-screen callout (flashes as aggregate renders):**
+> AGGREGATE · 15 sessions · 10 cross-cohort patterns
 
 ---
 
 ### 2:50 – 3:00 | Close
 
-*Back to `/start` — show the NL generator briefly.*
+> "Founder evaluation, post-incident review, civic consultation — or yours. One brief, many participants."
 
-> "Describe your use case in plain language — Opus 4.7 generates the brief. Founder evaluation, post-incident review, civic consultation — or yours. One brief, many participants, comparable structured signal."
-
-*Fade on the tagline:*
+*Fade on the tagline (screen text):*
 **"Cross-turn reasoning, rendered live. Both sides leave with something."**
+
+**Sub-line (one size smaller, below tagline):**
+> Opus 4.7 · Sonnet 4.6 · Haiku 4.5 · MIT-licensed · built Apr 21–26 2026
 
 ---
 
 ## Recording checklist
 
-- [ ] Practise all typed responses twice before recording
+- [ ] **Friday evening: dry-run.** Run one full session end-to-end; verify meta-notice fires and `what_you_already_have` section is specific. Record the dry-run — keep it if it's clean.
+- [ ] **Friday evening: decide tools** — screen recorder (ScreenApp or OBS), audio (headset or ElevenLabs), editing (Descript or CapCut). Don't install new tools Saturday morning.
+- [ ] Practise all typed responses twice cold before first take
 - [ ] Disable notifications (Focus mode)
 - [ ] Record at 1920×1080, 30fps minimum
 - [ ] Narration separately via line-in or good headset (no laptop mic)

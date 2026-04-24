@@ -100,22 +100,23 @@ The Conductor prompt asks Claude to decide not just "what to ask next" but *"giv
 
 ## Field 9 — Did you use Claude Managed Agents? If so, how?
 
-**Yes.**
+**Yes — one Managed Agent: the post-session claim verifier.**
 
-After a session ends, the host can trigger a post-session claim-verification agent from the session detail page. The agent:
+The agent is defined in Anthropic's managed-agents plane:
 
-1. Reads the full interview transcript
-2. Calls Claude Opus 4.7 with the `web_search_20250305` tool enabled
-3. Claude autonomously identifies 3–5 verifiable factual claims made by the participant
-4. Runs web searches for each claim
-5. Synthesizes a structured **Fact-Check Report**: for each claim — verdict (Supported / Refuted / Partially Supported / Unverifiable) + evidence summary with named sources
-6. Appends a "Coverage note" explaining which claim types were not checkable (opinions, personal anecdotes, internal data)
+- **`client.beta.agents.create`** — an `Agent` resource named *"Lacunex claim verifier"*, backed by `claude-opus-4-7`, with the built-in `web_search` tool enabled under an `always_allow` permission policy via `agent_toolset_20260401`.
+- **`client.beta.environments.create`** — a cloud container environment with unrestricted network, used as the execution substrate for each session.
+- **`client.beta.sessions.create`** — a new session per fact-check run, bound to the agent + environment above.
+- **`client.beta.sessions.events.send`** — the interview transcript is delivered to the agent as a `user.message` event.
+- **`client.beta.sessions.events.stream`** — the session's event bus is streamed back to our route, which forwards each event to the browser over SSE.
 
-This is implemented at `POST /api/sessions/[id]/research`. The web search tool is a server-side tool — Anthropic's infrastructure handles search execution; our orchestration layer handles the agentic loop, result extraction, and persistence.
+The result: when the host clicks "Run agent" on a finished session, the UI renders a live event log — every `agent.tool_use` (the web-search query the agent chose), every `agent.tool_result` (search results returned), every `agent.message` slice as it writes — before the final Fact-Check Report lands. The audience watches the agent work rather than waiting behind a spinner. Typical run: ~35s active container time, 4–5 parallel web searches, one structured report with per-claim verdicts (Supported / Refuted / Partially Supported / Unverifiable) and named source references.
 
-We chose post-session claim verification over in-session real-time fact-checking because: (a) the participant shouldn't feel interrogated mid-conversation; (b) the host benefits from the full transcript context for claim selection; (c) it's the highest-leverage place where agentic behavior changes the output qualitatively (not just "finds information," but "decides which claims are worth checking and why").
+Why post-session instead of in-session: (a) the participant shouldn't feel interrogated mid-conversation; (b) the host benefits from the full transcript context for claim selection; (c) agentic behaviour changes the output qualitatively here — the agent *decides* which claims are worth checking, not just retrieves information. The civic consultation brief surfaces mostly "Unverifiable" (personal experience); the founder brief surfaces verifiable market / competitor / regulatory claims. In a real run against a post-incident witness transcript, the agent correctly flagged a "LinkedIn ad prices doubled in Microsoft's Q2 2022 earnings call" claim as Refuted — Microsoft reported LinkedIn revenue growth, not ad prices.
 
-In the civic consultation brief, most session content is personal experience and thus "Unverifiable" — the agent correctly identifies and labels this. In the founder brief, claims about market size, competitor behavior, and process pain are frequently verifiable — and the agent finds and cites supporting or contradicting industry data.
+Route: `POST /api/sessions/[id]/research`; event pipeline lives in [`src/lib/managed-agents.ts`](src/lib/managed-agents.ts); the event log component is in the session detail page. Idempotent provisioning script: `npx tsx scripts/spike-managed-agents-e2e.ts` (reuses the Agent + Environment by metadata tag, or creates them on first run; writes IDs to `.env.local`).
+
+**What we considered but chose not to label as an agent:** Our cross-session cohort synthesis feature ("live synthesis over all sessions in a round") is a single Messages-API call over N transcripts — valuable but not a Managed Agent. We walked back an earlier "two agents" framing rather than wrap a one-shot synthesis call in ceremonial agent machinery to pad a count. One honest Managed Agent, with its receipts visible in the UI, was the better claim.
 
 ---
 
@@ -123,7 +124,7 @@ In the civic consultation brief, most session content is personal experience and
 
 - [x] Problem Statement (Field 4) — rewritten, free-text textarea confirmed
 - [x] Project Description (Field 5) — drafted
-- [x] Managed Agents (Field 9) — two agents: claim verifier + live cohort synthesis
+- [x] Managed Agents (Field 9) — one Managed Agent (claim verifier) wired via `beta.agents` + `beta.environments` + `beta.sessions`, events streamed to UI via SSE; cohort synthesis described as a feature, not relabelled as an agent
 - [ ] Demo video — record with OBS + Playwright session; upload to YouTube/Loom; paste URL in Field 7
 - [ ] Verify GitHub repo is public, README is judge-readable
 - [ ] Trim Field 5 if over form character limit

@@ -30,6 +30,21 @@ const TEMPLATES: Record<string, Template> = {
   [briefDesignerTemplate.template_id]: briefDesignerTemplate as unknown as Template,
 };
 
+// Managed Agents event types forwarded from the research route over SSE.
+// Kept narrow on the client — only the fields the UI actually renders.
+type ResearchServerEvent =
+  | { type: "status"; status: "running" | "idle" | "terminated"; stop_reason?: string }
+  | { type: "thinking" }
+  | { type: "tool_use"; name: string; input: unknown }
+  | { type: "tool_result"; is_error: boolean; block_count: number }
+  | { type: "message_text"; text: string }
+  | { type: "error"; message: string }
+  | { type: "done"; report: string; cached: boolean; session_id?: string; active_seconds?: number }
+  | { type: "fatal"; message: string };
+
+// Non-terminal events that we keep in the log.
+type ResearchEvent = Exclude<ResearchServerEvent, { type: "done" } | { type: "fatal" }>;
+
 // Move-type badge styling — keyed by ConductorDecision.move_type values.
 // Kept in-page because this is the only surface that renders them.
 const MOVE_STYLES: Record<string, { label: string; cls: string }> = {
@@ -113,6 +128,93 @@ function AuditPanel({ turn }: { turn: Turn }) {
   );
 }
 
+// Live activity log of the claim-verifier Managed Agent. Renders each
+// forwarded session event as one line so the audience can watch the
+// agent decide what to search for, see results come back, and wait for
+// the synthesis. Drops span.* / compaction events — those are noise here.
+function ResearchActivityLog({
+  events,
+  running,
+}: {
+  events: ResearchEvent[];
+  running: boolean;
+}) {
+  return (
+    <div className="mt-4 rounded-lg border border-indigo-200/70 bg-white/80 p-3 font-mono text-[11px] leading-relaxed text-stone-700">
+      <div className="mb-1.5 flex items-center gap-2 text-[9px] uppercase tracking-widest text-indigo-700">
+        <span>agent events</span>
+        {running && (
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" />
+        )}
+      </div>
+      {events.length === 0 ? (
+        <p className="italic text-stone-500">
+          Opening agent session…
+        </p>
+      ) : (
+        <ul className="space-y-0.5">
+          {events.map((ev, i) => {
+            switch (ev.type) {
+              case "status":
+                return (
+                  <li key={i} className="text-stone-500">
+                    <span className="text-indigo-600">status</span> {ev.status}
+                    {ev.stop_reason && (
+                      <span className="text-stone-400"> · {ev.stop_reason}</span>
+                    )}
+                  </li>
+                );
+              case "thinking":
+                return (
+                  <li key={i} className="text-stone-500">
+                    <span className="text-indigo-600">thinking</span>
+                  </li>
+                );
+              case "tool_use": {
+                const q =
+                  typeof (ev.input as { query?: unknown })?.query === "string"
+                    ? ((ev.input as { query: string }).query)
+                    : JSON.stringify(ev.input).slice(0, 120);
+                return (
+                  <li key={i} className="text-stone-800">
+                    <span className="text-emerald-700">{ev.name}</span>{" "}
+                    <span className="text-stone-500">→</span>{" "}
+                    <span className="italic">{q}</span>
+                  </li>
+                );
+              }
+              case "tool_result":
+                return (
+                  <li key={i} className="text-stone-500">
+                    <span className={ev.is_error ? "text-red-700" : "text-emerald-700"}>
+                      result
+                    </span>{" "}
+                    {ev.block_count} block{ev.block_count === 1 ? "" : "s"}
+                    {ev.is_error && " (error)"}
+                  </li>
+                );
+              case "message_text":
+                return (
+                  <li key={i} className="text-stone-800">
+                    <span className="text-violet-700">message</span> {ev.text.length} chars
+                  </li>
+                );
+              case "error":
+                return (
+                  <li key={i} className="text-red-700">
+                    error · {ev.message}
+                  </li>
+                );
+              default:
+                return null;
+            }
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function SessionDetailPage({
   params,
 }: {
@@ -125,6 +227,11 @@ export default function SessionDetailPage({
   const [researchMd, setResearchMd] = useState<string | null>(null);
   const [researching, setResearching] = useState(false);
   const [researchError, setResearchError] = useState<string | null>(null);
+  const [researchEvents, setResearchEvents] = useState<ResearchEvent[]>([]);
+  const [researchMeta, setResearchMeta] = useState<{
+    session_id?: string;
+    active_seconds?: number;
+  } | null>(null);
   const [generatingBrief, setGeneratingBrief] = useState(false);
   const [generatedBrief, setGeneratedBrief] = useState<Template | null>(null);
   const [briefError, setBriefError] = useState<string | null>(null);
@@ -163,11 +270,63 @@ export default function SessionDetailPage({
     if (researching) return;
     setResearching(true);
     setResearchError(null);
+    setResearchEvents([]);
+    setResearchMeta(null);
     try {
       const res = await fetch(`/api/sessions/${sessionId}/research`, { method: "POST" });
-      const data = (await res.json()) as { report?: string; error?: string };
-      if (!res.ok || !data.report) throw new Error(data.error ?? `HTTP ${res.status}`);
-      setResearchMd(data.report);
+      if (!res.ok) {
+        const body = await res.text();
+        let msg = `HTTP ${res.status}`;
+        try {
+          const j = JSON.parse(body) as { error?: string };
+          if (j.error) msg = j.error;
+        } catch {
+          if (body) msg = body.slice(0, 300);
+        }
+        throw new Error(msg);
+      }
+      if (!res.body) throw new Error("no response body");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let done = false;
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+        if (streamDone) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buffer.indexOf("\n\n")) !== -1) {
+          const frame = buffer.slice(0, idx);
+          buffer = buffer.slice(idx + 2);
+          const dataLine = frame
+            .split("\n")
+            .find((l) => l.startsWith("data: "));
+          if (!dataLine) continue;
+          const payload = dataLine.slice(6);
+          let ev: ResearchServerEvent;
+          try {
+            ev = JSON.parse(payload) as ResearchServerEvent;
+          } catch {
+            continue;
+          }
+          if (ev.type === "done") {
+            setResearchMd(ev.report);
+            setResearchMeta({
+              session_id: ev.session_id,
+              active_seconds: ev.active_seconds,
+            });
+            done = true;
+            break;
+          }
+          if (ev.type === "fatal") {
+            setResearchError(ev.message);
+            done = true;
+            break;
+          }
+          setResearchEvents((prev) => [...prev, ev]);
+        }
+      }
     } catch (err) {
       setResearchError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -289,10 +448,10 @@ export default function SessionDetailPage({
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <h2 className="text-xs uppercase tracking-widest text-indigo-700">
-                      Claim Verification
+                      Claim Verification · Managed Agent
                     </h2>
                     <p className="mt-1 text-xs text-stone-500">
-                      An autonomous agent reads this transcript, identifies factual claims, and searches the web to verify each one.
+                      A Claude Managed Agent reads this transcript, identifies factual claims, and uses the <code>web_search</code> tool to verify each one. Events stream live from the agent session.
                     </p>
                   </div>
                   {!researchMd && (
@@ -302,17 +461,30 @@ export default function SessionDetailPage({
                       disabled={researching}
                       className="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                     >
-                      {researching ? "Verifying claims…" : "Run agent"}
+                      {researching ? "Agent working…" : "Run agent"}
                     </button>
                   )}
                 </div>
                 {researchError && (
                   <p className="mt-3 text-xs text-red-700">{researchError}</p>
                 )}
+                {(researching || researchEvents.length > 0) && !researchMd && (
+                  <ResearchActivityLog events={researchEvents} running={researching} />
+                )}
                 {researchMd && (
-                  <article className="mt-4 text-[13px] leading-relaxed text-stone-800 [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-sm [&_h2]:font-semibold [&_p]:mb-2 [&_strong]:font-semibold">
-                    <ReactMarkdown>{researchMd}</ReactMarkdown>
-                  </article>
+                  <>
+                    {researchMeta?.session_id && (
+                      <p className="mt-3 text-[10px] font-mono text-stone-500">
+                        session: {researchMeta.session_id}
+                        {typeof researchMeta.active_seconds === "number" && (
+                          <span> · active {researchMeta.active_seconds.toFixed(1)}s</span>
+                        )}
+                      </p>
+                    )}
+                    <article className="mt-4 text-[13px] leading-relaxed text-stone-800 [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-sm [&_h2]:font-semibold [&_p]:mb-2 [&_strong]:font-semibold">
+                      <ReactMarkdown>{researchMd}</ReactMarkdown>
+                    </article>
+                  </>
                 )}
               </section>
 

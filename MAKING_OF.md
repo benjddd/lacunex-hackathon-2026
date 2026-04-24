@@ -83,17 +83,15 @@ These are not PDFs sitting in a RAG system. They're distilled axioms embedded in
 
 **Confidence deltas.** The dashboard now renders completeness *changes* per objective per turn: a small ↑ or ↓ arrow next to each completeness bar, computed as the delta between the current and previous extraction call. This makes the extraction engine's real-time tracking visible — you can watch the confidence in an objective's evidence level move as the conversation probes it.
 
-**The research agent.** A session detail page now has "Claim Verification" — a post-session Managed Agent that identifies 3–5 falsifiable claims in the transcript and runs web searches against each, returning a structured Fact-Check Report (Supported / Refuted / Partially Supported / Unverifiable). This uses the `web_search_20250305` server-side tool. We count this as a second agent alongside the live cohort synthesis agent — both are Claude agents maintaining a living document over time, not single-shot API calls.
+**The claim-verifier Managed Agent.** The session detail page has a "Claim Verification" section backed by a genuine Claude **Managed Agent**, not a Messages-API call wrapped in agent language. The agent is defined in Anthropic's managed-agents plane (`client.beta.agents.create` — `agent_011CaPADkYrv75ZMSNwn4YWG`) with the built-in `web_search` tool enabled under an `always_allow` permission policy, bound to a cloud container environment (`client.beta.environments.create`). When the host clicks "Run agent", the route opens a `beta.sessions.create` session, sends the transcript as a `user.message`, and streams the session event bus back to the browser over SSE. The UI renders each `agent.tool_use`, `agent.tool_result`, and `agent.message` event live — so the audience watches the agent pick search queries, see results arrive, and write the report, rather than waiting through a spinner. The final Fact-Check Report lands as `Supported / Refuted / Partially Supported / Unverifiable` verdicts with inline source names. Typical run: ~35s active container time, 4–5 parallel web searches.
 
 ---
 
 ## On the Managed Agents claim
 
-The two agents in the system are:
-1. **Claim verification agent** — takes a transcript, identifies claims, searches the web for each, produces a structured verification report. This is a full agentic loop: tool selection, search execution, evidence evaluation, structured output.
-2. **Live cohort synthesis agent** — maintains a running picture of a round's emerging themes as sessions accumulate. Runs incrementally on-demand; each run sees all current sessions and produces an updated synthesis. The host can trigger it after the third session, the seventh, the fifteenth — each time getting a fresh reading that incorporates new evidence.
+There is **one** genuine Claude Managed Agent in the system: the post-session **claim verifier**. It is provisioned through the `client.beta.agents` and `client.beta.environments` surfaces, invoked via `client.beta.sessions`, and its event stream is plumbed through the route to the browser. The live event log on the session page is the receipt — every `agent.tool_use` and `agent.tool_result` you see rendered is a real Managed Agents event, not a reconstruction.
 
-Both agents do something a simple Claude call can't: they maintain and update a document in response to an evolving evidence base. The claim verifier updates its report as it discovers new evidence. The synthesis agent updates the cohort picture as sessions accumulate.
+An earlier iteration of this doc also labelled the cross-session cohort synthesis ("live synthesis over all sessions in a round") as an "agent". On reflection that framing was too generous: cohort synthesis is a single Messages-API call over N transcripts, producing one output. It is a useful feature, but it does not use the Managed Agents plane and is not an agent. We corrected the claim rather than wrapping the synthesis call in ceremonial agent machinery to justify a number — one honest agent is worth more than two dressed-up calls.
 
 ---
 

@@ -22,8 +22,8 @@ All times **IST**. Every session: read this file, act on imminent gates.
   - Demo subject decided (and participant notified if it's someone else).
 
 ### Fri 2026-04-24
-- **Voice is CUT** (D23). Not relitigated.
-- **Managed Agents: wired** (D40). Claim-verifier + live cohort synthesis both shipped. No further Managed Agents work unless a specific polish issue surfaces.
+- **Voice: shipped (D23 reversed).** Groq Whisper large-v3 via `/api/transcribe`; mic button in ChatPane. Falls back silently when `GROQ_API_KEY` is unset.
+- **Managed Agents: wired** (D40, D45). One genuine Claude Managed Agent shipped: the post-session claim verifier (beta.agents + beta.environments + beta.sessions, web_search tool, SSE event stream rendered live in the session page). Earlier dual-agent framing (also calling cohort synthesis an "agent") was walked back on 2026-04-24 — synthesis is a useful feature but is a single Messages-API call, not a Managed Agent.
 - **Post-Incident and Civic Consultation briefs: done.** Three fully functional briefs live.
 - **Morning:** Polish pass — terminology cleanup (internal terms still visible in UI), any Vercel deploy blockers.
 - **18:00 IST:** Vercel deploy + smoke-test. Upstash KV credentials must be set in Vercel env vars before this.

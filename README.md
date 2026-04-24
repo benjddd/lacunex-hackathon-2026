@@ -67,9 +67,11 @@ Participant speaks
               Host dashboard updates live
 ```
 
-All four calls run every turn. Meta-Noticing runs in parallel with Extraction; candidate notices are passed to the Conductor which decides whether and how to deploy them. A notice can only be deployed if it cites ≥2 distinct turn indices (enforced in code — not just in the prompt). The Conductor enforces a rate cap (one deploy per three turns) and suppression rules.
+Three calls run every turn — Meta-Noticing in parallel with Extraction, then the Conductor with candidate notices + updated state. A notice can only be deployed if it cites ≥2 distinct turn indices (enforced in code — not just in the prompt). The Conductor enforces a rate cap (one deploy per three turns) and suppression rules.
 
-At session close, a fifth call — **Takeaway Synthesis** (Opus 4.7) — produces the participant's reflective artifact.
+At session close, a fourth call — **Takeaway Synthesis** (Opus 4.7) — produces the participant's reflective artifact. A lighter **Takeaway Preview** (Sonnet 4.6) also regenerates every three participant turns, so the reflection the participant can peek at mid-session grows with the conversation.
+
+Beyond the interview loop, three more specialized calls run on their own cadence: **Cross-Cohort Aggregate** (Opus 4.7) across all sessions in a round; **Brief Designer** (Opus 4.7, two-stage: distil + generate) that interviews the Host to author a new brief; and **Claim Verifier**, a Claude **Managed Agent** (Opus 4.7 + built-in `web_search` tool) that runs a full agentic loop on its own container — session events stream to the browser live, so the audience watches the agent decide queries, see results arrive, and write the report. See [src/lib/managed-agents.ts](src/lib/managed-agents.ts).
 
 Everything is one Next.js app. API routes call Claude directly. Session state is client-owned — the UI sends the full transcript with each turn. Simple, serverless-safe, no database.
 
@@ -91,6 +93,12 @@ Everything is one Next.js app. API routes call Claude directly. Session state is
 | **Takeaway Synthesis** | `claude-opus-4-7` | once at session end | system (artifact tone + sections) | markdown for the participant's reflective artifact |
 
 Model IDs are isolated in [src/lib/models.ts](src/lib/models.ts) — one edit to swap. **Prompt caching** is on for every system block (stable within a session), so turn-over-turn cost drops to cache rates after turn 1.
+
+Three more specialized calls run outside the per-turn loop — each chosen for the job it's actually doing:
+
+- **Takeaway Preview** (`claude-sonnet-4-6`) — regenerates the participant's reflection every three participant turns so they can peek at it mid-session. Sonnet for speed; the final Opus pass still runs at session close.
+- **Brief Designer** (`claude-opus-4-7`, two-stage) — distils the host's design-interview transcript into a prose description, then generates a conforming Template JSON. The platform uses itself to author its own briefs.
+- **Cross-Cohort Aggregate** (`claude-opus-4-7`) — per round, produces a 6-pattern-type synthesis (convergent / divergent / shared-assumption / recurring-hedge / outlier / unasked-across-cohort) with verbatim quote provenance.
 
 ### Why four calls, not one
 
@@ -131,7 +139,8 @@ src/
     demo/page.tsx                    # /demo — split-screen combined view (auto-starts a session)
     start/page.tsx                   # /start — multi-brief selector + NL brief generator
     host/page.tsx                    # /host — host hub (briefs, invite links, sessions, rounds)
-    p/[templateId]/page.tsx          # /p/:id — participant interview
+    host/live/[sessionId]/page.tsx   # /host/live/:id — live dashboard; polls /api/sessions/:id/live every 4s so a second device watches fill in real time
+    p/[templateId]/page.tsx          # /p/:id — participant interview (mic input, live takeaway preview drawer)
     i/[token]/page.tsx               # /i/:token — resolves an invite; redirects to the bound brief
     sessions/page.tsx                # /sessions — session list
     sessions/[sessionId]/page.tsx    # /sessions/:id — session detail + claim verifier
@@ -144,8 +153,12 @@ src/
       invites/[token]/route.ts       # GET — resolve an invite token to its brief
       rounds/route.ts                # GET/POST — list and create rounds
       rounds/[roundId]/route.ts      # GET/PATCH — round detail + add session
-      rounds/[roundId]/synthesize/route.ts  # POST — trigger cohort synthesis (Managed Agents)
-      sessions/[id]/research/route.ts       # POST — trigger claim verification (Managed Agents)
+      rounds/[roundId]/synthesize/route.ts  # POST — cohort synthesis across all sessions in a round
+      sessions/[id]/research/route.ts       # POST — claim verification via Claude Managed Agent (SSE)
+      sessions/[id]/live/route.ts           # GET — live extraction state (powers /host/live/[sessionId] polling)
+      sessions/[id]/generate-brief/route.ts # POST — distil a brief-designer session → generate a new Template (Opus 4.7 ×2)
+      takeaway/route.ts              # POST — takeaway preview (Sonnet 4.6) + final (Opus 4.7)
+      transcribe/route.ts            # POST — Groq Whisper large-v3 voice-to-text for the mic button
       simulate-participant/route.ts  # POST — dev-only synthetic participant
       generate-brief/route.ts        # POST — NL brief → Template via Opus 4.7
   lib/
@@ -165,6 +178,7 @@ src/
     founder-product-ideation.json
     post-incident-witness.json
     civic-consultation.json
+    brief-designer.json              # A brief the platform runs against the host to author new briefs
   components/              # Shared UI pieces
 docs/
   domain/
@@ -232,6 +246,6 @@ MIT. See [LICENSE](LICENSE). Every component of this project is open source, per
 
 ## Status
 
-Three briefs fully wired: **Founder Investment Evaluation**, **Post-Incident Witness**, **Civic Consultation**. Rounds + cohort synthesis live. Two Managed Agents wired: claim verifier + live cohort synthesis. NL brief generator (describe your use case in plain language → custom brief).
+Three domain briefs fully wired: **Founder Investment Evaluation**, **Post-Incident Witness**, **Civic Consultation**. Plus **Brief Designer** — a fourth brief the Host runs against the platform itself to author a new interview from scratch; the resulting Template JSON drops straight into the Conductor. Rounds + live cohort synthesis live. One Claude Managed Agent wired: post-session claim verifier (web_search tool, session events streamed to the UI). **Live host dashboard** at `/host/live/[sessionId]` — a second device can watch the Host dashboard fill in real time via KV polling. **Live takeaway preview** on the participant side regenerates every three turns (Sonnet 4.6). **Voice input** via Groq Whisper large-v3 mic button.
 
 See [MAKING_OF.md](MAKING_OF.md) for architectural decisions, day-by-day build log, and the calibrated claims about what Opus 4.7 enables. See [PROJECT.md](PROJECT.md) for the live tracker.

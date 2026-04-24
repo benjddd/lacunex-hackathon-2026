@@ -3,12 +3,18 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
+import { hostedGetSession, hostedGetResearch, hostedSaveResearch } from "@/lib/store-hosted";
 import type { Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
+export const maxDuration = 120;
 
 interface Params {
   params: Promise<{ sessionId: string }>;
+}
+
+interface SessionDoc {
+  transcript?: Turn[];
 }
 
 const SYSTEM = `You are a post-interview fact-checker for a qualitative research platform. You receive a transcript of an interview session. Your job is to:
@@ -36,40 +42,61 @@ function transcriptToText(turns: Turn[]): string {
     .join("\n\n");
 }
 
+async function loadSession(sessionId: string): Promise<SessionDoc | null> {
+  if (process.env.VERCEL) {
+    const doc = await hostedGetSession(sessionId);
+    return (doc as SessionDoc) ?? null;
+  }
+  try {
+    const raw = await fs.readFile(
+      path.join(process.cwd(), "transcripts", `session-${sessionId}.json`),
+      "utf-8"
+    );
+    return JSON.parse(raw) as SessionDoc;
+  } catch {
+    return null;
+  }
+}
+
+async function loadCachedResearch(sessionId: string): Promise<string | null> {
+  if (process.env.VERCEL) return hostedGetResearch(sessionId);
+  try {
+    return await fs.readFile(
+      path.join(process.cwd(), "transcripts", `research-${sessionId}.md`),
+      "utf-8"
+    );
+  } catch {
+    return null;
+  }
+}
+
+async function saveResearch(sessionId: string, report: string): Promise<void> {
+  if (process.env.VERCEL) {
+    await hostedSaveResearch(sessionId, report);
+    return;
+  }
+  await fs.writeFile(
+    path.join(process.cwd(), "transcripts", `research-${sessionId}.md`),
+    report,
+    "utf-8"
+  );
+}
+
 export async function POST(_req: Request, { params }: Params) {
   const { sessionId } = await params;
   if (!/^[A-Za-z0-9._-]+$/.test(sessionId)) {
     return NextResponse.json({ error: "invalid session id" }, { status: 400 });
   }
 
-  if (process.env.VERCEL) {
-    return NextResponse.json(
-      { error: "Claim verification requires local deployment (filesystem storage)." },
-      { status: 503 }
-    );
-  }
+  const cached = await loadCachedResearch(sessionId);
+  if (cached) return NextResponse.json({ report: cached, cached: true });
 
-  const dir = path.join(process.cwd(), "transcripts");
-  const sessionPath = path.join(dir, `session-${sessionId}.json`);
-  const researchPath = path.join(dir, `research-${sessionId}.md`);
-
-  // Return cached result if we already ran this session
-  try {
-    const cached = await fs.readFile(researchPath, "utf-8");
-    return NextResponse.json({ report: cached, cached: true });
-  } catch {
-    // Not cached — proceed
-  }
-
-  let sessionJson: { transcript?: Turn[] };
-  try {
-    const raw = await fs.readFile(sessionPath, "utf-8");
-    sessionJson = JSON.parse(raw) as { transcript?: Turn[] };
-  } catch {
+  const sessionDoc = await loadSession(sessionId);
+  if (!sessionDoc) {
     return NextResponse.json({ error: "session not found" }, { status: 404 });
   }
 
-  const transcript = sessionJson.transcript ?? [];
+  const transcript = sessionDoc.transcript ?? [];
   if (transcript.length === 0) {
     return NextResponse.json({ error: "session has no transcript" }, { status: 400 });
   }
@@ -90,13 +117,9 @@ export async function POST(_req: Request, { params }: Params) {
     const usage = response.usage as { input_tokens: number; output_tokens: number };
     console.log(`[research] ${elapsed}ms | in=${usage.input_tokens} out=${usage.output_tokens}`);
 
-    // Extract final text — the server executes web_search internally and includes
-    // the text response in the same message after tool calls complete.
     let report = "";
     for (const block of response.content) {
-      if (block.type === "text") {
-        report += block.text;
-      }
+      if (block.type === "text") report += block.text;
     }
     report = report.trim();
 
@@ -104,7 +127,7 @@ export async function POST(_req: Request, { params }: Params) {
       return NextResponse.json({ error: "model returned no text" }, { status: 500 });
     }
 
-    await fs.writeFile(researchPath, report, "utf-8");
+    await saveResearch(sessionId, report);
     return NextResponse.json({ report, cached: false });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

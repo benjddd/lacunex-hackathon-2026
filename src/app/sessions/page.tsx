@@ -2,6 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import founderTemplate from "@/templates/founder-product-ideation.json";
+import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
+
+const TEMPLATE_NAMES: Record<string, string> = {
+  [founderTemplate.template_id]: founderTemplate.name,
+  [postIncidentTemplate.template_id]: postIncidentTemplate.name,
+  [civicTemplate.template_id]: civicTemplate.name,
+};
 
 interface SessionSummary {
   session_id: string;
@@ -92,7 +101,9 @@ export default function SessionsListPage() {
                   <div className="flex items-baseline justify-between gap-4">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-stone-900">
-                        {s.template_id ?? "(unknown brief)"}
+                        {s.template_id
+                          ? (TEMPLATE_NAMES[s.template_id] ?? s.template_id)
+                          : "(unknown brief)"}
                         {s.note && (
                           <span className="ml-2 rounded-full bg-stone-100 px-2 py-0.5 text-[10px] uppercase tracking-wider text-stone-600">
                             {s.note}

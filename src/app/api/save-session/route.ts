@@ -9,6 +9,7 @@ export const runtime = "nodejs";
 
 interface SaveRequest {
   templateId: string;
+  templateJson?: unknown; // full template object for NL-generated briefs (gen-*)
   transcript: Turn[];
   extraction: ExtractionState;
   activeObjectiveId: string | null;
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
       session_id: sessionId,
       saved_at: now.toISOString(),
       template_id: body.templateId,
+      template_json: body.templateJson ?? null,
       started_at: body.startedAtIso ?? null,
       active_objective_id: body.activeObjectiveId,
       note: body.note ?? null,
@@ -67,6 +69,7 @@ export async function POST(req: Request) {
     session_id: sessionId,
     saved_at: now.toISOString(),
     template_id: body.templateId,
+    template_json: body.templateJson ?? null,
     started_at: body.startedAtIso ?? null,
     active_objective_id: body.activeObjectiveId,
     note: body.note ?? null,

@@ -55,6 +55,12 @@ export default function HostPage() {
           </div>
           <div className="flex items-center gap-2">
             <Link
+              href="/start"
+              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+            >
+              Custom brief
+            </Link>
+            <Link
               href="/sessions"
               className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
             >
@@ -152,12 +158,14 @@ export default function HostPage() {
             <h2 className="text-xs uppercase tracking-wider text-stone-500">
               Rounds (cross-participant aggregates)
             </h2>
-            <Link
-              href="/rounds"
-              className="text-xs text-amber-700 hover:underline"
-            >
-              All rounds →
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/rounds" className="text-xs text-amber-700 hover:underline">
+                New round →
+              </Link>
+              <Link href="/rounds" className="text-xs text-stone-500 hover:underline">
+                All rounds
+              </Link>
+            </div>
           </div>
 
           {roundsError && (
@@ -166,11 +174,12 @@ export default function HostPage() {
           {!rounds && !roundsError && (
             <p className="text-xs text-stone-500">Loading…</p>
           )}
-          {isHosted && (
-            <div className="rounded-lg border border-amber-200 bg-amber-50/50 px-4 py-3 text-xs text-amber-800">
-              Rounds and aggregation require local deployment (filesystem storage).
-              Run locally to use this feature — see README for setup.
-              The live interview and takeaway features work in full on this URL.
+          {isHosted && rounds && rounds.length === 0 && (
+            <div className="rounded-lg border border-stone-200 bg-white px-5 py-4 text-sm text-stone-600">
+              No rounds yet.{" "}
+              <Link href="/rounds" className="text-amber-700 underline">
+                Create a round →
+              </Link>
             </div>
           )}
           {!isHosted && rounds && rounds.length === 0 && (

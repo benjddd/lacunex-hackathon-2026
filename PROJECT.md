@@ -25,7 +25,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | Event | Anthropic "Built with Opus 4.7" hackathon |
 | Hack window | Tue 2026-04-21 12:30 EST → Sun 2026-04-26 20:00 EST |
 | **Submission deadline** | **Sun 2026-04-26 20:00 EST = Mon 2026-04-27 03:00 IST** |
-| Today (IST) | Wed 2026-04-22 |
+| Hack started (Day 1) | Wed 2026-04-22 |
 | User working hours | ~14h/day (08:00–22:00 IST), last day until 03:00 IST |
 | Required artefacts | 3-min demo video (YouTube/Loom/similar) + public GitHub repo + written description |
 | Open-source rule | **Every component** (backend, frontend, models, prompts) must be OSS under an approved license |
@@ -102,7 +102,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D27 | **Demo opens with a brief running**, not architecture | 0:00–0:30 is the interview + dashboard filling; architecture diagram is a 15–20s reveal mid-video. Video storyboard detail → [INTERNAL.md](INTERNAL.md) §2. |
 | D28 | **Numeric compression claim — LOCKED:** *"15 minutes → structured insight that would take a researcher 3 hours to extract post-hoc."* | Defensible: post-hoc transcript analysis + thematic coding on a 15-min interview is documented at 2–4 hours in qualitative research literature. |
 | D29 | `what_you_already_have_that_is_relevant` protected as closing frame | Differentiating section: names resources already in the participant's life they hadn't connected to the question. Prompt hardened with transcript-anchor examples. Demo video closing beat — see [INTERNAL.md](INTERNAL.md) §13. |
-| D30 | **Branding: CaptainSubtext brand can stay** | Brand name is defensible as a compound, but "subtext" as an explanatory noun is contested. Verdict: keep `CaptainSubtext` for repo + UI; use **"cross-turn reasoning"** in descriptive copy. Full analysis → [INTERNAL.md](INTERNAL.md) §12a. |
+| D30 | **Dual naming: CaptainSubtext (internal/repo) + Lacunex (external/brand)** | GitHub repo stays `captainsubtext` (established history, internal identifier). All user-facing surfaces — README title, UI, submission form, video — use **Lacunex**. Docs that reference both should name both. Use **"cross-turn reasoning"** in descriptive copy. Full analysis → [INTERNAL.md](INTERNAL.md) §12a. *(Supersedes the earlier "keep CaptainSubtext for UI" verdict; D1 locked Lacunex as the public brand Apr 24.)* |
 | D31 | **Rounds as first-class entity** | Shipped. A round groups N sessions run against the same brief. Storage `transcripts/rounds/round-<id>.json`. API: GET/POST `/api/rounds`, GET/POST `/api/rounds/[id]`, POST `/api/rounds/[id]/aggregate`. UI: `/rounds` list + `/rounds/[id]` detail with aggregate view. Demonstrates comparable structured signal across N participants — the core platform promise. |
 | D32 | **Cross-participant aggregation with 6 pattern types** | Shipped. `callAggregate` Opus 4.7 call takes N sessions, returns: convergent_problem / divergent_framing / shared_assumption / recurring_hedge / outlier / unasked_across_cohort patterns, top themes, signal strength per objective, routing recommendations ("you should also loop in X about Y"). Verbatim quotes cited per pattern. |
 | D33 | **Meta-noticing wired live into /api/turn** | Restored in commit 28edb63 after loss during subagent branch operations. Runs in parallel with Extraction on every turn past the 2nd participant turn. Candidates passed to Conductor. Response includes `notices: {candidates, deployed}`. Conductor deploy rate-cap and suppression rules enforced. |
@@ -120,11 +120,11 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 | # | Question | Owner | Blocking? |
 |---|---|---|---|
-| Q4 | Demo subject for recorded video | User | Blocks Sat |
+| Q4 | Demo subject for recorded video | Resolved | Founder Investment Evaluation brief with scripted participant responses; full script in DEMO_SCRIPT.md. |
 | Q8 | Video recording tool (Loom vs OBS vs screen-rec + separate audio) | User | Blocks Sat |
 | Q10 | Submission platform link | Resolved | `https://cerebralvalley.ai/e/built-with-4-7-hackathon/hackathon/submit` (in SUBMISSION_DRAFT.md) |
 
-*Resolved: Q1 (NL authoring cut, D13), Q2 (Host, D12), Q3 (voice cut, D23), Q5 (API key live), Q6 (github.com/Attius-Digital-Art/captainsubtext, D14), Q7 (Vercel, D5), Q9 (2 functional briefs, D18).*
+*Resolved: Q1 (NL authoring cut, D13), Q2 (Host, D12), Q3 (voice cut, D23), Q4 (Founder brief + DEMO_SCRIPT), Q5 (API key live), Q6 (github.com/Attius-Digital-Art/captainsubtext, D14), Q7 (Vercel, D5), Q9 (2 functional briefs, D18).*
 
 ---
 

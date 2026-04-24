@@ -6,12 +6,13 @@
 
 ## Pre-recording setup
 
+**Recording approach (decided):** Record two separate screen captures — participant view and host view — as independent sessions. Edit them together in post-production. Session state is client-side per tab so they cannot share live state; the edit sells the side-by-side story.
+
 - Browser: fresh profile, no extensions visible
-- Tab 1: `http://localhost:3000/p/founder-product-ideation` (participant view)
-- Tab 2: `http://localhost:3000/` (host / combined view — same session, different window)
-- Arrange windows side-by-side (two half-screen windows, or switch tabs with narration)
+- **Recording A (participant view):** `http://localhost:3000/p/founder-product-ideation` — capture just the chat pane; no badges, no dashboard
+- **Recording B (host view):** same URL but with the dashboard pane in focus, or the combined split-screen — capture dashboard filling, ◆ badges, ↩ chips
 - Terminal with `npm run dev` running, hidden behind
-- Practise the participant responses below until they flow naturally — you're typing them
+- Practise the participant responses below until they flow naturally — you're typing them for both recordings
 
 ---
 

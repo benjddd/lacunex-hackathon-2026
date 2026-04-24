@@ -1,4 +1,4 @@
-# Calendar & Gates — CaptainSubtext hackathon
+# Calendar & Gates — Built with Opus 4.7 hackathon (Anthropic)
 
 All times **IST**. Every session: read this file, act on imminent gates.
 
@@ -23,10 +23,11 @@ All times **IST**. Every session: read this file, act on imminent gates.
 
 ### Fri 2026-04-24
 - **Voice is CUT** (D23). Not relitigated.
-- **If Managed Agents = GO:** morning and early afternoon on the research-agent work, on a short-lived branch (`feat/managed-agents`). Merge only if pristine by Fri 18:00 IST.
-- **If Managed Agents = NO GO:** morning on Post-Incident Witness Interview brief (authored fresh), afternoon on Cohort Discovery brief (stretch) OR polish of the single working brief.
-- **18:00 IST:** Vercel deploy (save-session + takeaway port: either client-side download or Vercel KV OR hidden-in-prod).
-- **EOD gate (22:00 IST):** Deployed, working, at least one brief pristine. Architecture section in README complete with 4 calls + models + caching boundary. **If anything is half-wired, cut it now — a flawless single brief beats two brittle ones.**
+- **Managed Agents: wired** (D40). Claim-verifier + live cohort synthesis both shipped. No further Managed Agents work unless a specific polish issue surfaces.
+- **Post-Incident and Civic Consultation briefs: done.** Three fully functional briefs live.
+- **Morning:** Polish pass — terminology cleanup (internal terms still visible in UI), any Vercel deploy blockers.
+- **18:00 IST:** Vercel deploy + smoke-test. Upstash KV credentials must be set in Vercel env vars before this.
+- **EOD gate (22:00 IST):** Deployed, working, all three briefs pristine on Vercel. README judge-readable. **If anything is half-wired, cut it now — a flawless core beats a broken stretch.**
 
 ### Sat 2026-04-25
 - **10:00 IST:** Start recording demo interview. Confirm demo subject before first take. Participant should NOT see the questions in advance.

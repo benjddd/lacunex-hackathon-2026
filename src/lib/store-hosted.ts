@@ -90,3 +90,37 @@ export async function hostedListSessions(): Promise<unknown[]> {
   }
   return [...sessionMem.values()];
 }
+
+// ---- Takeaway store ----
+
+const takeawayMem = new Map<string, string>();
+
+export async function hostedGetTakeaway(sessionId: string): Promise<string | null> {
+  if (hasKV) return kvGet<string>(`takeaway:${sessionId}`);
+  return takeawayMem.get(sessionId) ?? null;
+}
+
+export async function hostedSaveTakeaway(sessionId: string, markdown: string): Promise<void> {
+  if (hasKV) {
+    await kvSet(`takeaway:${sessionId}`, markdown);
+  } else {
+    takeawayMem.set(sessionId, markdown);
+  }
+}
+
+// ---- Research (claim verification) store ----
+
+const researchMem = new Map<string, string>();
+
+export async function hostedGetResearch(sessionId: string): Promise<string | null> {
+  if (hasKV) return kvGet<string>(`research:${sessionId}`);
+  return researchMem.get(sessionId) ?? null;
+}
+
+export async function hostedSaveResearch(sessionId: string, report: string): Promise<void> {
+  if (hasKV) {
+    await kvSet(`research:${sessionId}`, report);
+  } else {
+    researchMem.set(sessionId, report);
+  }
+}

@@ -13,6 +13,7 @@ interface SessionDoc {
   session_id: string;
   saved_at: string;
   template_id: string;
+  template_json: Template | null;
   started_at: string | null;
   active_objective_id: string | null;
   note: string | null;
@@ -64,7 +65,9 @@ export default function SessionDetailPage({
     };
   }, [sessionId]);
 
-  const template = session ? TEMPLATES[session.template_id] : null;
+  const template = session
+    ? (TEMPLATES[session.template_id] ?? session.template_json ?? null)
+    : null;
   const roleLabels = template?.role_labels ?? DEFAULT_ROLE_LABELS;
 
   const handleResearch = async () => {

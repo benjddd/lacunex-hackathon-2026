@@ -3,6 +3,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { callTakeaway } from "@/lib/claude-calls";
 import { getTemplate } from "@/lib/templates";
+import { hostedSaveTakeaway } from "@/lib/store-hosted";
 import type { ExtractionState, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -70,11 +71,11 @@ export async function POST(req: Request) {
     // Best-effort persistence — a write failure must not kill the response.
     let savedPath: string | null = null;
     try {
-      savedPath = await persistTakeaway(
-        markdown,
-        body.transcript.length,
-        body.sessionId
-      );
+      if (process.env.VERCEL) {
+        if (body.sessionId) await hostedSaveTakeaway(body.sessionId, markdown);
+      } else {
+        savedPath = await persistTakeaway(markdown, body.transcript.length, body.sessionId);
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn("[/api/takeaway] persistence failed (continuing):", msg);

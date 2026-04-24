@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { hostedGetSession } from "@/lib/store-hosted";
+import { hostedGetSession, hostedGetTakeaway } from "@/lib/store-hosted";
 
 export const runtime = "nodejs";
 
@@ -23,7 +23,8 @@ export async function GET(_req: Request, { params }: Params) {
     if (!session) {
       return NextResponse.json({ error: "session not found" }, { status: 404 });
     }
-    return NextResponse.json({ session, takeaway: null });
+    const takeaway = await hostedGetTakeaway(sessionId);
+    return NextResponse.json({ session, takeaway });
   }
 
   const dir = path.join(process.cwd(), "transcripts");

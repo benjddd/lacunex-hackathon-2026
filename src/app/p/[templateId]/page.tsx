@@ -200,20 +200,31 @@ function ParticipantPageContent({
     setTakeawayGenerating(true);
     setTakeawayError(null);
 
-    // Auto-save so the session appears in the round (non-fatal if it fails).
-    void fetch("/api/save-session", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        templateId: template.template_id,
-        transcript,
-        extraction,
-        activeObjectiveId,
-        startedAtIso: startedAt.current,
-        note: `participant:${template.template_id}`,
-        roundId,
-      }),
-    }).catch(() => undefined);
+    // Save session first so we get the sessionId to pair with the takeaway.
+    // Also handles round association. Non-fatal if it fails.
+    let sessionId: string | undefined;
+    try {
+      const saveRes = await fetch("/api/save-session", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          templateId: template.template_id,
+          templateJson: generatedTemplate ?? undefined,
+          transcript,
+          extraction,
+          activeObjectiveId,
+          startedAtIso: startedAt.current,
+          note: `participant:${template.template_id}`,
+          roundId,
+        }),
+      });
+      if (saveRes.ok) {
+        const saveData = (await saveRes.json()) as { sessionId?: string };
+        sessionId = saveData.sessionId;
+      }
+    } catch {
+      // save failure is non-fatal
+    }
 
     try {
       const res = await fetch("/api/takeaway", {
@@ -221,6 +232,7 @@ function ParticipantPageContent({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           templateId: template.template_id,
+          sessionId,
           transcript,
           extraction,
         }),
@@ -234,7 +246,7 @@ function ParticipantPageContent({
     } finally {
       setTakeawayGenerating(false);
     }
-  }, [transcript, extraction, activeObjectiveId, template, takeawayMarkdown, roundId]);
+  }, [transcript, extraction, activeObjectiveId, template, generatedTemplate, takeawayMarkdown, roundId]);
 
   if (!template) {
     return (

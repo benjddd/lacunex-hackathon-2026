@@ -95,6 +95,7 @@ function SessionView({ template }: { template: Template }) {
 
         const nextIndex = withTranscript.length;
         const deployed = data.notices?.deployed ?? null;
+        const candidates = data.notices?.candidates ?? [];
         const hostTurn: Turn = {
           index: nextIndex,
           role: "host",
@@ -102,6 +103,7 @@ function SessionView({ template }: { template: Template }) {
           at: new Date().toISOString(),
           objective_id: data.activeObjectiveId ?? undefined,
           reasoning: data.decision.reasoning ?? undefined,
+          move_type: data.decision.move_type,
           anchor_turn:
             data.decision.move_type === "anchor_return" &&
             typeof data.decision.anchor_turn === "number"
@@ -109,6 +111,14 @@ function SessionView({ template }: { template: Template }) {
               : undefined,
           deployed_notice: deployed
             ? { type: deployed.type, anchors: deployed.transcript_anchors, observation: deployed.observation }
+            : undefined,
+          notice_candidates: candidates.length
+            ? candidates.map((n) => ({
+                type: n.type,
+                strength: n.strength,
+                transcript_anchors: n.transcript_anchors,
+                observation: n.observation,
+              }))
             : undefined,
         };
         setTranscript([...withTranscript, hostTurn]);

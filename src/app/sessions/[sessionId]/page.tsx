@@ -30,6 +30,89 @@ const TEMPLATES: Record<string, Template> = {
   [briefDesignerTemplate.template_id]: briefDesignerTemplate as unknown as Template,
 };
 
+// Move-type badge styling — keyed by ConductorDecision.move_type values.
+// Kept in-page because this is the only surface that renders them.
+const MOVE_STYLES: Record<string, { label: string; cls: string }> = {
+  probe_current: { label: "probe current", cls: "bg-stone-100 text-stone-700" },
+  switch_objective: { label: "switch objective", cls: "bg-sky-100 text-sky-800" },
+  deploy_meta_notice: { label: "deploy meta-notice", cls: "bg-emerald-100 text-emerald-800" },
+  anchor_return: { label: "anchor return", cls: "bg-amber-100 text-amber-800" },
+  wrap_up: { label: "wrap up", cls: "bg-violet-100 text-violet-800" },
+};
+
+// Per-turn audit panel — renders the conductor's reasoning, chosen move,
+// and the meta-notice candidates (deployed and considered-but-not). Source
+// of truth for the post-production video callouts: the exact phrasing you
+// see here is what narration should quote.
+function AuditPanel({ turn }: { turn: Turn }) {
+  const hasData =
+    !!turn.reasoning ||
+    !!turn.move_type ||
+    (turn.notice_candidates?.length ?? 0) > 0;
+  if (!hasData) return null;
+  const move = turn.move_type ? MOVE_STYLES[turn.move_type] : null;
+  return (
+    <div className="ml-2 mt-1 max-w-[75%] rounded-lg border border-dashed border-stone-300 bg-white/70 px-3 py-2 text-[11px] leading-relaxed">
+      <div className="mb-1.5 flex items-center gap-2">
+        <span className="text-[9px] uppercase tracking-widest text-stone-400">
+          platform audit
+        </span>
+        {move && (
+          <span className={`rounded-full ${move.cls} px-2 py-0.5 text-[9px] font-medium uppercase tracking-wider`}>
+            {move.label}
+          </span>
+        )}
+        {typeof turn.anchor_turn === "number" && (
+          <span className="text-[10px] text-amber-700">↩ re-opened turn {turn.anchor_turn}</span>
+        )}
+      </div>
+      {turn.reasoning && (
+        <div className="mb-2">
+          <div className="mb-0.5 text-[9px] uppercase tracking-wider text-stone-400">
+            why this move
+          </div>
+          <p className="italic text-stone-700">{turn.reasoning}</p>
+        </div>
+      )}
+      {turn.notice_candidates && turn.notice_candidates.length > 0 && (
+        <div>
+          <div className="mb-1 text-[9px] uppercase tracking-wider text-stone-400">
+            meta-notice candidates ({turn.notice_candidates.length})
+          </div>
+          <ul className="space-y-1.5">
+            {turn.notice_candidates.map((c, i) => {
+              const wasDeployed =
+                turn.deployed_notice?.type === c.type &&
+                JSON.stringify([...turn.deployed_notice.anchors].sort()) ===
+                  JSON.stringify([...c.transcript_anchors].sort());
+              return (
+                <li
+                  key={i}
+                  className={`border-l-2 pl-2 ${wasDeployed ? "border-emerald-400" : "border-stone-200"}`}
+                >
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span
+                      className={`text-[9px] font-semibold uppercase tracking-wider ${
+                        wasDeployed ? "text-emerald-700" : "text-stone-400"
+                      }`}
+                    >
+                      {wasDeployed ? "deployed" : "considered"}
+                    </span>
+                    <span className="text-[10px] text-stone-500">
+                      {c.type} · {c.strength} · anchors [{c.transcript_anchors.join(", ")}]
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-stone-700">{c.observation}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SessionDetailPage({
   params,
 }: {
@@ -45,6 +128,7 @@ export default function SessionDetailPage({
   const [generatingBrief, setGeneratingBrief] = useState(false);
   const [generatedBrief, setGeneratedBrief] = useState<Template | null>(null);
   const [briefError, setBriefError] = useState<string | null>(null);
+  const [auditOpen, setAuditOpen] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -121,12 +205,26 @@ export default function SessionDetailPage({
                 : sessionId}
             </p>
           </div>
-          <Link
-            href="/sessions"
-            className="shrink-0 rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-          >
-            ← All sessions
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setAuditOpen((v) => !v)}
+              className={`rounded-md border px-3 py-1 text-xs transition ${
+                auditOpen
+                  ? "border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+                  : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
+              }`}
+              title="Show or hide the conductor's reasoning and meta-notice candidates per turn"
+            >
+              {auditOpen ? "Platform audit · on" : "Show platform audit"}
+            </button>
+            <Link
+              href="/sessions"
+              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+            >
+              ← All sessions
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -150,26 +248,26 @@ export default function SessionDetailPage({
                 session.transcript.map((turn) => {
                   const isHost = turn.role === "host";
                   return (
-                    <div
-                      key={turn.index}
-                      className={`flex ${isHost ? "justify-start" : "justify-end"}`}
-                    >
-                      <div
-                        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                          isHost
-                            ? "bg-amber-50 text-stone-900 rounded-bl-sm"
-                            : "bg-slate-800 text-white rounded-br-sm"
-                        }`}
-                      >
+                    <div key={turn.index}>
+                      <div className={`flex ${isHost ? "justify-start" : "justify-end"}`}>
                         <div
-                          className={`mb-1 text-[10px] uppercase tracking-wider ${
-                            isHost ? "text-amber-800" : "text-slate-300"
+                          className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                            isHost
+                              ? "bg-amber-50 text-stone-900 rounded-bl-sm"
+                              : "bg-slate-800 text-white rounded-br-sm"
                           }`}
                         >
-                          {isHost ? roleLabels.host : roleLabels.participant}
+                          <div
+                            className={`mb-1 text-[10px] uppercase tracking-wider ${
+                              isHost ? "text-amber-800" : "text-slate-300"
+                            }`}
+                          >
+                            {isHost ? roleLabels.host : roleLabels.participant}
+                          </div>
+                          <div className="whitespace-pre-wrap">{turn.text}</div>
                         </div>
-                        <div className="whitespace-pre-wrap">{turn.text}</div>
                       </div>
+                      {isHost && auditOpen && <AuditPanel turn={turn} />}
                     </div>
                   );
                 })

@@ -115,6 +115,20 @@ export interface Turn {
     anchors: number[];
     observation: string;
   };
+  // The conductor's move type on this host turn. Persisted so the
+  // per-turn audit on /sessions/[sessionId] can explain WHY the question
+  // was asked without re-running the model. Values: see MoveType enum.
+  move_type?: string;
+  // All meta-notice candidates the noticing layer produced for this turn,
+  // including ones the conductor chose NOT to deploy. Enables the audit
+  // panel's "considered but not surfaced" view — the platform-improvement
+  // signal the host uses to calibrate the meta-noticing prompt over time.
+  notice_candidates?: {
+    type: string;
+    strength: string;
+    transcript_anchors: number[];
+    observation: string;
+  }[];
 }
 
 export interface ObjectiveState {

@@ -2,6 +2,7 @@ import type { Template } from "./types";
 import founderProductIdeation from "@/templates/founder-product-ideation.json";
 import postIncidentWitness from "@/templates/post-incident-witness.json";
 import civicConsultation from "@/templates/civic-consultation.json";
+import briefDesigner from "@/templates/brief-designer.json";
 
 // Three domain-neutral briefs:
 // - Founder Investment Evaluation (Investor/Founder) — Thu 2026-04-22
@@ -9,10 +10,13 @@ import civicConsultation from "@/templates/civic-consultation.json";
 // - Civic Consultation (Facilitator/Resident) — Thu 2026-04-23
 // Covers VC due-diligence, incident investigation, and civic engagement.
 // Same four-call architecture, three completely different tones and stakes.
+// Plus the meta-brief:
+// - Brief Designer — Fri 2026-04-24: platform interviews host to design their own brief
 const templates: Template[] = [
   founderProductIdeation as unknown as Template,
   postIncidentWitness as unknown as Template,
   civicConsultation as unknown as Template,
+  briefDesigner as unknown as Template,
 ];
 
 export function listTemplates(): Pick<Template, "template_id" | "name" | "description">[] {

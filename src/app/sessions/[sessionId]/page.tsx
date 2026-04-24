@@ -7,6 +7,7 @@ import { DashboardPane } from "@/components/DashboardPane";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
+import briefDesignerTemplate from "@/templates/brief-designer.json";
 import { DEFAULT_ROLE_LABELS, type ExtractionState, type Template, type Turn } from "@/lib/types";
 
 interface SessionDoc {
@@ -26,6 +27,7 @@ const TEMPLATES: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
   [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
   [civicTemplate.template_id]: civicTemplate as unknown as Template,
+  [briefDesignerTemplate.template_id]: briefDesignerTemplate as unknown as Template,
 };
 
 export default function SessionDetailPage({
@@ -40,6 +42,9 @@ export default function SessionDetailPage({
   const [researchMd, setResearchMd] = useState<string | null>(null);
   const [researching, setResearching] = useState(false);
   const [researchError, setResearchError] = useState<string | null>(null);
+  const [generatingBrief, setGeneratingBrief] = useState(false);
+  const [generatedBrief, setGeneratedBrief] = useState<Template | null>(null);
+  const [briefError, setBriefError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,6 +88,22 @@ export default function SessionDetailPage({
       setResearchError(err instanceof Error ? err.message : String(err));
     } finally {
       setResearching(false);
+    }
+  };
+
+  const handleGenerateBrief = async () => {
+    if (generatingBrief) return;
+    setGeneratingBrief(true);
+    setBriefError(null);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/generate-brief`, { method: "POST" });
+      const data = (await res.json()) as { template?: Template; error?: string };
+      if (!res.ok || !data.template) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setGeneratedBrief(data.template);
+    } catch (err) {
+      setBriefError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setGeneratingBrief(false);
     }
   };
 
@@ -196,6 +217,50 @@ export default function SessionDetailPage({
                   </article>
                 )}
               </section>
+
+              {/* Brief Designer: generate a brief from this design conversation */}
+              {session.template_id === "brief-designer" && (
+                <section className="mt-6 rounded-2xl border border-violet-100 bg-violet-50/40 p-6">
+                  <h2 className="text-xs uppercase tracking-widest text-violet-700">
+                    Generate Brief
+                  </h2>
+                  <p className="mt-1 text-xs text-stone-500">
+                    Turn this design conversation into a ready-to-use interview brief.
+                  </p>
+                  {briefError && (
+                    <p className="mt-3 text-xs text-red-700">{briefError}</p>
+                  )}
+                  {!generatedBrief && (
+                    <button
+                      type="button"
+                      onClick={() => void handleGenerateBrief()}
+                      disabled={generatingBrief}
+                      className="mt-3 rounded-md bg-violet-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+                    >
+                      {generatingBrief ? "Generating brief…" : "Generate brief"}
+                    </button>
+                  )}
+                  {generatedBrief && (
+                    <div className="mt-3">
+                      <p className="text-xs text-stone-700 font-medium">{generatedBrief.name}</p>
+                      <p className="text-xs text-stone-500 mt-1">{generatedBrief.description}</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          sessionStorage.setItem(
+                            `lacunex:brief:${generatedBrief.template_id}`,
+                            JSON.stringify(generatedBrief)
+                          );
+                          window.location.href = `/p/${generatedBrief.template_id}`;
+                        }}
+                        className="mt-3 rounded-md bg-slate-800 px-3 py-1.5 text-xs text-white hover:bg-slate-900"
+                      >
+                        Start using this brief →
+                      </button>
+                    </div>
+                  )}
+                </section>
+              )}
             </div>
           </div>
 

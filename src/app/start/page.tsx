@@ -6,6 +6,7 @@ import { useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
+import briefDesignerTemplate from "@/templates/brief-designer.json";
 import { DEFAULT_ROLE_LABELS, type Template } from "@/lib/types";
 
 const BRIEFS: Template[] = [
@@ -19,6 +20,8 @@ const HOOKS: Record<string, string> = {
   "post-incident-witness": "Before we look at any reports — tell me what you personally saw or heard in the minutes before the incident.",
   "civic-consultation": "Forget the options on the table for a second. What outcome would make you feel this process was worth your time?",
 };
+
+const BRIEF_DESIGNER = briefDesignerTemplate as unknown as Template;
 
 export default function StartPage() {
   const router = useRouter();
@@ -135,6 +138,45 @@ export default function StartPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* Brief Designer — meta card */}
+        <div className="mt-6 rounded-xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-white p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="mb-1.5 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-violet-700">
+                Meta
+              </div>
+              <h2 className="text-sm font-semibold text-stone-900">{BRIEF_DESIGNER.name}</h2>
+              <p className="mt-0.5 text-[11px] text-stone-500 uppercase tracking-wider">
+                {BRIEF_DESIGNER.role_labels?.host ?? "Brief Designer"} · {BRIEF_DESIGNER.role_labels?.participant ?? "You"}
+              </p>
+              <p className="mt-2 text-xs text-stone-600 leading-relaxed">
+                Design your own brief — the platform interviews you to build it. Describe your use case, your participants, and what you want to learn. You get a ready-to-use brief at the end.
+              </p>
+              <p className="mt-3 text-[11px] italic text-violet-500 border-l-2 border-violet-200 pl-3">
+                &ldquo;What question are you trying to answer — and what decision will the answer inform?&rdquo;
+              </p>
+            </div>
+            <div className="shrink-0 flex flex-col gap-2">
+              <Link
+                href={`/p/${BRIEF_DESIGNER.template_id}`}
+                className="rounded-md bg-violet-600 px-4 py-2 text-center text-xs font-medium text-white hover:bg-violet-700 whitespace-nowrap"
+              >
+                Design your brief →
+              </Link>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {BRIEF_DESIGNER.objectives.slice(0, 4).map((obj) => (
+              <span
+                key={obj.id}
+                className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] text-violet-700"
+              >
+                {obj.label}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* NL brief generator */}

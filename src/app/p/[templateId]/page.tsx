@@ -119,6 +119,7 @@ function ParticipantPageContent({
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             templateId: template.template_id,
+            templateJson: generatedTemplate ?? undefined,
             transcript: withTranscript,
             extraction: withExtraction,
             activeObjectiveId: withActive,
@@ -172,7 +173,7 @@ function ParticipantPageContent({
         setIsLoading(false);
       }
     },
-    [template, deployedNotices]
+    [template, generatedTemplate, deployedNotices]
   );
 
   useEffect(() => {

@@ -37,7 +37,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid json" }, { status: 400 });
   }
 
-  const template = getTemplate(body.templateId);
+  const template =
+    getTemplate(body.templateId) ??
+    (body.templateJson ? (body.templateJson as import("@/lib/types").Template) : null);
   if (!template) {
     return NextResponse.json(
       { error: `unknown template: ${body.templateId}` },

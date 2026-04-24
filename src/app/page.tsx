@@ -6,6 +6,8 @@ import { ChatPane } from "@/components/ChatPane";
 import { DashboardPane } from "@/components/DashboardPane";
 import { TakeawayArtifact } from "@/components/TakeawayArtifact";
 import founderTemplate from "@/templates/founder-product-ideation.json";
+import postIncidentTemplate from "@/templates/post-incident-witness.json";
+import civicTemplate from "@/templates/civic-consultation.json";
 import {
   emptyExtraction,
   DEFAULT_ROLE_LABELS,
@@ -15,8 +17,11 @@ import {
   type Turn,
 } from "@/lib/types";
 
-const TEMPLATE = founderTemplate as unknown as Template;
-const ROLE_LABELS = TEMPLATE.role_labels ?? DEFAULT_ROLE_LABELS;
+const ALL_TEMPLATES: Template[] = [
+  founderTemplate as unknown as Template,
+  postIncidentTemplate as unknown as Template,
+  civicTemplate as unknown as Template,
+];
 
 interface DeployedNoticePayload {
   type: string;
@@ -37,22 +42,22 @@ interface TurnResponse {
   error?: string;
 }
 
-export default function Home() {
+// Keyed by template_id — remounts (resets all state) when template switches.
+function SessionView({ template }: { template: Template }) {
+  const roleLabels = template.role_labels ?? DEFAULT_ROLE_LABELS;
   const [transcript, setTranscript] = useState<Turn[]>([]);
   const [extraction, setExtraction] = useState<ExtractionState>(() =>
-    emptyExtraction(TEMPLATE)
+    emptyExtraction(template)
   );
   const [activeObjectiveId, setActiveObjectiveId] = useState<string | null>(
-    TEMPLATE.objectives[0]?.id ?? null
+    template.objectives[0]?.id ?? null
   );
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [sessionClosed, setSessionClosed] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [savedSessionId, setSavedSessionId] = useState<string | null>(null);
-  const [deployedNotices, setDeployedNotices] = useState<
-    { turn: number; type: string }[]
-  >([]);
+  const [deployedNotices, setDeployedNotices] = useState<{ turn: number; type: string }[]>([]);
   const [objectiveStallTurns, setObjectiveStallTurns] = useState(0);
   const [prevExtraction, setPrevExtraction] = useState<ExtractionState | null>(null);
   const [currentReasoning, setCurrentReasoning] = useState<string | null>(null);
@@ -60,7 +65,6 @@ export default function Home() {
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
   const [takeawayError, setTakeawayError] = useState<string | null>(null);
-  const [showWalkthrough, setShowWalkthrough] = useState(false);
   const openedRef = useRef(false);
   const startedAt = useRef(new Date().toISOString());
 
@@ -77,7 +81,7 @@ export default function Home() {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            templateId: TEMPLATE.template_id,
+            templateId: template.template_id,
             transcript: withTranscript,
             extraction: withExtraction,
             activeObjectiveId: withActive,
@@ -104,11 +108,7 @@ export default function Home() {
               ? data.decision.anchor_turn
               : undefined,
           deployed_notice: deployed
-            ? {
-                type: deployed.type,
-                anchors: deployed.transcript_anchors,
-                observation: deployed.observation,
-              }
+            ? { type: deployed.type, anchors: deployed.transcript_anchors, observation: deployed.observation }
             : undefined,
         };
         setTranscript([...withTranscript, hostTurn]);
@@ -120,58 +120,47 @@ export default function Home() {
         );
         setActiveObjectiveId(data.activeObjectiveId);
         if (deployed) {
-          setDeployedNotices((prev) => [
-            ...prev,
-            { turn: nextIndex, type: deployed.type },
-          ]);
+          setDeployedNotices((prev) => [...prev, { turn: nextIndex, type: deployed.type }]);
         }
         if (data.decision.move_type === "wrap_up") setSessionClosed(true);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        setErrorMsg(msg);
+        setErrorMsg(err instanceof Error ? err.message : String(err));
       } finally {
         setIsLoading(false);
       }
     },
-    [deployedNotices]
+    [template.template_id, deployedNotices, objectiveStallTurns]
   );
 
-  // Kick off the opening turn once on mount.
   useEffect(() => {
     if (openedRef.current) return;
     openedRef.current = true;
-    void fetchTurn([], emptyExtraction(TEMPLATE), TEMPLATE.objectives[0]?.id ?? null);
-  }, [fetchTurn]);
+    void fetchTurn([], emptyExtraction(template), template.objectives[0]?.id ?? null);
+  }, [fetchTurn, template]);
 
   const handleParticipantSend = useCallback(
     (text: string) => {
       if (sessionClosed) return;
-      const nextIndex = transcript.length;
       const participantTurn: Turn = {
-        index: nextIndex,
+        index: transcript.length,
         role: "participant",
         text,
         at: new Date().toISOString(),
       };
-      const nextTranscript = [...transcript, participantTurn];
-      setTranscript(nextTranscript);
-      void fetchTurn(nextTranscript, extraction, activeObjectiveId);
+      const next = [...transcript, participantTurn];
+      setTranscript(next);
+      void fetchTurn(next, extraction, activeObjectiveId);
     },
     [transcript, extraction, activeObjectiveId, sessionClosed, fetchTurn]
   );
 
   const handleEndSession = useCallback(async () => {
-    // Close the session first so the participant can't send more messages
-    // while we're generating.
     setSessionClosed(true);
     setTakeawayOpen(true);
-    // Reuse cached markdown if already generated.
     if (takeawayMarkdown) return;
     setTakeawayGenerating(true);
     setTakeawayError(null);
 
-    // Save first (if we haven't already) so the takeaway can be paired with a
-    // session file on disk. Both failures are non-fatal for the takeaway flow.
     let sessionIdForPairing = savedSessionId;
     if (!sessionIdForPairing) {
       try {
@@ -179,7 +168,7 @@ export default function Home() {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            templateId: TEMPLATE.template_id,
+            templateId: template.template_id,
             transcript,
             extraction,
             activeObjectiveId,
@@ -192,9 +181,7 @@ export default function Home() {
           sessionIdForPairing = saveData.sessionId;
           setSavedSessionId(sessionIdForPairing);
         }
-      } catch {
-        // Pairing best-effort only; takeaway still generates without it.
-      }
+      } catch { /* pairing is best-effort */ }
     }
 
     try {
@@ -202,7 +189,7 @@ export default function Home() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          templateId: TEMPLATE.template_id,
+          templateId: template.template_id,
           transcript,
           extraction,
           sessionId: sessionIdForPairing,
@@ -212,12 +199,11 @@ export default function Home() {
       if (!res.ok || !data.markdown) throw new Error(data.error ?? `HTTP ${res.status}`);
       setTakeawayMarkdown(data.markdown);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setTakeawayError(msg);
+      setTakeawayError(err instanceof Error ? err.message : String(err));
     } finally {
       setTakeawayGenerating(false);
     }
-  }, [transcript, extraction, activeObjectiveId, savedSessionId, takeawayMarkdown]);
+  }, [transcript, extraction, activeObjectiveId, savedSessionId, takeawayMarkdown, template.template_id]);
 
   const handleSave = useCallback(async () => {
     setSaveStatus("saving…");
@@ -226,7 +212,7 @@ export default function Home() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          templateId: TEMPLATE.template_id,
+          templateId: template.template_id,
           transcript,
           extraction,
           activeObjectiveId,
@@ -234,20 +220,12 @@ export default function Home() {
         }),
       });
       const data = (await res.json()) as {
-        ok?: boolean;
-        hosted?: boolean;
-        sessionId?: string;
-        payload?: unknown;
-        path?: string;
-        turns?: number;
-        error?: string;
+        ok?: boolean; hosted?: boolean; sessionId?: string;
+        payload?: unknown; path?: string; turns?: number; error?: string;
       };
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
       if (data.hosted && data.payload) {
-        // Hosted env (Vercel): trigger client-side JSON download instead.
-        const blob = new Blob([JSON.stringify(data.payload, null, 2)], {
-          type: "application/json",
-        });
+        const blob = new Blob([JSON.stringify(data.payload, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -263,97 +241,35 @@ export default function Home() {
       }
       setTimeout(() => setSaveStatus(null), 8000);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setSaveStatus(`save failed: ${msg}`);
+      setSaveStatus(`save failed: ${err instanceof Error ? err.message : String(err)}`);
     }
-  }, [transcript, extraction, activeObjectiveId]);
+  }, [transcript, extraction, activeObjectiveId, template.template_id]);
+
+  const participantTurns = transcript.filter((t) => t.role === "participant").length;
 
   return (
-    <div className="flex h-dvh flex-col bg-stone-50">
-      <header className="flex shrink-0 items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-            Lacunex
-          </h1>
-          <p className="text-xs text-stone-500">
-            Goal-directed interview · {TEMPLATE.name}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {saveStatus && (
-            <span className="text-[11px] text-stone-500">{saveStatus}</span>
-          )}
-          <Link
-            href="/host"
-            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-          >
-            Host hub
-          </Link>
-          <Link
-            href="/rounds"
-            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-          >
-            Rounds
-          </Link>
-          <Link
-            href="/sessions"
-            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-          >
-            Past sessions
-          </Link>
-          <button
-            type="button"
-            onClick={() => setShowWalkthrough(true)}
-            title="Feature walkthrough"
-            className="rounded-full border border-stone-300 bg-white w-6 h-6 text-xs text-stone-500 hover:bg-stone-50 flex items-center justify-center"
-          >
-            ?
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={transcript.length === 0}
-            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50 disabled:opacity-40"
-          >
-            Save session
-          </button>
-          <button
-            type="button"
-            onClick={handleEndSession}
-            disabled={transcript.filter((t) => t.role === "participant").length < 2 || takeawayGenerating}
-            className="rounded-md bg-slate-800 px-3 py-1 text-xs text-white hover:bg-slate-900 disabled:opacity-40"
-          >
-            {sessionClosed && takeawayMarkdown ? "View reflection" : "End & reflect"}
-          </button>
-          {sessionClosed && !takeawayOpen && (
-            <span className="rounded-full bg-stone-200 px-3 py-1 text-xs text-stone-700">
-              Session closed
-            </span>
-          )}
-        </div>
-      </header>
-
-      {/* Demo-mode notice — this combined view is for evaluation convenience.
-          In production the participant gets /p/[brief] and sees no dashboard. */}
-      <div className="flex items-center justify-between border-b border-amber-100 bg-amber-50/60 px-6 py-1.5 text-[11px] text-amber-800">
-        <span>
-          <span className="font-medium">Demo view</span> — host dashboard and participant chat shown together.
-          In production, participants use{" "}
-          <Link href={`/p/${TEMPLATE.template_id}`} className="underline hover:text-amber-900">
-            /p/{TEMPLATE.template_id}
-          </Link>{" "}
-          (no dashboard visible to them).
-        </span>
-        <Link href="/host" className="ml-4 shrink-0 font-medium underline hover:text-amber-900">
-          Host hub →
-        </Link>
+    <div className="flex flex-col flex-1 overflow-hidden">
+      {/* Session toolbar */}
+      <div className="flex shrink-0 items-center justify-end gap-3 border-b border-stone-100 bg-white px-6 py-2">
+        {saveStatus && <span className="text-[11px] text-stone-500">{saveStatus}</span>}
+        {errorMsg && <span className="text-[11px] text-red-600">{errorMsg}</span>}
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={transcript.length === 0}
+          className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50 disabled:opacity-40"
+        >
+          Save session
+        </button>
+        <button
+          type="button"
+          onClick={handleEndSession}
+          disabled={participantTurns < 2 || takeawayGenerating}
+          className="rounded-md bg-slate-800 px-3 py-1 text-xs text-white hover:bg-slate-900 disabled:opacity-40"
+        >
+          {sessionClosed && takeawayMarkdown ? "View reflection" : "End & reflect"}
+        </button>
       </div>
-
-      {errorMsg && (
-        <div className="border-b border-red-200 bg-red-50 px-6 py-2 text-xs text-red-800">
-          {errorMsg}
-        </div>
-      )}
 
       <main className="flex flex-1 overflow-hidden">
         <div className="flex-1 min-w-0">
@@ -362,14 +278,14 @@ export default function Home() {
             isLoading={isLoading}
             onSend={handleParticipantSend}
             disabled={sessionClosed}
-            roleLabels={ROLE_LABELS}
+            roleLabels={roleLabels}
             showReasoning
             showHostMeta
           />
         </div>
         <div className="w-[400px] shrink-0">
           <DashboardPane
-            template={TEMPLATE}
+            template={template}
             extraction={extraction}
             prevExtraction={prevExtraction}
             activeObjectiveId={activeObjectiveId}
@@ -387,6 +303,83 @@ export default function Home() {
           onClose={() => setTakeawayOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+export default function Home() {
+  const [selectedTemplateId, setSelectedTemplateId] = useState(ALL_TEMPLATES[0].template_id);
+  const [showWalkthrough, setShowWalkthrough] = useState(false);
+
+  const activeTemplate =
+    ALL_TEMPLATES.find((t) => t.template_id === selectedTemplateId) ?? ALL_TEMPLATES[0];
+
+  return (
+    <div className="flex h-dvh flex-col bg-stone-50">
+      <header className="flex shrink-0 items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="shrink-0">
+            <h1 className="text-lg font-semibold tracking-tight text-stone-900">Lacunex</h1>
+            <p className="text-xs text-stone-500">
+              {activeTemplate.role_labels?.host ?? DEFAULT_ROLE_LABELS.host} ·{" "}
+              {activeTemplate.role_labels?.participant ?? DEFAULT_ROLE_LABELS.participant}
+            </p>
+          </div>
+          {/* Brief selector — switching resets the session via key */}
+          <div className="flex items-center gap-1 rounded-lg border border-stone-200 bg-stone-50 p-1">
+            {ALL_TEMPLATES.map((t) => (
+              <button
+                key={t.template_id}
+                type="button"
+                onClick={() => setSelectedTemplateId(t.template_id)}
+                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                  selectedTemplateId === t.template_id
+                    ? "bg-white shadow-sm text-stone-900"
+                    : "text-stone-500 hover:text-stone-700"
+                }`}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link href="/host" className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50">
+            Host hub
+          </Link>
+          <Link href="/rounds" className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50">
+            Rounds
+          </Link>
+          <Link href="/sessions" className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50">
+            Sessions
+          </Link>
+          <button
+            type="button"
+            onClick={() => setShowWalkthrough(true)}
+            title="Feature walkthrough"
+            className="rounded-full border border-stone-300 bg-white w-6 h-6 text-xs text-stone-500 hover:bg-stone-50 flex items-center justify-center"
+          >
+            ?
+          </button>
+        </div>
+      </header>
+
+      {/* Demo-mode notice */}
+      <div className="flex items-center justify-between border-b border-amber-100 bg-amber-50/60 px-6 py-1.5 text-[11px] text-amber-800">
+        <span>
+          <span className="font-medium">Demo view</span> — host dashboard and participant chat on one screen.
+          In production, participants use{" "}
+          <Link href={`/p/${activeTemplate.template_id}`} className="underline hover:text-amber-900">
+            /p/{activeTemplate.template_id}
+          </Link>.
+        </span>
+        <Link href="/host" className="ml-4 shrink-0 font-medium underline hover:text-amber-900">
+          Host hub →
+        </Link>
+      </div>
+
+      {/* Session — key forces full remount (state reset) on template switch */}
+      <SessionView key={selectedTemplateId} template={activeTemplate} />
 
       {showWalkthrough && (
         <div
@@ -399,40 +392,19 @@ export default function Home() {
           >
             <div className="flex items-center justify-between border-b border-stone-100 px-6 py-4">
               <h2 className="text-sm font-semibold text-stone-900">What you&apos;re looking at</h2>
-              <button
-                type="button"
-                onClick={() => setShowWalkthrough(false)}
-                className="text-stone-400 hover:text-stone-600 text-lg leading-none"
-              >
-                ×
-              </button>
+              <button type="button" onClick={() => setShowWalkthrough(false)} className="text-stone-400 hover:text-stone-600 text-lg leading-none">×</button>
             </div>
             <div className="px-6 py-5 space-y-4 text-sm text-stone-700">
               <div className="space-y-3">
-                <Feature
-                  label="Left panel — participant chat"
-                  desc="This is exactly what the participant sees at /start. No dashboard, no badges — a natural conversation. The AI interviewer decides each question turn-by-turn from the full session state."
-                />
-                <Feature
-                  label="Right panel — host dashboard (live)"
-                  desc="Completeness bars fill in real time as the conversation runs. Each objective tracks its own structured evidence — not just a transcript summary. ↑/↓ arrows show confidence change per turn."
-                />
-                <Feature
-                  label="tracking → strip"
-                  desc="The conductor's stated reasoning after each turn. Not post-hoc — this is what the model said it was doing before generating the question."
-                />
-                <Feature
-                  label="◆ meta-notice badges"
-                  desc="When the system detects a cross-turn pattern (contradiction, hedge, avoidance), it surfaces a badge on the host's turn citing ≥2 turn indices. The conductor then decides whether to deploy it."
-                />
-                <Feature
-                  label="↩ anchor-return chips"
-                  desc="When the conductor re-opens a prior turn to probe further, a chip marks which earlier turn it returned to. Makes cross-turn reasoning visible on screen."
-                />
+                <Feature label="Brief selector" desc="Three fully-wired briefs — Founder Investment Evaluation, Post-Incident Witness, Civic Consultation. Same four-call architecture, completely different domains. Switch brief to restart with a fresh session." />
+                <Feature label="Left panel — participant chat" desc="Exactly what the participant sees at /p/[brief]. No dashboard, no badges. The AI conductor decides each question turn-by-turn from the full session state." />
+                <Feature label="Right panel — host dashboard (live)" desc="Completeness bars fill in real time. Each objective tracks its own structured evidence. ↑/↓ arrows show confidence change per turn." />
+                <Feature label="◆ meta-notice badges" desc="When the system detects a cross-turn pattern (contradiction, hedge, avoidance), it surfaces a badge citing ≥2 turn indices. The conductor decides whether to deploy it." />
+                <Feature label="↩ anchor-return chips" desc="When the conductor re-opens a prior turn to probe further, a chip marks which earlier turn it returned to." />
               </div>
               <div className="border-t border-stone-100 pt-4 space-y-1 text-xs text-stone-500">
-                <p><span className="font-medium text-stone-600">End &amp; reflect</span> — closes the session and generates the participant&apos;s personalised takeaway.</p>
-                <p><Link href="/start" className="text-amber-700 underline">Start a clean participant session →</Link></p>
+                <p><span className="font-medium text-stone-600">End &amp; reflect</span> — generates the participant&apos;s personalised takeaway.</p>
+                <p><Link href="/start" className="text-amber-700 underline">Design a custom brief →</Link></p>
                 <p><Link href="/rounds" className="text-amber-700 underline">See rounds &amp; cohort synthesis →</Link></p>
               </div>
             </div>

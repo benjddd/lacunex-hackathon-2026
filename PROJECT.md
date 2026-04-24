@@ -86,7 +86,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D11 | Git initialized locally today | Commits timestamped to establish the in-window build record |
 | D12 | Role naming | **Host** (was "designer"). **Participant** retained (rejects "guest" — would hurt credibility with research / policy / expert-elicitation operators). |
 | D13 | Natural-language template authoring | **REVERSED AND SHIPPED.** Initially cut; rebuilt Day 4 as `/start` page with Opus 4.7 generator. User describes use case in plain text → Opus generates brief schema → structural defaults merged server-side → stored in sessionStorage → participant page loads it. |
-| D14 | GitHub remote | **github.com/Attius-Digital-Art/captainsubtext**, public from Day 1. |
+| D14 | GitHub remote | **github.com/Attius-Digital-Art/lacunex** (renamed from `captainsubtext` on Apr 24; GitHub preserves old-URL redirects). Public from Day 1. |
 | D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** |
 | D16 | Founder brief reframed to **Founder Investment Evaluation** | Host = Investor, Participant = Founder. Fixes the Host/Participant separation the original framing collapsed (the founder was both roles). Objectives unchanged; persona updated to investor-doing-DD; `role_labels` field added to brief schema and UI reads it. Same `template_id`. |
 | D17 | Second brief = **Civic Consultation** (Facilitator/Resident) | Authored Fri. Maximally different from Founder brief in tone + stakes; strongest Impact-30% evidence (non-feasible-today scale). Fallback: Expert Knowledge Elicitation. |
@@ -102,7 +102,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D27 | **Demo opens with a brief running**, not architecture | 0:00–0:30 is the interview + dashboard filling; architecture diagram is a 15–20s reveal mid-video. Video storyboard detail → [INTERNAL.md](INTERNAL.md) §2. |
 | D28 | **Numeric compression claim — LOCKED:** *"15 minutes → structured insight that would take a researcher 3 hours to extract post-hoc."* | Defensible: post-hoc transcript analysis + thematic coding on a 15-min interview is documented at 2–4 hours in qualitative research literature. |
 | D29 | `what_you_already_have_that_is_relevant` protected as closing frame | Differentiating section: names resources already in the participant's life they hadn't connected to the question. Prompt hardened with transcript-anchor examples. Demo video closing beat — see [INTERNAL.md](INTERNAL.md) §13. |
-| D30 | **Dual naming: CaptainSubtext (internal/repo) + Lacunex (external/brand)** | GitHub repo stays `captainsubtext` (established history, internal identifier). All user-facing surfaces — README title, UI, submission form, video — use **Lacunex**. Docs that reference both should name both. Use **"cross-turn reasoning"** in descriptive copy. Full analysis → [INTERNAL.md](INTERNAL.md) §12a. *(Supersedes the earlier "keep CaptainSubtext for UI" verdict; D1 locked Lacunex as the public brand Apr 24.)* |
+| D30 | **Dual naming: CaptainSubtext (internal/repo) + Lacunex (external/brand)** | ~~GitHub repo stays `captainsubtext` (established history, internal identifier).~~ All user-facing surfaces — README title, UI, submission form, video — use **Lacunex**. Docs that reference both should name both. Use **"cross-turn reasoning"** in descriptive copy. Full analysis → [INTERNAL.md](INTERNAL.md) §12a. *(Supersedes the earlier "keep CaptainSubtext for UI" verdict; D1 locked Lacunex as the public brand Apr 24.)* **Repo-name clause superseded by D41 on Apr 24 — unified naming: repo renamed to `lacunex`.** |
 | D31 | **Rounds as first-class entity** | Shipped. A round groups N sessions run against the same brief. Storage `transcripts/rounds/round-<id>.json`. API: GET/POST `/api/rounds`, GET/POST `/api/rounds/[id]`, POST `/api/rounds/[id]/aggregate`. UI: `/rounds` list + `/rounds/[id]` detail with aggregate view. Demonstrates comparable structured signal across N participants — the core platform promise. |
 | D32 | **Cross-participant aggregation with 6 pattern types** | Shipped. `callAggregate` Opus 4.7 call takes N sessions, returns: convergent_problem / divergent_framing / shared_assumption / recurring_hedge / outlier / unasked_across_cohort patterns, top themes, signal strength per objective, routing recommendations ("you should also loop in X about Y"). Verbatim quotes cited per pattern. |
 | D33 | **Meta-noticing wired live into /api/turn** | Restored in commit 28edb63 after loss during subagent branch operations. Runs in parallel with Extraction on every turn past the 2nd participant turn. Candidates passed to Conductor. Response includes `notices: {candidates, deployed}`. Conductor deploy rate-cap and suppression rules enforced. |
@@ -113,6 +113,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D38 | **Goal→outcome traceability in dashboard** | Each host turn now carries `objective_id`. DashboardPane shows collapsible "what we're trying to learn" per objective (goal text + success criteria + turn indices). Causal chain visible: goal → questions → extraction result. |
 | D39 | **Token + timing logs** | All 4 Claude calls log ms + input/output/cache_read/cache_write token counts to server console. Now visible during prompt iteration. |
 | D40 | **Managed Agents — implementation direction settled** | Unique value: post-session claim-verification agent. Reads transcript, identifies 2–3 factual claims, uses `web_search` to check them, appends "claims verified" section to takeaway. Directly demonstrates anti-confabulation thesis. Route: `/api/sessions/[id]/research`. Awaiting user GO after Cohen talk. |
+| D41 | **Repo renamed `captainsubtext` → `lacunex`** (Apr 24) | Supersedes the dual-naming clause in D30. Unified public naming across repo, brand, domain, submission. GitHub auto-redirects the old URL, preserving any external references. Future proprietary-line work (if any) lives in a separate private fork; the MIT snapshot stays public at `github.com/Attius-Digital-Art/lacunex`. |
 
 ---
 
@@ -124,7 +125,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | Q8 | Video recording tool (Loom vs OBS vs screen-rec + separate audio) | User | Blocks Sat |
 | Q10 | Submission platform link | Resolved | `https://cerebralvalley.ai/e/built-with-4-7-hackathon/hackathon/submit` (in SUBMISSION_DRAFT.md) |
 
-*Resolved: Q1 (NL authoring cut, D13), Q2 (Host, D12), Q3 (voice cut, D23), Q4 (Founder brief + DEMO_SCRIPT), Q5 (API key live), Q6 (github.com/Attius-Digital-Art/captainsubtext, D14), Q7 (Vercel, D5), Q9 (2 functional briefs, D18).*
+*Resolved: Q1 (NL authoring cut, D13), Q2 (Host, D12), Q3 (voice cut, D23), Q4 (Founder brief + DEMO_SCRIPT), Q5 (API key live), Q6 (github.com/Attius-Digital-Art/lacunex, D14/D41), Q7 (Vercel, D5), Q9 (2 functional briefs, D18).*
 
 ---
 
@@ -160,7 +161,7 @@ They have a question only real people can answer. Getting that answer requires d
 
 ## 7. Submission checklist
 
-- [x] Public GitHub repo with README, LICENSE (MIT), install + run instructions (live at github.com/Attius-Digital-Art/captainsubtext)
+- [x] Public GitHub repo with README, LICENSE (MIT), install + run instructions (live at github.com/Attius-Digital-Art/lacunex)
 - [ ] **Written summary: 100–200 words** (tight — draft in INTERNAL.md, final version on the submission form)
 - [ ] **3-min demo video maximum** (hard cap). Pre-recorded video is what Stage 2 plays — there is no live demo.
 - [x] All code in repo authored after Tue 2026-04-21 12:30 EST (git log shows it)
@@ -185,7 +186,7 @@ They have a question only real people can answer. Getting that answer requires d
 
 ## 9. Current status — Day 1 close
 
-**Day 1 gate met and then some.** Repo public at [github.com/Attius-Digital-Art/captainsubtext](https://github.com/Attius-Digital-Art/captainsubtext). What shipped beyond the original Day-1 target:
+**Day 1 gate met and then some.** Repo public at [github.com/Attius-Digital-Art/lacunex](https://github.com/Attius-Digital-Art/lacunex) (renamed from `captainsubtext` on Apr 24 per D41). What shipped beyond the original Day-1 target:
 
 - Next.js scaffold + MIT LICENSE + README + CLAUDE.md + PROJECT.md + CALENDAR.md + INTERNAL.md (gitignored).
 - Anthropic SDK + prompt caching on static blocks; model IDs isolated in one config.
@@ -277,7 +278,7 @@ They have a question only real people can answer. Getting that answer requires d
 - Upstash Redis provisioning: upstash.com → create Redis DB → copy `KV_REST_API_URL` + `KV_REST_API_TOKEN` → set in Vercel env vars → redeploy.
 - Smoke-test live URL after redeploy.
 - Demo video recording (Saturday).
-- Verify/update GitHub URL in SUBMISSION_DRAFT Field 6 (repo currently still named `captainsubtext`).
+- Complete the GitHub-side rename `captainsubtext` → `lacunex` (web UI action); local file references already updated per D41. After GitHub rename: `git remote set-url origin https://github.com/Attius-Digital-Art/lacunex.git`.
 
 **Pending autonomous tasks:**
 - Evaluate simulation quality; commit best post-incident sessions as fixtures.

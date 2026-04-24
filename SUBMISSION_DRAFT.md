@@ -43,7 +43,9 @@ The thesis is not "a better way to read a transcript." It is: by the time you're
 ## Field 5 — Project Description
 *(Describe your project and what problem it solves. 200–400 words.)*
 
-**Lacunex runs goal-directed adaptive interviews with live structured reasoning across turns.**
+**Lacunex runs goal-directed adaptive interviews with live structured reasoning across turns — eliminating the ~2 hours of post-session transcription, coding, and synthesis that qualitative research literature documents per 15-minute interview.**
+
+The concrete shape of the saving: a consumer-insights team running 30 founder-investor conversations saves ~60 researcher-hours and gets a comparable structured signal across all 30 — because the brief, not the moderator, is the constant. A civic consultation reaching 100 residents becomes a cohort picture, not 100 idiosyncratic transcripts. A post-incident investigation catches hedges, drift between turn 3 and turn 9, and implied-not-said beliefs *in the moment* — observations that would be invisible in transcript review the next day.
 
 The problem: the most valuable insight in any research process lives between the lines — in what the participant hedged, contradicted from three turns ago, or couldn't quite say. Surveys capture surface-level responses. Even AI tools that analyze transcripts arrive after the conversation closes. The conversation itself is where the insight is at risk.
 
@@ -53,20 +55,18 @@ Lacunex is built on a four-call Opus 4.7 architecture:
 - **Extraction** — schema-bound, updates the host's structured dashboard live *during* the conversation.
 - **Takeaway Synthesis** — closes each session with a reflective artifact for the participant, including a section called "what you already have that is relevant" — specific resources in their existing life they hadn't connected to the problem.
 
-Neither side leaves empty-handed. The host gets structured insight *during* the conversation (not after), rendered live in a dashboard. The participant gets a personalized takeaway they can act on.
+Neither side leaves empty-handed. The host gets structured insight *during* the conversation, rendered live in a dashboard. The participant gets a personalized takeaway they can act on.
 
-One brief runs reliably across many participants — so insights are comparable, not a pile of idiosyncratic transcripts. Three fully wired briefs ship with the platform: Founder Investment Evaluation (investor/founder), Post-Incident Witness Interview (facilitator/witness), and Civic Consultation (facilitator/resident).
+Three fully wired briefs ship — Founder Investment Evaluation, Post-Incident Witness Interview, Civic Consultation — plus a natural-language brief generator for authoring new interview types.
 
-Self-serve from day one — no enterprise contract, no demo call required. One brief, many conversations: run the same brief across any number of participants and get comparable structured signal, not a pile of idiosyncratic transcripts.
-
-**It is not a research moderator that delivers overnight reports** (Outset, Listen Labs, Strella — all batch, all post-hoc). It is not a transcript analyzer (Dovetail, Condens). The distinctive claim: cross-turn structural reasoning that detects contradictions and implied assumptions turn-by-turn — rendered live on screen during the conversation, not after. Transcription + coding + synthesis for a 15-minute interview averages 2+ hours of researcher time; we eliminate that step entirely by producing structured output while the conversation is still happening.
+**Not a research moderator that delivers overnight reports** (Outset, Listen Labs, Strella — all batch, post-hoc). Not a transcript analyzer (Dovetail, Condens). The distinctive claim: cross-turn structural reasoning that surfaces contradictions and implied assumptions *during* the conversation, not after.
 
 Headline: *Cross-turn reasoning, rendered live. Both sides leave with something.*
 
 ---
 
 ## Field 6 — Public GitHub Repository
-https://github.com/Attius-Digital-Art/captainsubtext
+https://github.com/Attius-Digital-Art/lacunex
 
 ---
 

@@ -38,10 +38,9 @@ export default function RoundsListPage() {
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/rounds");
-      const data = (await res.json()) as { rounds?: Round[]; hosted?: boolean; error?: string };
+      const data = (await res.json()) as { rounds?: Round[]; error?: string };
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
       setRounds(data.rounds ?? []);
-      if (data.hosted) setError("Rounds require local deployment (filesystem storage). Run locally to use this feature.");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
@@ -97,7 +96,7 @@ export default function RoundsListPage() {
               All sessions
             </Link>
             <Link
-              href="/"
+              href="/demo"
               className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
             >
               New session

@@ -118,7 +118,7 @@ npm run dev
 # Open http://localhost:3000
 ```
 
-The opening turn fires on first render. Type a response, press Enter, watch the dashboard fill in.
+The landing page is a role chooser: **Host** (create briefs, generate invite links, view rounds), **Participant** (paste an invite code), or **Demo** (see both sides — host dashboard filling live beside the participant chat — in a single window). The demo auto-starts a session on first render so the conductor's opening turn arrives without a click.
 
 ---
 
@@ -127,10 +127,12 @@ The opening turn fires on first render. Type a response, press Enter, watch the 
 ```
 src/
   app/
-    page.tsx                         # / — brief selection + single-session start
+    page.tsx                         # / — role chooser (Host / Participant-with-invite / Demo)
+    demo/page.tsx                    # /demo — split-screen combined view (auto-starts a session)
     start/page.tsx                   # /start — multi-brief selector + NL brief generator
-    host/page.tsx                    # /host — host hub (all sessions/rounds)
-    p/[templateId]/page.tsx          # /p/:id — participant interview (split-screen)
+    host/page.tsx                    # /host — host hub (briefs, invite links, sessions, rounds)
+    p/[templateId]/page.tsx          # /p/:id — participant interview
+    i/[token]/page.tsx               # /i/:token — resolves an invite; redirects to the bound brief
     sessions/page.tsx                # /sessions — session list
     sessions/[sessionId]/page.tsx    # /sessions/:id — session detail + claim verifier
     rounds/page.tsx                  # /rounds — round management
@@ -138,6 +140,8 @@ src/
     api/
       turn/route.ts                  # POST — stateless turn: takes transcript, returns utterance + extraction state
       save-session/route.ts          # POST — persist session to filesystem or KV
+      invites/route.ts               # POST — create a per-session invite token for a brief
+      invites/[token]/route.ts       # GET — resolve an invite token to its brief
       rounds/route.ts                # GET/POST — list and create rounds
       rounds/[roundId]/route.ts      # GET/PATCH — round detail + add session
       rounds/[roundId]/synthesize/route.ts  # POST — trigger cohort synthesis (Managed Agents)
@@ -150,6 +154,7 @@ src/
     anthropic.ts           # SDK client singleton
     claude-calls.ts        # callConductor / callExtraction / callMetaNoticing / callTakeaway
     rounds.ts              # Round lifecycle helpers
+    invites.ts             # Per-session invite-token generation + resolution
     store-hosted.ts        # KV-backed persistence (Vercel/Upstash or in-memory fallback)
     personas.ts            # Synthetic participant personas (dev only)
     prompts/

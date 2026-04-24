@@ -130,6 +130,30 @@ export async function hostedSaveResearch(sessionId: string, report: string): Pro
   }
 }
 
+// ---- Invite store ----
+
+export interface InviteRecord {
+  token: string;
+  template_id: string;
+  created_at: string;
+  note: string | null;
+}
+
+const inviteMem = new Map<string, InviteRecord>();
+
+export async function hostedSaveInvite(invite: InviteRecord): Promise<void> {
+  if (hasKV) {
+    await kvSet(`invite:${invite.token}`, invite);
+  } else {
+    inviteMem.set(invite.token, invite);
+  }
+}
+
+export async function hostedGetInvite(token: string): Promise<InviteRecord | null> {
+  if (hasKV) return kvGet<InviteRecord>(`invite:${token}`);
+  return inviteMem.get(token) ?? null;
+}
+
 // ---- Live session store (2h TTL) ----
 
 const liveSessionMem = new Map<string, unknown>();

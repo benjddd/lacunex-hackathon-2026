@@ -1,4 +1,4 @@
-// Shared types for CaptainSubtext. The host-facing JSON template defines
+// Shared types for Lacunex. The host-facing JSON template defines
 // what to learn; everything below is the session's live state.
 
 export type EvidenceStatus = "tested" | "partial" | "untested";

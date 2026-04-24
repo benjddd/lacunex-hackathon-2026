@@ -58,7 +58,7 @@ export default function SessionsListPage() {
             <p className="text-xs text-stone-500">Past sessions</p>
           </div>
           <Link
-            href="/"
+            href="/demo"
             className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
           >
             New session
@@ -84,7 +84,7 @@ export default function SessionsListPage() {
               Sessions you save from the interview screen will appear here.
             </p>
             <Link
-              href="/"
+              href="/demo"
               className="mt-4 inline-block rounded-md bg-slate-800 px-4 py-1.5 text-xs text-white hover:bg-slate-900"
             >
               Start a session

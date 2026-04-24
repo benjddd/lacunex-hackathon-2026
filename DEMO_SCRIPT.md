@@ -1,4 +1,4 @@
-# Demo Recording Script — Ambitext
+# Demo Recording Script — Lacunex
 > For Saturday recording. Target: 2:45–3:00. Hard cap 3:00.
 > Use a separate browser profile. Set display zoom to 125%. Font size legible at 720p.
 
@@ -19,7 +19,7 @@
 
 ### 0:00 – 0:12 | Setup
 
-> "Ambitext runs structured interviews where the platform does the intellectual work — deciding each question from the full conversation state, surfacing what was implied but not said, and producing structured insight live, not in an overnight report."
+> "Lacunex runs structured interviews where the platform does the intellectual work — deciding each question from the full conversation state, surfacing what was implied but not said, and producing structured insight live, not in an overnight report."
 
 *Screen: host view (`/`) showing the brief selector. Click "Founder Investment Evaluation", then "Start interview."*
 

@@ -273,7 +273,7 @@ export default function Home() {
       <header className="flex shrink-0 items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
         <div>
           <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-            Ambitext
+            Lacunex
           </h1>
           <p className="text-xs text-stone-500">
             Goal-directed interview · {TEMPLATE.name}

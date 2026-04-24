@@ -1,11 +1,11 @@
-# Submission Draft — Ambitext
+# Submission Draft — Lacunex
 > Internal working doc. Fill in [FILL IN] fields before submitting.
 > URL: https://cerebralvalley.ai/e/built-with-4-7-hackathon/hackathon/submit
 
 ---
 
 ## Field 1 — Team Name
-Ambitext
+Lacunex
 
 ---
 
@@ -15,7 +15,7 @@ Benjamin Dysin (benjdy)
 ---
 
 ## Field 3 — Project Name
-Ambitext
+Lacunex
 
 ---
 
@@ -38,7 +38,7 @@ They act too late — the synthesis happens the day after the conversation close
 
 They go too shallow — they catch what was said, not what was meant. The hedge ("probably"), the drift ("we *think* customers want…"), the contradiction three turns later — these are the actual data. They disappear in the transcript.
 
-Ambitext fixes all three. The conductor adapts turn-by-turn to what the participant just said. The meta-noticing layer identifies contradictions, hedging, and implied-not-stated beliefs in real time — and the conductor can act on them, within the same conversation, before the window closes. The host's structured extraction fills live during the interview, not after.
+Lacunex fixes all three. The conductor adapts turn-by-turn to what the participant just said. The meta-noticing layer identifies contradictions, hedging, and implied-not-stated beliefs in real time — and the conductor can act on them, within the same conversation, before the window closes. The host's structured extraction fills live during the interview, not after.
 
 The thesis is not "a better way to read a transcript." It is: by the time you're reading the transcript, you've already missed the chance to react.
 
@@ -49,11 +49,11 @@ The thesis is not "a better way to read a transcript." It is: by the time you're
 ## Field 5 — Project Description
 *(Describe your project and what problem it solves. 200–400 words.)*
 
-**Ambitext runs goal-directed adaptive interviews with live structured reasoning across turns.**
+**Lacunex runs goal-directed adaptive interviews with live structured reasoning across turns.**
 
 The problem: the most valuable insight in any research process lives between the lines — in what the participant hedged, contradicted from three turns ago, or couldn't quite say. Surveys capture surface-level responses. Even AI tools that analyze transcripts arrive after the conversation closes. The conversation itself is where the insight is at risk.
 
-Ambitext is built on a four-call Opus 4.7 architecture:
+Lacunex is built on a four-call Opus 4.7 architecture:
 - **Conductor** — decides the next move turn-by-turn, using the full session state: objectives, extraction state, stall counter, and meta-notice candidates. Generates the interviewer turn.
 - **Meta-Noticing** — an observation-only layer that runs after each participant turn, identifying contradictions, hedging, and implied-not-said signals across turns. Each notice requires ≥2 transcript anchors; shallow observations are rejected before surfacing.
 - **Extraction** — schema-bound, updates the host's structured dashboard live *during* the conversation.

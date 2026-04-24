@@ -1,4 +1,4 @@
-# Ambitext — Project State & Tracker
+# Lacunex — Project State & Tracker
 
 Living document. Update whenever scope, timeline, decisions, or risks change.
 
@@ -6,7 +6,7 @@ Living document. Update whenever scope, timeline, decisions, or risks change.
 
 ## 1. What we're building
 
-**Ambitext** — platform for goal-directed, adaptive interviews.
+**Lacunex** — platform for goal-directed, adaptive interviews.
 
 The platform thesis rests on three beats:
 
@@ -73,7 +73,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 | # | Decision | Value |
 |---|---|---|
-| D1 | Platform name | **Ambitext** — domain `ambitext.com` registered Apr 23 2026; `.io`/`.ai` also available; Vercel wired |
+| D1 | Platform name | **Lacunex** — renamed from Ambitext Apr 24; domain `lacunex.com` registered, Vercel wired. Prior name "Ambitext" rejected: "text" suffix pulled toward wrong category. |
 | D2 | Demo template | Founder Product Ideation fully wired + 2–3 **stub** templates visible in selector (not functional) to show range |
 | D3 | No template editor in POC | JSON config on disk; may be augmented by a one-shot natural-language authoring flow (see Q1 below) |
 | D4 | Text-first | Ship text cleanly before voice; voice decision revisited Thu |
@@ -130,9 +130,31 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 
 ## 6. Core product USPs
 
-- **Not a questionnaire.** Every conversation is different. No pre-written question list — goal-aware live generation.
-- **Not post-hoc research analysis.** Structured insight emerges *during* the conversation, not after.
-- **Dual value.** Host gets synthesized insight; participant gets reflective clarity — including, when relevant, actionable self-insight about existing resources or processes they can redirect.
+Three layers, each solving a distinct host problem:
+
+**Layer 1 — Study design** *(skill + time)*
+The host states what they're investigating; the platform structures the inquiry: objectives, hypotheses, interview arc. Expert research-design capability, instantly, interactively. Partially shipped: `/start` NL authoring generates a brief schema. Full vision: multi-round study path designed collaboratively. Gives research methodology to anyone who lacks it.
+
+**Layer 2 — Interview execution** *(skill)*
+Every conversation is adaptive, non-scripted, professional-grade. Cross-turn reasoning, meta-noticing (contradictions, hedging, implied-not-said), live structured extraction, bilateral takeaway. The platform is the interviewer. Fully shipped.
+
+**Layer 3 — Scale without quality collapse** *(capacity)*
+1,000 conversations take the same time as 1. Every conversation is genuinely different; all serve the same strategic goals. Comparable signal across the whole cohort. Shipped: Rounds, cross-participant aggregation with 6 pattern types.
+
+**Layer 4 — Synthesis** *(skill + time)*
+Making sense of what came back — across many conversations — into something actually usable is its own skill and its own time sink. The platform delivers structured insight live during each conversation and cross-cohort patterns across the full round. Host ends with answers, not a transcript pile. Shipped: live extraction dashboard, cross-participant aggregation (6 pattern types, signal strength per objective, routing recommendations).
+
+**Participant value (real but instrumental):**
+Participants receive genuine reflective clarity — which makes them engage honestly, which gives the host better signal. The bilateral structure is a mechanism, not a moral stance.
+
+**The host's felt gap (what the brand must speak to):**
+They have a question only real people can answer. Getting that answer requires designing something they can't fully design, conducting conversations they're not trained to conduct, doing it at the scale they need, and making sense of what comes back. The platform closes all four gaps — without the host needing to be an expert in any of them.
+
+**Anti-positioning:**
+- Not a questionnaire / survey builder (adaptive, not scripted)
+- Not post-hoc transcript analysis (insight during and across, not after)
+- Not a single-conversation tool (rounds, cohorts, comparable signal)
+- Not enterprise-only (self-serve from day one)
 
 ---
 

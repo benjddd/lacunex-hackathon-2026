@@ -57,7 +57,7 @@ ${sections}
 </forbidden>
 
 <output_format>
-Return Markdown only. No JSON wrapper, no preamble. Start directly with a short title line (## Ambitext — your reflection), then one-sentence dateline, then the sections with level-3 headings using the section labels from the template.
+Return Markdown only. No JSON wrapper, no preamble. Start directly with a short title line (## Lacunex — your reflection), then one-sentence dateline, then the sections with level-3 headings using the section labels from the template.
 
 Do not include the section ids.
 </output_format>`;

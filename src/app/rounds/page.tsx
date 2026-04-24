@@ -85,7 +85,7 @@ export default function RoundsListPage() {
         <div className="flex items-baseline justify-between">
           <div>
             <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              Ambitext
+              Lacunex
             </h1>
             <p className="text-xs text-stone-500">Interview rounds</p>
           </div>

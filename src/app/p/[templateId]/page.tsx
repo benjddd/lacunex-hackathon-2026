@@ -71,7 +71,7 @@ function ParticipantPageContent({
   const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
   useEffect(() => {
     if (!TEMPLATE_MAP[templateId] && templateId.startsWith("gen-")) {
-      const raw = sessionStorage.getItem(`ambitext:brief:${templateId}`);
+      const raw = sessionStorage.getItem(`lacunex:brief:${templateId}`);
       if (raw) {
         try { setGeneratedTemplate(JSON.parse(raw) as Template); } catch { /* ignore */ }
       }

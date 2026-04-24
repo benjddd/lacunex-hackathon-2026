@@ -142,8 +142,8 @@ function ParticipantPageContent({
             inviteToken,
           }),
         });
-        const data = (await res.json()) as TurnResponse;
-        if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+        const data = (await res.json()) as TurnResponse & { userMessage?: string };
+        if (!res.ok) throw new Error(data.userMessage ?? data.error ?? `HTTP ${res.status}`);
 
         const nextIndex = withTranscript.length;
         const deployed = data.notices?.deployed ?? null;
@@ -327,8 +327,8 @@ function ParticipantPageContent({
           mode: "final",
         }),
       });
-      const data = (await res.json()) as { markdown?: string; error?: string };
-      if (!res.ok || !data.markdown) throw new Error(data.error ?? `HTTP ${res.status}`);
+      const data = (await res.json()) as { markdown?: string; error?: string; userMessage?: string };
+      if (!res.ok || !data.markdown) throw new Error(data.userMessage ?? data.error ?? `HTTP ${res.status}`);
       setTakeawayMarkdown(data.markdown);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);

@@ -91,8 +91,8 @@ function SessionView({ template }: { template: Template }) {
             objectiveStallTurns,
           }),
         });
-        const data = (await res.json()) as TurnResponse;
-        if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+        const data = (await res.json()) as TurnResponse & { userMessage?: string };
+        if (!res.ok) throw new Error(data.userMessage ?? data.error ?? `HTTP ${res.status}`);
 
         const nextIndex = withTranscript.length;
         const deployed = data.notices?.deployed ?? null;
@@ -206,8 +206,8 @@ function SessionView({ template }: { template: Template }) {
           sessionId: sessionIdForPairing,
         }),
       });
-      const data = (await res.json()) as { markdown?: string; error?: string };
-      if (!res.ok || !data.markdown) throw new Error(data.error ?? `HTTP ${res.status}`);
+      const data = (await res.json()) as { markdown?: string; error?: string; userMessage?: string };
+      if (!res.ok || !data.markdown) throw new Error(data.userMessage ?? data.error ?? `HTTP ${res.status}`);
       setTakeawayMarkdown(data.markdown);
     } catch (err) {
       setTakeawayError(err instanceof Error ? err.message : String(err));
@@ -260,10 +260,14 @@ function SessionView({ template }: { template: Template }) {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
+      {errorMsg && (
+        <div className="border-b border-red-200 bg-red-50 px-6 py-2 text-xs text-red-800">
+          {errorMsg}
+        </div>
+      )}
       {/* Session toolbar */}
       <div className="flex shrink-0 items-center justify-end gap-3 border-b border-stone-100 bg-white px-6 py-2">
         {saveStatus && <span className="text-[11px] text-stone-500">{saveStatus}</span>}
-        {errorMsg && <span className="text-[11px] text-red-600">{errorMsg}</span>}
         <button
           type="button"
           onClick={handleSave}

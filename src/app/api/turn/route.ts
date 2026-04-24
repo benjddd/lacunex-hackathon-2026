@@ -53,7 +53,14 @@ export async function POST(req: Request) {
   let effectiveTemplateId = body.templateId;
   if (body.inviteToken) {
     if (!isValidToken(body.inviteToken)) {
-      return NextResponse.json({ error: "invalid invite token" }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: "invalid invite token",
+          userMessage:
+            "The invite token in the URL is malformed. Ask your host to send a fresh invite link.",
+        },
+        { status: 400 }
+      );
     }
     if (isBypassRequest(req)) {
       const invite = await resolveInvite(body.inviteToken);
@@ -65,11 +72,16 @@ export async function POST(req: Request) {
       const result = await consumeInviteTurn(body.inviteToken);
       if (!result.ok) {
         const status = result.reason === "budget_exhausted" ? 429 : 404;
+        const userMessage =
+          result.reason === "budget_exhausted"
+            ? `This interview link has used its full turn budget (${result.invite?.turns_used}/${result.invite?.turn_budget}). Ask your host to send a fresh invite link to continue.`
+            : "This invite link is not recognized. Ask your host to send a fresh invite link.";
         return NextResponse.json(
           {
             error: result.reason,
             budget: result.invite?.turn_budget,
             used: result.invite?.turns_used,
+            userMessage,
           },
           { status }
         );

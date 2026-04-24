@@ -123,6 +123,11 @@ export async function checkRateLimit(
     const result = await limiter.limit(key);
     if (result.success) return { ok: true };
     const retryAfterSec = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
+    const waitHuman =
+      retryAfterSec < 90
+        ? `${retryAfterSec} seconds`
+        : `${Math.ceil(retryAfterSec / 60)} minutes`;
+    const userMessage = `Too many requests from your network in the last few minutes — the platform caps traffic to protect against runaway AI costs. Please try again in about ${waitHuman}. If you are testing on behalf of the team, ask the host for a bypass token.`;
     return {
       ok: false,
       response: new Response(
@@ -130,6 +135,7 @@ export async function checkRateLimit(
           error: "rate_limit_exceeded",
           bucket,
           retry_after_seconds: retryAfterSec,
+          userMessage,
         }),
         {
           status: 429,

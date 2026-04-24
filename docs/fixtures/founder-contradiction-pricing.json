@@ -1,0 +1,156 @@
+{
+  "_annotation": {
+    "purpose": "Curated founder-product-ideation session showing a contradiction catch across turns about pricing and market size — two claims the founder had not previously reconciled. Also demonstrates an implied_not_said catch about founder-market fit.",
+    "persona": "Second-time technical founder, ex-FAANG infra engineer, building a dev-tools product for SRE teams",
+    "template_id": "founder-product-ideation",
+    "turn_count": 20,
+    "key_moments": [
+      {
+        "turn": 3,
+        "type": "participant_market_claim_top_down",
+        "note": "Founder states 'we're going after the $12B observability market' — classic top-down TAM framing."
+      },
+      {
+        "turn": 7,
+        "type": "participant_icp_narrow",
+        "note": "When asked to describe the first 10 customers, founder names 'SRE teams at companies between 200 and 800 engineers, probably ~1500 companies globally that fit.' This is a much narrower slice than the TAM claim."
+      },
+      {
+        "turn": 9,
+        "type": "participant_pricing_claim",
+        "note": "Founder states 'we're pricing it at $2,500 a month per team — maybe 8 to 12 SREs in a pod.' That's the per-team price."
+      },
+      {
+        "turn": 12,
+        "type": "conductor_cross_turn_catch_contradiction",
+        "note": "CROSS-TURN CATCH: Host reconciles the arithmetic — 'You said $12B market, and also 1,500 companies at $2,500/month — that's $45M of ARR if you take 100% of your ICP. Both can be true, but they point to different businesses. Which one is the one you're building?' Anchors turns 3, 7, 9. The catch isn't gotcha — it's making arithmetic contradiction visible."
+      },
+      {
+        "turn": 13,
+        "type": "participant_revises",
+        "note": "Founder concedes the TAM number was from a Gartner deck and he'd never actually done the bottom-up math. 'The $12B is the top-of-deck number. The real business, if it works, is a $50M-ARR business, at best. That's still a great business but it's not the same pitch.' This is the kind of self-discovery the platform is designed to produce."
+      },
+      {
+        "turn": 15,
+        "type": "participant_i_vs_they_shift",
+        "note": "Founder slides from 'SREs need this' (they) to 'I've been frustrated with this' (I) when describing the pain. The meta-notice hint flagged this in advance for the brief."
+      },
+      {
+        "turn": 17,
+        "type": "conductor_implied_not_said_catch",
+        "note": "CROSS-TURN CATCH: Host surfaces — 'Earlier you talked about SRE teams in the abstract. Just now when you described the specific moment the problem hits, you were describing yourself on your old team at Meta. Is the first customer you've really deeply interviewed you?' Anchors turns 5, 15. implied_not_said via the 'I' vs 'they' shift pattern."
+      },
+      {
+        "turn": 18,
+        "type": "participant_epistemic_update",
+        "note": "Founder admits: the ICP is him from two years ago. He's talked to four current SRE leads but none for more than 30 minutes and none who pushed back. This is the founder-market-fit failure pattern from the VC-failure-patterns doc."
+      },
+      {
+        "turn": 19,
+        "type": "conductor_anchor_return",
+        "note": "ANCHOR_RETURN: Host returns to the $2,500/month number — 'Since your ICP is you two years ago, would you have authorized $2,500/month on your team's credit card without an architectural review? Or would you have had to go up to a VP and get it prioritized?' anchor_turn = 9. This tests the pricing-vs-reality claim with the newly admitted ICP."
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "The TAM/ARR arithmetic contradiction — $12B market vs. $45M serviceable at stated price, never reconciled — made visible by holding two claims 4 turns apart.",
+      "The founder-market-fit pattern: he's building for himself two years ago, has not stress-tested that ICP with current practitioners (4 × 30-min conversations, no pushback).",
+      "Willingness-to-pay at $2,500/month was untested against the actual buyer authority structure (SRE team lead vs. VP Eng sign-off). The founder's own career history was evidence that this price requires VP sign-off at his target segment.",
+      "The $12B headline was Gartner-deck scaffolding, not a thesis. The actual thesis is a $50M-ARR tools business. The pitch needs to be re-written to match.",
+      "What the founder already has: direct lived experience of the pain, technical credibility from FAANG infra, an existing network of ex-Meta SREs he hasn't systematically tapped for stress-testing."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "The TAM/ARR contradiction: turns 3 and 9 were 6 turns apart; a form would have captured them as separate data points with no reconciliation.",
+      "The 'I'/'they' shift in turn 15 isn't a contradiction in isolation — it's only a signal when read against the abstracted framing in turn 5. Requires holding both.",
+      "The pricing-vs-buyer-authority question in turn 19 requires the newly-admitted ICP (turn 18) to be mapped back onto the pricing claim (turn 9). Classic anchor_return.",
+      "The 'no pushback from any of the 4 current SREs' admission came as a direct consequence of sitting with the I/they shift — never triggered by the brief's standalone questions."
+    ]
+  },
+  "session_summary": {
+    "template_id": "founder-product-ideation",
+    "persona": "second_time_founder_technical — ex-FAANG SRE, high self-trust, low customer-discovery rigour",
+    "domain": "B2B dev tools for SRE incident response / observability",
+    "turn_count": 20,
+    "objectives_active": ["problem_reality", "target_user_specificity", "unstated_assumptions", "wedge_and_differentiation"],
+    "extraction_highlights": {
+      "problem_reality": {
+        "completeness": 0.65,
+        "confidence": 0.72,
+        "key_finding": "Pain is direct and personal but evidence base is founder's own past experience, not triangulated present-day customer pain. 4 × 30-min discovery conversations with no pushback."
+      },
+      "target_user_specificity": {
+        "completeness": 0.70,
+        "confidence": 0.82,
+        "key_finding": "ICP is the founder himself two years ago. Narrow and specific, but self-reference risk is load-bearing and previously unexamined."
+      },
+      "unstated_assumptions": {
+        "completeness": 0.85,
+        "confidence": 0.90,
+        "key_finding": "Three load-bearing assumptions surfaced: (1) TAM-to-ARR math works for the segment, (2) SRE team lead has $2,500/month discretionary authority, (3) no-pushback in 4 discovery conversations is signal rather than noise."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Give me the one-sentence version — what is this, who's it for."
+    },
+    {
+      "index": 3,
+      "role": "participant",
+      "text": "Sure. So it's an on-call incident-response platform — think PagerDuty, but the entire workflow from alert-fire to post-mortem is in one tool, and the runbooks are AI-assisted. We're going after the observability market, which is around $12B and growing 23% a year. The wedge is that the current stack is four products duct-taped together and nobody's happy with it.",
+      "_note": "Top-down TAM. $12B, 23% CAGR."
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "The specific user is the SRE who's on call at 2 AM with a P1. Alert fires, they triage, they're three clicks deep into Datadog trying to find the runbook, then they have to hop to Grafana for the chart, then they're typing in Slack while also opening a war room. It's a mess. SREs universally complain about this."
+    },
+    {
+      "index": 7,
+      "role": "participant",
+      "text": "Our first ten customers are mid-size engineering orgs — companies between 200 and 800 engineers, which is roughly where you staff a real SRE team but before you've built your own internal tooling. Maybe 1,500 companies globally fit that definition. We've talked to four of them.",
+      "_note": "Bottom-up ICP. 1,500 target customers."
+    },
+    {
+      "index": 9,
+      "role": "participant",
+      "text": "Pricing — we're landing at $2,500 a month per team. A team is usually 8 to 12 SREs, sometimes a pod model. So per-seat it's maybe $200 to $300 effective.",
+      "_note": "$2,500/mo per team."
+    },
+    {
+      "index": 12,
+      "role": "host",
+      "text": "I want to hold two things side by side for a second, because I don't think they quite fit and I'd rather surface it now. Earlier you said the market is $12B. Just now you described the ICP as 1,500 companies at $2,500 a month — that's $45M of potential ARR if you take 100% of that segment, which no one does. Both numbers can be true, but they're describing two different companies. Which one is the business you're actually building?",
+      "_note": "CROSS-TURN CATCH — contradiction. Anchors: [3, 7, 9]. The observation only exists when all three are held together."
+    },
+    {
+      "index": 13,
+      "role": "participant",
+      "text": "*pauses*\n\n…yeah, that's fair. Honestly, the $12B is the number the Gartner observability deck leads with, and I put it in the pitch because every deck I saw at Sequoia had a big TAM slide. I haven't actually done the bottom-up math against the ICP. If I had to write the real pitch — the one that matches the business I'm actually building — it's a $50M-ARR tools company serving 1,500 teams. That's still a great business. It's just not a $12B-market pitch."
+    },
+    {
+      "index": 15,
+      "role": "participant",
+      "text": "The other thing is — look, I lived this at Meta. I was on call for their monitoring ingest service for three years. Every P1 we had, I was hopping between the same four tools, pasting the same dashboard links into Slack at 2 in the morning, typing with one hand while I was trying to find the runbook. I know this workflow because I've lived it. I've been building this in my head for two years.",
+      "_note": "The 'I' has taken over. Previously he said 'SREs universally complain' (they); now it's 'I was on call for three years' (I)."
+    },
+    {
+      "index": 17,
+      "role": "host",
+      "text": "One thing I want to check. Earlier in the conversation you were describing SREs in the abstract — 'they hop between tools, they're three clicks deep, they're frustrated.' Just now when you described the specific 2-AM moment the problem lives in, you were describing yourself on the monitoring-ingest team at Meta. Is the first customer you've genuinely deeply interviewed you?",
+      "_note": "CROSS-TURN CATCH — implied_not_said via I/they shift. Anchors: [5, 15]."
+    },
+    {
+      "index": 18,
+      "role": "participant",
+      "text": "*exhales*\n\nYeah. I think I have to be honest and say yes. I've talked to four current SRE leads outside of Meta. None of those conversations ran more than 30 minutes, and — now that I'm thinking about it — not one of them pushed back on anything I said. They all nodded. Which I took as validation but is more likely politeness when a founder's talking at you about a workflow you know well. The ICP I've deeply interviewed is me from two years ago."
+    },
+    {
+      "index": 19,
+      "role": "host",
+      "text": "Let me come back to something from earlier. You said the price is $2,500 a month per team. If the ICP is you two years ago on the monitoring-ingest team — would you, in that seat, have put $2,500 a month on your team's credit card without an architectural review? Or would you have had to go up to your VP of Engineering and get it prioritized in a planning cycle?",
+      "_note": "ANCHOR_RETURN to turn 9 with the newly-admitted ICP. The question reveals that willingness-to-pay was never tested against buyer-authority structure."
+    }
+  ]
+}

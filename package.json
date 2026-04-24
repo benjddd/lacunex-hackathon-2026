@@ -10,7 +10,10 @@
     "start": "next start",
     "lint": "eslint",
     "sim": "tsx scripts/simulate-session.ts",
-    "eval:noticing": "tsx scripts/eval-noticing.ts"
+    "eval:noticing": "tsx scripts/eval-noticing.ts",
+    "replay:fixtures": "tsx scripts/replay-fixtures.ts",
+    "validate:templates": "tsx scripts/validate-templates.ts",
+    "test:suite": "npm run validate:templates -- --strict && npm run replay:fixtures -- --strict"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",

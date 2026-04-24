@@ -1,0 +1,158 @@
+{
+  "_annotation": {
+    "purpose": "Curated brief-designer session showing scope_creep and vague_participant catches. The host is trying to design a brief to study their own product's onboarding. The conductor catches both failure modes while helping the host get to a focused brief specification.",
+    "persona": "PM at a Series-B developer tools company wanting to run interviews to improve onboarding. Has run research before but tends to over-scope.",
+    "template_id": "brief-designer",
+    "turn_count": 12,
+    "key_moments": [
+      {
+        "turn": 1,
+        "type": "host_describes_use_case",
+        "note": "Host: 'We want to understand why our activation rate is low — what's happening in onboarding.'"
+      },
+      {
+        "turn": 3,
+        "type": "host_scope_creep_signal_1",
+        "note": "When asked what they want to learn, host lists: activation drop-off, feature discoverability, pricing confusion, competitor comparison, and 'whether our brand feels trustworthy.' Five distinct research goals in one turn."
+      },
+      {
+        "turn": 5,
+        "type": "host_scope_creep_signal_2",
+        "note": "Host adds two more: 'and while we're at it, we've been meaning to do a naming study on the new workspace feature, so we could include that.'"
+      },
+      {
+        "turn": 6,
+        "type": "conductor_cross_turn_catch_scope_creep",
+        "note": "CROSS-TURN CATCH: Host (conductor) surfaces — 'You've named seven different things in the last two answers — activation, discoverability, pricing, competitor comparison, brand trust, and the naming study. Any one of those is a separate brief. Which one, if you only got an answer to one of them, would change a decision you're currently stuck on?' Cites turns 3 and 5. The scope_creep notice."
+      },
+      {
+        "turn": 7,
+        "type": "host_prioritises",
+        "note": "Host: 'Okay — fair. The one that would change a decision is the activation drop-off. We have a redesign in PR that's going to either ship or not ship in two weeks. That's the decision.' The forcing question does its job."
+      },
+      {
+        "turn": 8,
+        "type": "host_vague_participant_signal",
+        "note": "When asked who to interview, host says: 'Developers who signed up but didn't activate.' Broad category — could mean 5,000 different people."
+      },
+      {
+        "turn": 9,
+        "type": "conductor_cross_turn_catch_vague_participant",
+        "note": "CROSS-TURN CATCH: Host (conductor) probes — 'You said developers who signed up but didn't activate — that's a big pool. If I had to find five of them for you by Friday and I could only ask two questions to qualify them, what would I ask? Give me the picture you actually have in your head when you say 'developer who didn't activate.' Anchor turn 8. vague_participant notice."
+      },
+      {
+        "turn": 10,
+        "type": "host_narrows_participant",
+        "note": "Host refines: 'Seed-to-Series-A-stage backend developers, probably team size 2-6, who signed up in the last 90 days via the GitHub integration, hit the first step of the CLI install, and then stopped. Not enterprise, not students, not frontend. That's maybe 400 people.'"
+      },
+      {
+        "turn": 11,
+        "type": "conductor_wraps_and_summarises",
+        "note": "Conductor: 'Here's what I've got. You want to learn what specifically in the CLI-install-to-first-command journey causes seed-to-A-stage backend developers on small teams to drop off, in the next two weeks, and the answer will determine whether you ship a PR'd redesign. The participant profile is narrow enough to be findable. Want me to generate the brief, or is there one thing we haven't caught that matters?'"
+      },
+      {
+        "turn": 12,
+        "type": "host_confirms_plus_one_addition",
+        "note": "Host confirms — and adds: 'One more — they should have tried and abandoned the product, not just signed up and forgotten. Someone who made a real attempt and gave up, not someone who never tried.' This is a quality refinement of the participant profile that emerged from the conversation, not in the brief request."
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "The host's actual decision — whether to ship a specific redesign in two weeks — was the appropriate anchor for the brief, not the category goal 'understand activation.'",
+      "The participant profile sharpened from 'developers who didn't activate' (≈5,000 people) to 'seed-to-A backend devs on small teams who attempted and abandoned the CLI install in the last 90 days' (≈400 people, findable in a day).",
+      "The host had six other research goals they'd been accumulating; none of them were as decision-critical as the activation question. Prioritising here is discipline, not scope-limitation.",
+      "The 'attempted and abandoned vs. never tried' distinction emerged only at the end, when the conversation had done its work. A form-style brief request would have missed it entirely."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "Scope_creep at turn 3 alone is normal — most hosts front-load their wants. Scope_creep at turns 3 AND 5 is a pattern that the 'which one would change a decision' forcing question is designed for.",
+      "The vague participant definition would have been accepted in a form request. Only the 'picture in your head' question surfaced the unstated specificity the host actually had.",
+      "The 'attempted and abandoned vs. never tried' distinction surfaced at turn 12 — after the brief was nearly complete. It wouldn't have emerged in a one-shot form.",
+      "The decision-anchored framing ('which would change a decision you're currently stuck on') is the single most useful move in brief design, and it only fires when scope_creep has visibly happened."
+    ]
+  },
+  "session_summary": {
+    "template_id": "brief-designer",
+    "persona": "mid-career PM at Series-B dev tools co, high domain context, default over-scoping tendency",
+    "domain": "Onboarding research brief design — activation drop-off in CLI-install flow",
+    "turn_count": 12,
+    "objectives_active": ["use_case", "learning_goals", "target_participant", "hypotheses"],
+    "extraction_highlights": {
+      "use_case": {
+        "completeness": 0.95,
+        "confidence": 0.95,
+        "key_finding": "Specific decision to be informed: ship or do-not-ship a PR'd onboarding redesign in 2 weeks. Domain: CLI install flow activation drop-off."
+      },
+      "target_participant": {
+        "completeness": 0.90,
+        "confidence": 0.92,
+        "key_finding": "Seed-to-A backend developers on small teams, signed up via GitHub integration in last 90 days, hit CLI install step 1 and stopped — with the final refinement that they must have attempted and abandoned, not merely forgotten."
+      },
+      "learning_goals": {
+        "completeness": 0.85,
+        "confidence": 0.90,
+        "key_finding": "One primary goal (what causes drop-off between CLI install step 1 and first command); five secondary goals intentionally de-scoped from this brief and parked for later."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Let's design this together. To start — what are you trying to investigate, and what's going to change based on the answer?"
+    },
+    {
+      "index": 1,
+      "role": "participant",
+      "text": "We're a dev tools company — CLI-first infrastructure-as-code thing. Our activation rate has been stuck at 14% for two quarters. We want to understand why our activation rate is low and what's happening in onboarding so we can fix it."
+    },
+    {
+      "index": 3,
+      "role": "participant",
+      "text": "So — a bunch of things. Where people drop off in activation specifically, but also why certain features don't get discovered, whether our pricing page is confusing, whether people are comparing us to Pulumi and Terraform and getting lost, and — honestly — whether our brand feels trustworthy. Our last NPS survey had a lot of 'I'm not sure you'll be around in two years' comments, which we think is affecting the trial-to-paid conversion. That's a lot, I know.",
+      "_note": "Five research goals in one turn: activation drop-off, feature discoverability, pricing confusion, competitor comparison, brand trust. First scope_creep signal."
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "Oh — and while we're talking to these people, we've been meaning to do a naming study on the new workspace feature. The team's been going back and forth on whether to call it 'Workspaces' or 'Projects' and we could just ask people. Could probably squeeze that in.",
+      "_note": "Two more goals piled on. Second scope_creep signal."
+    },
+    {
+      "index": 6,
+      "role": "host",
+      "text": "Can I push back on that for a second. You've named seven different things in the last two answers — activation drop-off, feature discoverability, pricing confusion, competitor comparison, brand trust, and the naming study. Any one of those is a separate research brief. If you only got a good answer to one of them, which one, right now, would change a decision you're actually stuck on?",
+      "_note": "CROSS-TURN CATCH — scope_creep. Anchors: [3, 5]. Forcing question."
+    },
+    {
+      "index": 7,
+      "role": "participant",
+      "text": "*pauses*\n\nOkay — that's fair. The one that would change a decision: the activation drop-off. We have an onboarding redesign in a PR right now that's either going to ship or not ship in two weeks, and the decision hinges on whether the current drop-off is a UI problem the redesign addresses, or a comprehension problem that the redesign doesn't touch. If I knew the answer to that, I'd know what to do. Everything else is parked."
+    },
+    {
+      "index": 8,
+      "role": "participant",
+      "text": "Who do we talk to? Developers who signed up but didn't activate.",
+      "_note": "Vague participant definition — could be 5,000 people across every use case."
+    },
+    {
+      "index": 9,
+      "role": "host",
+      "text": "That's a big pool. If I had to find five of those people for you by Friday and I could only ask two qualifying questions, what would I ask? Give me the picture you actually have in your head when you say 'developer who didn't activate.'",
+      "_note": "CROSS-TURN CATCH — vague_participant. Anchor [8]. 'Picture in your head' question surfaces unstated specificity."
+    },
+    {
+      "index": 10,
+      "role": "participant",
+      "text": "Seed-to-Series-A backend developers, probably team size two to six, who signed up in the last 90 days via the GitHub integration, hit step one of the CLI install — the 'paste this token' step — and then dropped off. Not enterprise (they have custom onboarding paths), not students (different motivation pattern), not frontend devs (they're not our ICP). That's maybe 400 people in our database. Much more findable."
+    },
+    {
+      "index": 11,
+      "role": "host",
+      "text": "Here's what I have. You want to learn what specifically in the CLI-install-to-first-command journey causes seed-to-A-stage backend developers on small teams to drop off — in the next two weeks — and the answer determines whether you ship a PR'd redesign. Your participant pool is ~400 people, findable via your own database. Your hypothesis is either UI friction (the redesign fixes) or comprehension gap (the redesign doesn't). Is that right? And is there one thing we haven't caught that matters?"
+    },
+    {
+      "index": 12,
+      "role": "participant",
+      "text": "That's it. One refinement — they should have tried and abandoned, not just signed up and forgotten. Someone who hit the CLI install, typed the token command, got a timeout or an error or just gave up, and closed the terminal. Not someone who signed up on Tuesday and meant to get back to it. That's a different conversation. If we can qualify on 'attempted and abandoned' — either by session-replay or a screening question — that's the population. Otherwise we'll just get 'yeah I meant to try it' which tells us nothing."
+    }
+  ]
+}

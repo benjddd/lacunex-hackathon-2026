@@ -1,0 +1,165 @@
+{
+  "_annotation": {
+    "purpose": "Curated civic-consultation session showing trust_contradiction and implied_resignation catches. Resident expresses cynicism about the process while giving unusually detailed input, and describes accommodation in a way that implies they no longer believe change is possible.",
+    "persona": "Long-term renter, tenant-association member, has attended many prior consultations on housing policy",
+    "template_id": "civic-consultation",
+    "nominal_scope": "Resident feedback on proposed missing-middle housing density allowance in established single-family zones",
+    "turn_count": 22,
+    "key_moments": [
+      {
+        "turn": 2,
+        "type": "participant_cynical_opening",
+        "note": "Opens with 'I'm only here because you're buying lunch and I was going to be down at the library anyway.' Signals expectation that the consultation is performative."
+      },
+      {
+        "turn": 3,
+        "type": "participant_substantive_engagement",
+        "note": "Immediately after the cynical opener, gives a six-sentence, specific answer about the last time the density issue affected her — quotes a particular week, names specific units, explains the displacement sequence. The depth contradicts the verbal cynicism."
+      },
+      {
+        "turn": 9,
+        "type": "conductor_cross_turn_catch_trust_contradiction",
+        "note": "CROSS-TURN CATCH: Host surfaces the gap — 'You opened by saying you were only here because of the sandwich, and yet you've given me the clearest account of what's actually happening to tenants on that block I've heard in six of these. What made you show up?' Cites turns 2 and 3 (and implicitly 5, 7). The catch respects the participant's framing while naming the mismatch."
+      },
+      {
+        "turn": 10,
+        "type": "participant_names_the_mechanism",
+        "note": "Participant explains: 'Because if nobody who lives in the block shows up, the only people you'll hear from are the homeowners on the next block, and they don't want the density and I do.' The engagement is strategic — she doesn't trust the process but she's there because NOT being there is worse."
+      },
+      {
+        "turn": 14,
+        "type": "participant_describes_accommodation",
+        "note": "Describes her own housing plan: 'I'll be moving to my sister's in Bellingham when the lease expires in July. It's fine. She has room.' The flatness of the delivery and the word 'fine' echo the civic-consultation pattern."
+      },
+      {
+        "turn": 15,
+        "type": "conductor_cross_turn_catch_implied_resignation",
+        "note": "CROSS-TURN CATCH: Host gently probes — 'When you say moving to Bellingham is fine, is that because you genuinely feel it's a fine outcome for you, or because you don't expect this consultation to change whether you get to stay?' Cites turns 11 and 14. Implied_resignation via the accommodation-framed-as-preference pattern."
+      },
+      {
+        "turn": 16,
+        "type": "participant_epistemic_honesty",
+        "note": "Participant: 'Honest answer? Because I don't expect this to change anything for me personally. The decision on this block was made four years ago when the first tear-down went through. I'm doing this for the families in the next tear-down, not mine.' Names the performative aspect and her own reason for participating anyway."
+      },
+      {
+        "turn": 20,
+        "type": "conductor_protective_synthesis",
+        "note": "Host pulls back: 'I don't want to lose the specifics in all of this. You've named three things that should show up in the report distinctly from 'tenant feedback in general' — the displacement sequence on your block, the notice-period gap you described, and the fact that your input is on behalf of the next tear-down, not yours. Can I make sure each of those lands separately?'"
+      },
+      {
+        "turn": 21,
+        "type": "participant_final_correction",
+        "note": "Participant adds one more thing — the Arabic-speaking family at 2014 had no idea there had been two prior consultations because the notices only went out in English. That's the 'hidden access gap' kind of finding a form survey would never surface."
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "The cynicism-plus-engagement pattern: she doesn't trust the process, but opts in strategically because absence would let the opposition dominate. Neither a 'trusts process' nor 'distrusts process' bucket captures this.",
+      "The 'moving to Bellingham is fine' line was an accommodation, not a preference — surfaced only by reading it against her earlier demonstrated care for the block.",
+      "Her input is explicitly on behalf of the next displaced family, not her own. That re-shapes what kind of evidence her testimony is (advocacy from within the affected group, not personal complaint).",
+      "A concrete access gap: notice went out only in English; an Arabic-speaking household missed two prior consultations — a hidden inclusion failure that a survey couldn't catch."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "A survey treating 'distrust process' and 'engage deeply' as inconsistent would drop one and record the other — the actual signal is that both are true.",
+      "The 'it's fine' phrase about Bellingham would have been coded as preference, inverting the resident's actual position.",
+      "The advocacy-from-within framing emerged from sitting with why she showed up despite cynicism — a form survey has no field for this and would record her as a 'tenant voice' indistinguishable from any other tenant response.",
+      "The Arabic-language notice gap would not have surfaced in response to any of the brief's prescribed questions; it came because the conversation stayed open long enough for it to arrive."
+    ]
+  },
+  "session_summary": {
+    "template_id": "civic-consultation",
+    "persona": "long-term tenant, tenant-association member, history of civic engagement with accumulated scepticism",
+    "domain": "Missing-middle housing density allowance in an established single-family zone",
+    "turn_count": 22,
+    "objectives_active": ["lived_experience", "trust_and_process", "barriers_and_access", "adjacent_concerns"],
+    "extraction_highlights": {
+      "trust_and_process": {
+        "completeness": 0.88,
+        "confidence": 0.92,
+        "key_finding": "Strategic engagement: distrusts process, participates anyway because absence would let opposition dominate. Prior positive-outcome expectation is zero; participation is tactical, not hopeful."
+      },
+      "lived_experience": {
+        "completeness": 0.82,
+        "confidence": 0.90,
+        "key_finding": "Specific week-by-week account of tenant displacement sequence on her block post-rezoning; contradicts the flatness of the opener."
+      },
+      "barriers_and_access": {
+        "completeness": 0.75,
+        "confidence": 0.85,
+        "key_finding": "Language barrier: a non-English-speaking household on the block missed two prior consultation rounds because notices were English-only. Access gap invisible in standard usage metrics."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Thank you for making the time. What I'd like to do is just understand how the missing-middle density proposal on your block is landing for you in practice — not your position on the policy, but what it looks like from where you actually live. There's a short summary at the end that I'll share with you. To start — can you tell me a bit about how long you've lived in the neighbourhood and how you'd describe it?"
+    },
+    {
+      "index": 2,
+      "role": "participant",
+      "text": "Look, I'll be straight with you — I'm only here because you're buying lunch and I was going to be down at the library anyway. I've done four of these in three years and nothing's changed except the rent. So take what I say with that understanding.",
+      "_note": "Cynical opener — sets trust baseline at zero."
+    },
+    {
+      "index": 3,
+      "role": "participant",
+      "text": "That said. I've been in the Maple Street block for eleven years, in the duplex at 2022. In the last four years I've watched three of the eight houses on the block get torn down. The one at 2008 went first — that was a family with two kids, the dad drove for the school district, they'd been there fifteen years. They got a sixty-day notice, the day after the rezone went through. The new building is six townhomes that went on the market last month at nine-fifty a unit. Then 2014 and 2030 followed. Same sequence every time. Sixty-day notice, demolition within four months, new build on the market inside eighteen months. If this proposal goes through, my building is next. That's what it looks like from the inside.",
+      "_note": "Six-sentence specific account — this depth directly contradicts the 'only here for the sandwich' opener."
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "The consultation four years ago — that was framed as 'gathering community input on a study.' The one two years ago was framed as 'reviewing the study.' The one last year was framed as 'finalising implementation.' At no point in any of those four meetings was there a real option on the table that wasn't 'yes, the study, in some form.' I sat through them all. I spoke at two of them. I don't know what I'd have had to say to change any of that."
+    },
+    {
+      "index": 7,
+      "role": "participant",
+      "text": "If you want a specific moment — a month ago I went to 2014's going-away thing. The family there, the ones being displaced, they told me they didn't know about either of the prior consultations. Both notices had gone out in English only. The husband speaks some English, the wife speaks basically none. They were blindsided by the notice when it came."
+    },
+    {
+      "index": 9,
+      "role": "host",
+      "text": "I want to name something. You opened by saying you were only here because of the sandwich, and in the last few minutes you've given me the most detailed account of what's actually happened on a rezoned block that I've heard in six of these — dates, unit numbers, notice periods, a language access failure I hadn't heard about. Those two things don't quite sit together for me. What made you show up today?",
+      "_note": "CROSS-TURN CATCH — trust_contradiction. Anchors: [2, 3, 5, 7]."
+    },
+    {
+      "index": 10,
+      "role": "participant",
+      "text": "*small laugh*\n\nBecause if nobody who actually lives on the block shows up, the only people you'll hear from are the homeowners on the next block who don't want the density. And they've always got ten people at every meeting. The homeowners have the time and the grievance and the English and the institutional access. So if I don't come, the only 'tenant voice' you get is whatever they project onto us. *pauses* That's not the same as thinking this meeting will change the outcome for my block. It won't. I'm here to make sure the record isn't only about them."
+    },
+    {
+      "index": 11,
+      "role": "host",
+      "text": "That's a useful distinction and I want to come back to it. Before we do — can I ask about your own situation? You mentioned you'd be next. What's your read on what happens when your lease comes up?"
+    },
+    {
+      "index": 14,
+      "role": "participant",
+      "text": "I'll be moving to my sister's in Bellingham when the lease expires in July. She has a basement suite she's willing to rent me for what I'm paying now, which is less than half of market rate here. I can't find anything in the city at my price point. So — Bellingham. It's fine.",
+      "_note": "The 'it's fine' civic-minimisation phrase again, this time attached to a personal accommodation."
+    },
+    {
+      "index": 15,
+      "role": "host",
+      "text": "When you say moving to Bellingham is fine — is that because it genuinely feels like a fine outcome for you, or because you don't expect this consultation to change whether you get to stay?",
+      "_note": "CROSS-TURN CATCH — implied_resignation. Anchors: [11, 14]. Borrows the IAP2 accommodation-as-preference pattern."
+    },
+    {
+      "index": 16,
+      "role": "participant",
+      "text": "*quieter*\n\nHonest answer? Because I don't expect this to change anything for me personally. The decision on my block was made four years ago when the first tear-down went through. The density proposal this year is the last procedural step; what it actually changes is the count of units in the new build, not whether the old ones come down. I'm doing this for whoever's in 2022 after me — that's probably another tenant household, not a homeowner — and for the next block to go. My lease is up in July and my sister said yes in December. That was the actual decision."
+    },
+    {
+      "index": 20,
+      "role": "host",
+      "text": "I want to make sure I don't lose the specifics while we wrap up. You've named three things that should land in the report distinctly from 'general tenant feedback.' First: the displacement sequence you described — sixty-day notice, four-month demolition, eighteen-month rebuild-and-resale cycle, repeated across three units on your block. Second: the notice-period gap, where tenants get sixty days and the first consultation round already happened two years prior, so the consultation and the displacement aren't really on the same timeline. Third: the Arabic-language notice failure at 2014. Those shouldn't merge in the write-up. Is that right?"
+    },
+    {
+      "index": 21,
+      "role": "participant",
+      "text": "Yes. And — one more thing, since you asked. If you can put in there that I'm giving this testimony on behalf of the next family in my unit, not myself, I'd want that noted. I don't want my input counted as one tenant saying 'I can't stay.' My staying isn't what's at stake anymore. What's at stake is whether the next tenant gets a sixty-day notice in only English.",
+      "_note": "Final correction — re-frames the epistemic status of her own testimony. This would never come up in a form."
+    }
+  ]
+}

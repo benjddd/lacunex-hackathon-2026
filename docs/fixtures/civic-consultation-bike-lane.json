@@ -1,0 +1,153 @@
+{
+  "_annotation": {
+    "purpose": "Curated civic-consultation session showing minimisation_mask and scope_displacement catches. Resident downplays the issue verbally while describing behaviour that reveals real impact, and keeps returning to a topic outside the nominal scope.",
+    "persona": "Mid-40s cyclist commuter, recently moved to the neighbourhood, engaged but wary of city consultations",
+    "template_id": "civic-consultation",
+    "nominal_scope": "Feedback on the proposed Meridian Avenue protected bike lane",
+    "turn_count": 18,
+    "key_moments": [
+      {
+        "turn": 3,
+        "type": "participant_verbal_minimisation",
+        "note": "Participant opens with 'it's honestly fine, I've made it work' — classic civic minimisation phrase that masks adaptation."
+      },
+      {
+        "turn": 5,
+        "type": "participant_describes_workaround",
+        "note": "Same participant describes a 1.2-mile detour through a parking lot and cutting through a strip mall. This is the behaviour-signal that contradicts the verbal 'fine.'"
+      },
+      {
+        "turn": 8,
+        "type": "conductor_cross_turn_catch_minimisation_mask",
+        "note": "CROSS-TURN CATCH: Host surfaces the gap directly — 'You've said this is fine a couple of times, but what you just described is a twelve-minute detour through a parking lot. Those don't quite match — which one is closer to how this actually feels to you?' Cites turns 3 and 5 as anchors; the notice could not fire on either turn alone."
+      },
+      {
+        "turn": 9,
+        "type": "participant_revision",
+        "note": "Participant concedes: 'It's not fine. I've just been saying it's fine for three years because nobody does anything when I don't.' This is the real signal that would be missed in a form-based survey."
+      },
+      {
+        "turn": 12,
+        "type": "participant_scope_displacement",
+        "note": "Participant pivots to the school drop-off on Meridian — third time they've mentioned it. The nominal scope is the bike lane, but their actual concern is what the bike lane change does to the school drop-off queue."
+      },
+      {
+        "turn": 13,
+        "type": "conductor_cross_turn_catch_scope_displacement",
+        "note": "CROSS-TURN CATCH: Host names the pattern — 'We're supposed to be talking about the bike lane, but you've come back to the school drop-off three times now. Is the drop-off the more pressing thing for you, and the bike lane is the vehicle for it?' Cites turns 4, 10, and 12 — three-occurrence recurrence, not forced two-turn pattern."
+      },
+      {
+        "turn": 14,
+        "type": "participant_reframes_priority",
+        "note": "Participant confirms: the bike lane per se is neutral for her. The drop-off queue behaviour has become dangerous since the school opened last year, and she's been trying to get the city to look at it. She sees the bike lane consultation as her only route in."
+      },
+      {
+        "turn": 17,
+        "type": "conductor_final_synthesis_move",
+        "note": "Host confirms the routing — 'What I'll make sure gets into the report is that the bike lane design should be evaluated against what it does to the drop-off pattern on Meridian between 8:10 and 8:35 on weekday mornings. Is that closer to what you actually want heard?'"
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "The 'it's fine' framing was a three-year accommodation, not an actual assessment — revealed only when the described behaviour contradicted the verbal claim.",
+      "The real issue the resident wants addressed is the school drop-off on Meridian, not the bike lane design. The bike lane consultation is the only consultation she's been able to attend given work schedule.",
+      "The bike lane is acceptable to this resident if and only if the drop-off behaviour is addressed — a conditional support she had never articulated as a conditional.",
+      "Routing recommendation: this resident's input belongs in the drop-off / traffic-calming process, not just the bike lane file."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "The minimisation_mask: a form survey would have recorded 'it's fine' and moved on.",
+      "The scope_displacement: three separate references to the school drop-off would have read as one-off 'side comments' and been filtered.",
+      "The conditional support structure: the resident's verbal position ('I support the lane') and actual position ('I support the lane only if the drop-off is also addressed') would have been recorded identically.",
+      "The correct routing: this input is more valuable in a traffic-calming process than a bike lane process — a routing recommendation only the aggregate layer can produce."
+    ]
+  },
+  "session_summary": {
+    "template_id": "civic-consultation",
+    "persona": "cycling commuter, parent of early-elementary student, works shifts",
+    "domain": "Proposed Meridian Avenue protected bike lane, with adjacent school drop-off concerns",
+    "turn_count": 18,
+    "objectives_active": ["lived_experience", "priorities_and_trade_offs", "adjacent_concerns"],
+    "extraction_highlights": {
+      "lived_experience": {
+        "completeness": 0.78,
+        "confidence": 0.84,
+        "key_finding": "Verbal 'it's fine' masks a 1.2-mile regular detour through a parking lot and strip mall — three-year-old adaptation, not acceptance."
+      },
+      "priorities_and_trade_offs": {
+        "completeness": 0.72,
+        "confidence": 0.88,
+        "key_finding": "Conditional support for the bike lane: acceptable only if it co-addresses the school drop-off behaviour on Meridian 8:10–8:35. Verbal position and conditional position would read identically in a survey."
+      },
+      "adjacent_concerns": {
+        "completeness": 0.85,
+        "confidence": 0.90,
+        "key_finding": "Real presenting issue is the school drop-off, not the bike lane. Resident is using the bike lane consultation as her only accessible route into the city's attention."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Thanks for making the time. We're looking at how the Meridian Avenue protected bike lane proposal is landing for residents in practice — not your vote for or against, just how the current situation is actually working for you. There's no right answer. At the end I'll share a short summary of what I heard. To start — can you tell me a bit about how you get around the neighbourhood day-to-day?"
+    },
+    {
+      "index": 3,
+      "role": "participant",
+      "text": "Honestly, it's fine. I've made it work. I know the city's been looking at the Meridian corridor for a while and I think it's good that something's being done, but I don't want to be one of these people who shows up at every meeting to complain. It's fine.",
+      "_note": "Verbal minimisation — 'it's fine' × 2, 'I've made it work.' First signal."
+    },
+    {
+      "index": 4,
+      "role": "participant",
+      "text": "I mean, the drop-off at Meridian Elementary has gotten a bit tight in the mornings, but that's not really what you're asking about.",
+      "_note": "First scope_displacement signal — school drop-off mentioned unprompted."
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "When I ride into the city I normally cut through the Safeway parking lot to avoid the Meridian–9th intersection, then I'm in the strip mall behind the post office, then I pop out onto 7th. It adds maybe twelve minutes but I'd rather that than deal with the turn onto Meridian during the school hour. I've done it that way for — god, three years? Yeah, since we moved to this neighbourhood.",
+      "_note": "Describes 1.2-mile detour explicitly, and — critically — 'three years.' This contradicts 'it's fine.'"
+    },
+    {
+      "index": 8,
+      "role": "host",
+      "text": "I want to sit with something for a second, because I want to get this right. You've said a couple of times that it's fine and you've made it work — but what you just described is a twelve-minute detour through a parking lot and the back of a strip mall, that you've been doing every morning for three years. Those don't quite match for me. When you say 'it's fine,' which one of those is closer to how this actually feels to you?",
+      "_note": "CROSS-TURN CATCH — minimisation_mask. Anchors: [3, 5]. why_cross_turn would quote both 'it's fine' from turn 3 and 'twelve minutes... three years' from turn 5."
+    },
+    {
+      "index": 9,
+      "role": "participant",
+      "text": "*pauses*\n\n…fair. No, it's not fine. I've just been saying it's fine for three years because nobody does anything when I don't. I kept showing up to things like this and I'd say 'well, the Safeway shortcut works' and then nothing would happen and I'd feel like I'd wasted everyone's time making a complaint about something I had a workaround for.\n\nThe truth is I don't ride Meridian between 8:10 and 8:30 any morning the school is in session. It's not safe. I've had two near-misses with parents reversing out of the drop-off queue — one of them didn't see me at all, I was in her blind spot behind a delivery truck. That's why I take the long way.",
+      "_note": "Revision produces the real signal. Note the meta-commentary on why residents minimise."
+    },
+    {
+      "index": 10,
+      "role": "participant",
+      "text": "And, you know, the school drop-off is — *laughs* — I keep bringing it up, sorry. I know you're not asking about that.",
+      "_note": "Second scope_displacement signal — resident names it herself but treats it as off-topic."
+    },
+    {
+      "index": 12,
+      "role": "participant",
+      "text": "So the protected bike lane — honestly, for someone like me who already takes the detour, it doesn't change much. But if it makes the drop-off queue longer because the curbside space goes away, then every parent who's currently double-parking on the street is going to be double-parking on 9th instead, and 9th is already a bus route. *pauses* That's what I keep thinking about.",
+      "_note": "Third scope_displacement signal — school drop-off reasoning now structured into her bike lane position."
+    },
+    {
+      "index": 13,
+      "role": "host",
+      "text": "I want to name something, if that's okay. We've been talking about the bike lane, but you've come back to the school drop-off three times now — once in your opening, once when you described your detour, and just now when you walked through the trade-off. Is the drop-off actually the more pressing thing for you, and the bike lane is the vehicle you have for raising it?",
+      "_note": "CROSS-TURN CATCH — scope_displacement. Anchors: [4, 10, 12]. Three-occurrence recurrence, as required by the recurrence_vs_contrast guidance in the system prompt."
+    },
+    {
+      "index": 14,
+      "role": "participant",
+      "text": "…yes. That's exactly it. I've been trying to get the city to look at the drop-off queue for a year. I couldn't get to the traffic-calming open house because I was working swing that week, and the bike lane meeting was on a weekend, so that's the one I made. I'm not trying to hijack your meeting. But yeah. The drop-off is the thing."
+    },
+    {
+      "index": 17,
+      "role": "host",
+      "text": "Then here's what I'm going to make sure gets into the report — in your own words, before you leave. That the bike lane design on Meridian should be evaluated against what it does to the drop-off pattern between 8:10 and 8:35 on weekday mornings. That a resident who supports the lane in principle won't support it in practice if it pushes double-parking onto 9th. And that your input on the drop-off belongs in the traffic-calming file, not just the bike lane file. Is that closer to what you actually want heard?",
+      "_note": "Protective synthesis + routing recommendation. The aggregate layer would use this to cross-route the input."
+    }
+  ]
+}

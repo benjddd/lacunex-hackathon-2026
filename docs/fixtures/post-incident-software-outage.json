@@ -1,0 +1,156 @@
+{
+  "_annotation": {
+    "purpose": "Curated post-incident witness session from a software production outage, demonstrating the template on a third domain (after clinical and manufacturing). Shows a hedging_pattern catch across turns and an emotional_shift catch at the moment the witness reaches the decision point. A sixth fixture covering SRE/devops use of the incident witness brief.",
+    "persona": "Senior backend engineer, 7 years at the company, on-call during a 43-minute customer-facing outage caused by a cascading connection-pool exhaustion following a late-night config push",
+    "template_id": "post-incident-witness",
+    "nominal_scope": "Postmortem witness interview — connection pool exhaustion incident, 02:14 UTC, 43-minute P1",
+    "turn_count": 16,
+    "key_moments": [
+      {
+        "turn": 2,
+        "type": "witness_timeline_begin",
+        "note": "Witness starts clean: paged at 02:14, opened laptop 02:15, joined incident channel 02:16. Good observational framing."
+      },
+      {
+        "turn": 4,
+        "type": "witness_first_hedge",
+        "note": "On the config push: 'I mean, yeah, I pushed the config change around midnight, it was — you know, I'd been looking at it for a while, it seemed fine.' Three hedges stacked."
+      },
+      {
+        "turn": 6,
+        "type": "witness_second_hedge",
+        "note": "On the code review: 'The review was — it was approved, I think Tariq stamped it, I'm pretty sure he saw the connection pool change. Maybe. I probably should have flagged it more.'"
+      },
+      {
+        "turn": 8,
+        "type": "witness_third_hedge",
+        "note": "On the test coverage: 'We kinda don't have end-to-end tests on that path because — well, you know, they're hard to write, and it's been on the backlog, and I figured the unit tests would catch it, which in retrospect was maybe not —'"
+      },
+      {
+        "turn": 9,
+        "type": "conductor_cross_turn_catch_hedging_pattern",
+        "note": "CROSS-TURN CATCH: Host names the pattern gently — 'I want to notice something. You've hedged three times in the last couple of minutes — on the push, on the review, on the tests. 'I think,' 'kinda,' 'maybe,' 'probably should have.' I'm not trying to catch you out. I'd just like to hear the unhedged version of what you actually did and believed. We can come back to the hedge if you need it.' Cites turns 4, 6, 8 — three-occurrence recurrence, substantive topic."
+      },
+      {
+        "turn": 10,
+        "type": "witness_drops_hedge",
+        "note": "Witness: 'Right. Fair. The unhedged version: I pushed the config at 00:07 UTC. Tariq approved it at 00:02 — five minutes before — with a thumbs-up emoji, no comment. I knew we didn't have E2E on that path and I pushed it at midnight specifically so if it broke I'd see it in my morning Slack scroll, not during peak traffic. I didn't flag it more because we've been shipping a lot of small configs that way for six months and nothing's broken. So: I took a calculated risk I've taken many times and this one happened to be the one that broke.' Clean, first-person, ownership without self-flagellation."
+      },
+      {
+        "turn": 12,
+        "type": "witness_emotional_shift_at_decision",
+        "note": "When Host asks about the moment of noticing, Witness's tone visibly shifts. Shorter sentences. 'I saw the p99 graph. It had already gone to 12 seconds. I just — I knew. I knew what I'd done. I spent about two minutes not moving.'"
+      },
+      {
+        "turn": 13,
+        "type": "conductor_cross_turn_catch_emotional_shift",
+        "note": "CROSS-TURN CATCH: Host notices and names — 'Something shifted for you just now when you got to the p99 graph moment. You've been giving me factual sequence up to there and now you've gone shorter and quieter. I'd like to slow down there if we can. What was the two minutes of not moving like?' Anchors turns 10, 12."
+      },
+      {
+        "turn": 14,
+        "type": "witness_discloses_freeze",
+        "note": "Witness: 'I've read about it — freezing in an incident. I'd always thought it wouldn't happen to me because I'm the senior person on the team. But for two minutes I sat with the laptop open and the graph on the screen and I didn't do anything. I didn't page. I didn't ping anyone. I just sat. The rollback is one command. I knew exactly what the command was. I couldn't — I couldn't make myself type it. I ran it at 02:20, six minutes after page. Mitigation worked at 02:24. The outage was 43 minutes but 10 of those were after my paging moment. Two of them were me not moving.'"
+      },
+      {
+        "turn": 15,
+        "type": "conductor_protective_synthesis",
+        "note": "Host: 'I want to be careful here. What you just described — the freeze — is the most important thing I'll include in the postmortem, and I also want to make sure it's in the write-up as a systems question, not as a personal failure. The fact that a senior engineer was alone on call with no one to tag in, and that the rollback is a one-command manual action with no automated safeguard, is the same problem as the freeze — they're the same failure, distributed between person and system. Can I write it that way?'"
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "Three stacked hedges concealed a calculated-risk pattern (midnight-push culture) that the team had normalised. The unhedged admission — 'I've taken this risk many times, this one broke' — is the actual postmortem signal, not 'developer should have been more careful.'",
+      "A two-minute freeze at the moment of realisation. Disclosed only after the emotional_shift was named and met without judgment. This is the kind of thing that never appears in incident reports and that kills senior engineers' careers silently.",
+      "The freeze and the one-command-rollback-with-no-automation are the same systemic failure seen from two angles. The conductor's protective synthesis frames it that way rather than as personal failure.",
+      "A coverage gap (no E2E on the config path) that had been a known backlog item for six months and had been successfully skirted by the midnight-push convention until this incident."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "Three hedges across three different topics read as 'normal speech' individually; the pattern only shows up when held across turns 4, 6, and 8.",
+      "A form-based postmortem would never capture the freeze. Asking 'what did you do at 02:16?' gets the factual answer; asking it with the emotional_shift catch from turn 13 gets the truthful answer.",
+      "The systems/person frame at turn 15 requires knowing both the freeze (turn 14) and the lack-of-automated-rollback (implicit in turn 10) at the same time. No single question gets there.",
+      "The midnight-push culture emerges as a systemic pattern, not as 'this engineer was reckless' — that reframing depends on the unhedged answer at turn 10."
+    ]
+  },
+  "session_summary": {
+    "template_id": "post-incident-witness",
+    "persona": "senior_backend_engineer_primary_actor — 7 years tenure, primary push author, primary mitigator",
+    "domain": "SRE/software postmortem: database connection pool exhaustion following config push, 43-minute P1 outage",
+    "turn_count": 16,
+    "objectives_active": ["timeline_reconstruction", "observed_vs_inferred", "unusual_or_unexpected", "witness_state"],
+    "extraction_highlights": {
+      "timeline_reconstruction": {
+        "completeness": 0.90,
+        "confidence": 0.93,
+        "key_finding": "Push 00:07 UTC, review thumbs-up 00:02 (pre-push, zero-comment), page 02:14, mitigation pushed 02:20, resolved 02:24. 6 minutes between page and mitigation; 2 of those were a freeze."
+      },
+      "witness_state": {
+        "completeness": 0.85,
+        "confidence": 0.90,
+        "key_finding": "Two-minute freeze at moment of realisation; disclosed only after emotional_shift caught and met without judgment. Systems question (sole on-call, one-command-manual-rollback) and personal question (freeze) are the same failure on two sides."
+      },
+      "unusual_or_unexpected": {
+        "completeness": 0.80,
+        "confidence": 0.88,
+        "key_finding": "Six-month normalised pattern of midnight config pushes as de-facto deploy-safety strategy; zero E2E test coverage on the path; all known internally; treated as acceptable risk until this incident."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Thanks for doing this — I know it's the day after and these are hard. This is a 25-minute structured conversation for the postmortem record. I'll ask about what you saw and did, and separately about what you concluded. The framing is blameless, but I'll be specific where specific matters. Nothing here is outside what shows up in the postmortem, and I'll recap at the end. To start — can you walk me through what you remember, starting from before you got paged?"
+    },
+    {
+      "index": 4,
+      "role": "participant",
+      "text": "I mean, yeah, I pushed the config change around midnight, it was — you know, I'd been looking at it for a while, it seemed fine. It was a small thing. Just bumping the connection pool ceiling on the catalog service from 200 to 400 because we'd been seeing queue depth spike during the 9 PM traffic ramp. I thought it was safe.",
+      "_note": "Three hedges: 'I mean,' 'you know,' 'seemed fine.'"
+    },
+    {
+      "index": 6,
+      "role": "participant",
+      "text": "The review was — it was approved, I think Tariq stamped it, I'm pretty sure he saw the connection pool change, maybe. I probably should have flagged it more in the PR description. It was a one-line config, so it didn't look like much on the diff.",
+      "_note": "Five hedges: 'was — it was,' 'I think,' 'pretty sure,' 'maybe,' 'probably should have.'"
+    },
+    {
+      "index": 8,
+      "role": "participant",
+      "text": "And — yeah, we kinda don't have end-to-end tests on that path, because they're hard to write, and it's been on the backlog for a while, and I figured the unit tests would catch it, which in retrospect was maybe not — I mean, the unit tests did pass. They just weren't testing the thing that broke.",
+      "_note": "Four more hedges: 'kinda,' 'for a while,' 'I figured,' 'maybe not.' That's twelve hedges across three substantive topics."
+    },
+    {
+      "index": 9,
+      "role": "host",
+      "text": "Can I notice something, gently. You've hedged three times in the last couple of minutes — on the push, on the review, on the test coverage. 'I think,' 'kinda,' 'maybe,' 'probably should have.' I'm not trying to catch you. I'd like to hear the unhedged version of each of those, if you can — and if the hedge is actually the truer answer, we come back to it. Okay?",
+      "_note": "CROSS-TURN CATCH — hedging_pattern. Anchors: [4, 6, 8]. Three-occurrence, substantive topics."
+    },
+    {
+      "index": 10,
+      "role": "participant",
+      "text": "*pauses. exhales.*\n\nRight. Okay. The unhedged version.\n\nI pushed the config at 00:07 UTC. Tariq approved the PR at 00:02 — five minutes before the push — with a thumbs-up emoji and no comment. I know because I checked this morning. He reviewed it in under two minutes. I pushed it at midnight specifically because we've had a pattern for six months now of pushing small configs at midnight so that if anything goes sideways I see it in morning Slack at 8 AM, not during peak traffic at 9 PM. Everyone on my team does this. I didn't flag it more because nothing we've pushed that way has broken for six months. This one broke.\n\nAnd on the tests — we know we don't have E2E on that path. It's been in the backlog for eight months. I wrote the ticket. I prioritised other things over it because the unit tests have never missed a real regression before. This incident is the first one where the unit-to-E2E gap mattered. So, in the unhedged version: I took a calculated risk I have taken many times. This one was the one that broke."
+    },
+    {
+      "index": 12,
+      "role": "participant",
+      "text": "I saw the p99 graph. It had already gone to twelve seconds. *shorter* I just — I knew. I knew what I'd done.\n\n*quieter* I spent about two minutes not moving.",
+      "_note": "Visible tone shift. Shorter sentences, less content, fragmentation."
+    },
+    {
+      "index": 13,
+      "role": "host",
+      "text": "Something shifted for you just now, around getting to the p99 graph. You've been walking me through the sequence pretty steadily and it just went shorter and quieter. I'd like to slow down there if we can, and I don't need you to speed up. What were those two minutes like?",
+      "_note": "CROSS-TURN CATCH — emotional_shift. Anchors: [10, 12]. The catch is that the register visibly changes between the 'calculated-risk' admission and the decision-point moment."
+    },
+    {
+      "index": 14,
+      "role": "participant",
+      "text": "*long pause*\n\nI've read the SRE literature on freezing in an incident. I always thought it wouldn't happen to me, because I'm the senior person on the team, I've run dozens of incidents, I know what to do.\n\n*slower*\n\nI had the rollback command in my shell history. It's one command. I'd written it the day before when I wrote the PR — standard practice, you keep the rollback command prepared next to the deploy command. I could see it in my scrollback. I knew exactly what would happen if I typed it. I could not — I could not make myself press enter.\n\nI ran it at 02:20. Page at 02:14. Rollback at 02:20. Mitigation at 02:24. Six minutes between page and mitigation, and two of those were me sitting there looking at the command. I've never told anyone that. It wasn't in my incident summary. The summary says 'mitigation deployed at 02:20 after initial triage.' That's technically true. What I was triaging was my own hand not moving."
+    },
+    {
+      "index": 15,
+      "role": "host",
+      "text": "Thank you for telling me that. I want to take a step back for a second before we wrap up, because I think what you've just said is the most important part of this postmortem and I want to frame how it lands. What you described — the two-minute freeze — is a person-level fact, and the team is going to see it in the writeup. It's also a systems-level fact: you were the sole person paged, you were alone, and the mitigation was a one-command manual action with no automated rollback, no second pair of eyes, no safety net. Those two facts — the freeze and the no-safety-net — are the same failure. They're not separate. I'd like to write it up that way, as a single systemic question with a human side, rather than as two separate observations. Does that sit right with you?",
+      "_note": "Protective synthesis — reframes personal disclosure as the visible surface of a systems question."
+    }
+  ]
+}

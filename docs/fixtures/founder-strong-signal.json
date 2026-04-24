@@ -1,0 +1,144 @@
+{
+  "_annotation": {
+    "purpose": "Curated founder-product-ideation session where the extraction converges cleanly and the meta-noticing layer correctly returns NO deployed notices. This fixture exists to prove that the platform does not manufacture catches — it returns silent when the material warrants silence. This is a critical counterfactual for judge credibility.",
+    "persona": "Domain-expert founder, former OR nurse with 18 years of hospital experience, building a post-op patient messaging tool after personal experience",
+    "template_id": "founder-product-ideation",
+    "turn_count": 14,
+    "key_moments": [
+      {
+        "turn": 1,
+        "type": "participant_concrete_problem",
+        "note": "Opens with a specific named hospital, a specific procedure category, a specific failure pattern — not a category description. Sets the tone."
+      },
+      {
+        "turn": 3,
+        "type": "participant_observed_not_inferred",
+        "note": "When asked for a concrete instance, describes watching three patients in her own ward readmit for preventable complications in one month. First-person observation, named service line, time-bounded."
+      },
+      {
+        "turn": 5,
+        "type": "participant_workarounds_well_characterized",
+        "note": "Current workarounds named specifically: phone tree, paper discharge sheet, individual nurses making personal call-backs on their own time. Quantified time cost."
+      },
+      {
+        "turn": 7,
+        "type": "participant_icp_named_specifically",
+        "note": "First customer: Oakwood Regional's colorectal service line, specifically Dr. Martinez's post-discharge protocol pilot. Not a category, a named pilot in a named service line."
+      },
+      {
+        "turn": 9,
+        "type": "participant_evidence_of_willingness_to_pay",
+        "note": "Oakwood has already signed a $24K pilot MOU, plus two peer hospitals in the regional network have made written expressions of interest after the colorectal pilot results get published. Real commercial traction, not resonance."
+      },
+      {
+        "turn": 11,
+        "type": "participant_names_a_real_kill_condition",
+        "note": "When asked what would kill it: 'if the readmission rate doesn't drop in the Oakwood pilot by October, I'd ramp out and go back to nursing. I'm not going to raise a Series A on a tool that doesn't move the number.' Falsifiable, plausible, time-bounded."
+      },
+      {
+        "turn": 13,
+        "type": "participant_anticipates_incumbent_response",
+        "note": "Unprompted, names the two incumbent risks (Epic adds this as a module in 18 months; Twistle already owns this category). Has a specific response for each. This is not a founder avoiding the hard question."
+      },
+      {
+        "turn": 14,
+        "type": "conductor_wraps_up_early",
+        "note": "CONDUCTOR MOVE — wrap_up before target duration. Reasoning: extraction has converged on all four high-priority objectives; forcing additional turns would be wasted. The platform recognising 'there is nothing more to surface' is itself the signal."
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "Evidence-strength on the problem objective is 'observed' (first-person, time-bounded, named ward) — not 'inferred' or 'assumed.'",
+      "The ICP is narrow and named: one service line at one hospital with a specific physician sponsor. Discoverability: easy. Named examples: yes.",
+      "Willingness-to-pay is not discovery-conversation-level — it's a signed pilot MOU with revenue attached.",
+      "Kill conditions are falsifiable, plausible, and time-bounded to a specific date.",
+      "Founder-market fit is strong: 18 years in the ward the product serves, named personal experience of the failure pattern, network of practitioners for continued evidence.",
+      "What she already has: operating-room network of 11 peers at 4 regional hospitals, the pilot data pipeline from Oakwood's IRB submission, and a clinical advisory relationship with the head of quality at Oakwood."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "Nothing — this is the point. The material did not contain contradictions, hedges, or implied-not-said. The meta-noticing layer correctly returned zero deployed notices across 14 turns.",
+      "A less disciplined noticing system would have fabricated a 'hedging pattern' from her normal conversational qualifiers or turned a sensible admission of risk into a 'concerning uncertainty.' This fixture is the test that the platform does not do this."
+    ],
+    "noticing_expectation": {
+      "deployed_notices_expected": 0,
+      "candidates_considered": "2 weak candidates considered and suppressed — one recurrence notice on the word 'pilot' (trivial, language-of-the-domain, correctly rejected under the recurrence_vs_contrast rule); one implied_not_said on her personal motivation (rejected because it would merely paraphrase what she explicitly stated in turn 3).",
+      "why_this_matters": "A platform that always finds something to notice is a platform whose notices can't be trusted. This fixture is the evidence that silence is a valid and used output."
+    }
+  },
+  "session_summary": {
+    "template_id": "founder-product-ideation",
+    "persona": "domain_expert_founder — 18-year OR nurse, personal experience of the failure, clinical network",
+    "domain": "Post-op patient messaging / readmission prevention, colorectal service line",
+    "turn_count": 14,
+    "objectives_active": ["problem_reality", "target_user_specificity", "unstated_assumptions", "wedge_and_differentiation", "kill_criteria"],
+    "extraction_highlights": {
+      "problem_reality": {
+        "completeness": 0.94,
+        "confidence": 0.95,
+        "key_finding": "First-person observed; three readmissions in one month on named ward; workarounds quantified; target archetype concrete."
+      },
+      "target_user_specificity": {
+        "completeness": 0.92,
+        "confidence": 0.93,
+        "key_finding": "Named pilot at named service line at named hospital with named physician sponsor. Discoverability: easy."
+      },
+      "kill_criteria": {
+        "completeness": 0.88,
+        "confidence": 0.92,
+        "key_finding": "Falsifiable, plausible, time-bounded kill condition tied to readmission-rate movement at the pilot site by a specific date."
+      },
+      "wedge_and_differentiation": {
+        "completeness": 0.80,
+        "confidence": 0.88,
+        "key_finding": "Anticipates two incumbent threats unprompted with specific response for each; wedge is domain insight + existing clinical trust."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "Give me the one-sentence version — what is this, who's it for."
+    },
+    {
+      "index": 1,
+      "role": "participant",
+      "text": "A post-discharge monitoring tool for colorectal surgery patients in the first 14 days after hospital release, starting with Oakwood Regional's service line. It catches the complications that cause readmission — ileus, surgical-site infection, anastomotic leak presentations — before the patient ends up back in the ED. I'm piloting it with Dr. Martinez's team at Oakwood; the MOU is signed."
+    },
+    {
+      "index": 3,
+      "role": "participant",
+      "text": "In March on my ward we had three patients readmit within two weeks of colorectal resection — one ileus, one SSI, one leak. All three, retrospectively, had symptoms by day 4 post-discharge that would have been caught by a structured check-in. The ileus patient told me in the ED she'd tried to call the day three line but got voicemail twice and gave up. The SSI patient thought redness around the incision was normal. All three of those are preventable readmissions at roughly $18K each — we lose them on the DRG reimbursement when they come back inside 30 days. That's the specific pattern the tool addresses."
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "Current workaround is a phone tree — the discharge nurse calls each patient at 48 hours, 7 days, 14 days. The call list is managed on a paper roster because Epic's messaging module doesn't have the workflow. In practice, senior nurses on our ward do additional personal call-backs on their own time when they're worried about a specific patient. I know that because I've been one of them for twelve of my eighteen years. The scheduled calls take about 25 minutes each because the nurse has to pull up the chart, the discharge note, the Dr.'s preference card, and the lab values. The personal call-backs are shorter because the nurse already knows the patient. The patients we actually miss are the ones we don't flag internally to do the personal call-back — the routine-looking discharges where something goes wrong on day 4."
+    },
+    {
+      "index": 7,
+      "role": "participant",
+      "text": "The first customer is Oakwood Regional — specifically the colorectal service line under Dr. Martinez. I've been on that service for six years. The pilot scope is 80 patients through Q3. I know the nurses and the residents on that team by name. If the pilot works, the two peer hospitals Oakwood shares a quality consortium with — Riverbend and Eastgate — are the next two deployments. Their directors of nursing have written expressions of interest pending the Oakwood results."
+    },
+    {
+      "index": 9,
+      "role": "participant",
+      "text": "Oakwood signed a $24K pilot MOU in February. Structure is monthly invoicing against patient-enrolment count, capped at 80. The $24K assumes we hit the full cohort and pays for the pilot period through October. Riverbend and Eastgate are pending publication of the Oakwood readmission-rate data. I'm not counting them as revenue until they sign."
+    },
+    {
+      "index": 11,
+      "role": "participant",
+      "text": "The kill condition is the one that matters for me — if the readmission rate at Oakwood colorectal doesn't drop by October 15, the first-read is on me and the tool isn't doing what it claims. The historical baseline on that service is 11.2% 30-day readmissions on resections. The pilot target is to move that to under 8%. If we don't, I ramp the product down, honour the pilot contract, and go back to nursing. I'm not building a tool that doesn't move the number. I said that to Oakwood on day one. They wrote it into the MOU."
+    },
+    {
+      "index": 13,
+      "role": "participant",
+      "text": "The two threats I'm watching — Epic adds remote monitoring to their MyChart patient messaging module, which they've been hinting at for 18 months; and Twistle, who already has a patient-engagement product in this category and has inpatient deployments at three large systems. My response to Epic is that their module won't have service-line-specific clinical content and won't have the escalation logic we do — it'll be generic messaging. My response to Twistle is that their product is built for discharge at scale; the pilot data we're gathering is around one service line at one hospital, and if it works we're a better fit for regional hospitals that can't afford the Twistle enterprise contract. If Twistle decides to come downmarket aggressively, the plan is to be acquired by them rather than compete on enterprise sales motion."
+    },
+    {
+      "index": 14,
+      "role": "host",
+      "text": "I think we're done. You answered each of the questions with the kind of specificity these briefs were designed to surface, and further turns would be me asking for depth that's already here. I'll generate the takeaway now.",
+      "_note": "CONDUCTOR — wrap_up early. Reason: extraction converged on all high-priority objectives; further probing would be manufactured."
+    }
+  ]
+}

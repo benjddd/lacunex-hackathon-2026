@@ -1,0 +1,190 @@
+{
+  "_annotation": {
+    "purpose": "Curated post-incident witness session from a manufacturing near-miss, demonstrating domain-neutrality of the template. Shows an avoidance pattern caught across turns, plus a source-monitoring catch (observed vs post-hoc reconstruction) distinct from the clinical fixture. Includes a welfare-signal the conductor surfaces gently.",
+    "persona": "Mid-30s line operator at a metal stamping plant, 8 years at the site, witness to a press-guard bypass near-miss on the neighbouring press line",
+    "template_id": "post-incident-witness",
+    "nominal_scope": "Near-miss on Line 3, 6:42 AM shift transition — guard interlock bypassed on a 400-ton press, no injury, machine stopped by the opposite-station operator before completion of stroke",
+    "turn_count": 21,
+    "key_moments": [
+      {
+        "turn": 2,
+        "type": "witness_timeline_opening",
+        "note": "Witness gives an ordered account of the first five minutes of his shift — coming in, badge-in, coffee, walking to his own station at Line 2. Observational, concrete."
+      },
+      {
+        "turn": 5,
+        "type": "witness_first_deflection",
+        "note": "Host asks what the departing Line 3 operator said at handover. Witness deflects: 'He was fine, just tired, told me it was a quiet night.' Brief, categorical, doesn't name the operator."
+      },
+      {
+        "turn": 7,
+        "type": "witness_second_deflection",
+        "note": "Host asks whether the departing operator mentioned any issues with the guard on press 3B. Witness: 'No, not that I remember. Those handovers are pretty quick, you know how it is.' Generic minimising language."
+      },
+      {
+        "turn": 9,
+        "type": "witness_third_deflection",
+        "note": "Host circles back to the Line 3 operator's state. Witness changes subject to the stamping die. Host tracks the deflection."
+      },
+      {
+        "turn": 10,
+        "type": "conductor_cross_turn_catch_avoidance",
+        "note": "CROSS-TURN CATCH: Host gently names the pattern — 'I've come back to Greg — the departing operator — three times now, and each time we've gone somewhere else. Is there something about that handover that's hard to stay with? We can slow down.' Cites turns 5, 7, 9. Avoidance notice — classic pattern from the brief."
+      },
+      {
+        "turn": 11,
+        "type": "witness_discloses_context",
+        "note": "Witness: 'Greg's been — he's been struggling. Divorce, you know. Everyone knows. I don't want to be the guy who says it was his fault the guard was off, because I don't actually know if it was him. But he looked rough that morning and his eyes weren't right. I've worked with him eight years. That's not the Greg I know.' Genuine welfare signal emerges only after the avoidance is named."
+      },
+      {
+        "turn": 13,
+        "type": "conductor_welfare_response",
+        "note": "Host: 'That's a hard thing to say. I want to be clear — this isn't about assigning blame to Greg. What you're describing — the eyes, looking rough — that's context that matters for the safety investigation, and it's also context that matters for Greg. Both of those are real. Thank you for saying it.' Non-investigative, non-therapy-speak acknowledgement that conforms to brief's forbidden-language rules."
+      },
+      {
+        "turn": 15,
+        "type": "witness_observation_vs_inference",
+        "note": "Witness describes the guard state: 'The interlock was zip-tied open — I saw that when I walked past. Red tie, about a centimeter thick. The bypass was obvious.' This is direct observation."
+      },
+      {
+        "turn": 16,
+        "type": "witness_inference_as_fact",
+        "note": "Witness continues: 'And obviously Greg zip-tied it because it was kicking out on the safety cycle and he was trying to hit the quota.' This is an inference presented as observation."
+      },
+      {
+        "turn": 17,
+        "type": "conductor_source_monitoring_probe",
+        "note": "CROSS-TURN CATCH: Host distinguishes — 'The red zip tie — that you saw yourself, walking past. The reason for the zip tie — that you said 'obviously Greg zip-tied it because it was kicking out.' Did you see him do it, or did you work that out from the situation?' Anchors turns 15, 16. Source-monitoring catch from the memory-science domain doc."
+      },
+      {
+        "turn": 18,
+        "type": "witness_reclassifies_claim",
+        "note": "Witness: 'No, I didn't see him do it. I worked it out. Honestly, that's the story everyone on the line was telling by noon that day. I can't separate what I saw from what we all decided afterwards. The zip tie I saw. The why — I don't know. Maybe he did, maybe he didn't. I've been treating 'he did' like a fact for a month.'"
+      },
+      {
+        "turn": 19,
+        "type": "conductor_outside_consideration",
+        "note": "Host brings an angle from outside the transcript — 'One thing we haven't touched — when was the last time maintenance was on press 3B, and do you know if the interlock had been flagged for any prior issues? The zip tie is real. The reason it was needed may or may not be Greg.' Outside_consideration notice type — platform surfacing an investigative angle the witness hadn't raised."
+      },
+      {
+        "turn": 20,
+        "type": "witness_produces_new_information",
+        "note": "Witness: 'Now that you ask — yeah, 3B's interlock was throwing a fault code during the week before. Maintenance put it on the Monday list. The incident was Friday. I'd forgotten about that completely until you asked. Jesus.' New information that reshapes the investigation."
+      }
+    ],
+    "what_the_platform_surfaced": [
+      "The witness had information about the departing operator's state that was being suppressed out of loyalty and diffused blame. The avoidance pattern made it accessible; naming it without blame language made it safe to disclose.",
+      "The distinction between observed fact (the red zip-tie) and post-hoc reconstruction (Greg put it there because of quota pressure). The witness had been treating the reconstruction as fact for a month.",
+      "A maintenance history on the interlock — flagged for repair the week before the incident — that reframes the causal picture. 'Greg zip-tied it' becomes 'someone zip-tied a part that had a known fault code and was scheduled for service' — a different investigation.",
+      "A welfare signal about Greg: the witness's description of 'eyes weren't right' is context for the safety investigation and a care-signal for a colleague in distress. Both matter."
+    ],
+    "what_would_have_been_missed_without_cross_turn_reasoning": [
+      "Three separate deflections in turns 5, 7, 9 would read as three brief neutral answers; only the pattern makes the avoidance visible.",
+      "The observation-vs-inference confusion at turn 16 is invisible on that turn alone — the word 'obviously' is normal speech. It becomes a source-monitoring signal only when held against the earlier direct-observation claim at turn 15.",
+      "The maintenance history would not have surfaced in response to any of the brief's prescribed questions. It arrived because the conductor brought an outside_consideration at turn 19 — platform drawing on domain-knowledge about incident investigation.",
+      "The welfare frame at turn 13 would be absent from a form — there's no field for 'context that matters for the witness's colleague as a person.'"
+    ]
+  },
+  "session_summary": {
+    "template_id": "post-incident-witness",
+    "persona": "line_operator_adjacent_witness — 8 years at the plant, worked alongside the Line 3 operator for the duration",
+    "domain": "Industrial safety: 400-ton metal stamping press guard interlock bypass near-miss at shift transition",
+    "turn_count": 21,
+    "objectives_active": ["timeline_reconstruction", "observed_vs_inferred", "unusual_or_unexpected", "witness_state", "further_witnesses"],
+    "extraction_highlights": {
+      "observed_vs_inferred": {
+        "completeness": 0.85,
+        "confidence": 0.90,
+        "key_finding": "Red zip-tie bypass: directly observed. Motive for bypass: inference presented as fact, reclassified during session. Maintenance history of interlock: new information that reframes causal analysis."
+      },
+      "witness_state": {
+        "completeness": 0.70,
+        "confidence": 0.75,
+        "key_finding": "Witness's own state was normal but he had loyalty-based reluctance to describe the departing operator's state. Welfare signal on colleague disclosed only after avoidance was named."
+      },
+      "unusual_or_unexpected": {
+        "completeness": 0.82,
+        "confidence": 0.88,
+        "key_finding": "Departing operator visibly struggling with personal situation; interlock had prior fault codes and pending maintenance; both facts pre-existed the incident and neither was in the initial incident report."
+      }
+    }
+  },
+  "selected_transcript": [
+    {
+      "index": 0,
+      "role": "host",
+      "text": "This is a short structured conversation — about 25 minutes — to help us understand what happened on Friday morning. Nothing's on the record beyond what the investigator chooses to include, and I'll close with a short summary of what I heard. I'm going to ask about what you saw and heard, not what you concluded — if I press on a specific thing, it's because I want to make sure we separate what you witnessed from what you worked out afterwards. Sound alright? To start — can you walk me through the first five minutes of your shift, starting from when you badged in?"
+    },
+    {
+      "index": 5,
+      "role": "participant",
+      "text": "Greg was on his way out. We talked for maybe 30 seconds at the barrier. He was fine. Said it was a quiet night. You know how those handovers go. Then I went to my station at Line 2.",
+      "_note": "First deflection. 'He was fine,' doesn't name what they discussed, 'you know how those handovers go.'"
+    },
+    {
+      "index": 7,
+      "role": "participant",
+      "text": "No, not that I remember. Those handovers are pretty quick, you know. We don't go through a checklist or anything at shift change. He didn't say 'hey, the guard's throwing codes' if that's what you're asking.",
+      "_note": "Second deflection. Pre-empting the question and minimising the handover protocol."
+    },
+    {
+      "index": 9,
+      "role": "participant",
+      "text": "Anyway. So about twenty minutes in I heard the stroke engage on 3B and then stop, and Mandy from the opposite station came running around the post. The die — the die on 3B was a repeat job, we'd been running it all week. Thirty-ton coil feed, two-stage progressive, nothing unusual about the tooling.",
+      "_note": "Third deflection — changes subject to the die."
+    },
+    {
+      "index": 10,
+      "role": "host",
+      "text": "I want to slow down for a second. I've asked about Greg — the departing operator — three times now, and each time we've ended up somewhere else. I'm not trying to corner you. But there's something about that handover I'd like to stay with, if we can. Is there something that makes it hard to talk about?",
+      "_note": "CROSS-TURN CATCH — avoidance. Anchors: [5, 7, 9]. The notice lives in the three-turn pattern of redirection; not in any single turn."
+    },
+    {
+      "index": 11,
+      "role": "participant",
+      "text": "*long pause*\n\nLook. Greg's been going through a divorce. Everyone on the line knows. He's been tough to work around for a few weeks — shows up, does his work, nothing actionable, but he's not himself. That morning he looked — his eyes weren't right. He looked like he hadn't slept in a while. I don't want to be the guy who tells you 'Greg was impaired, that's why the guard was off' because I don't know that. I know he looked rough and I know he's been struggling. That's what I didn't want to say, because I don't know where it ends up in the write-up.",
+      "_note": "Genuine information surfaces when the avoidance is named without blame language."
+    },
+    {
+      "index": 13,
+      "role": "host",
+      "text": "Thank you for telling me that. It's a hard thing to say. I want to be straight with you — what you described is context that matters for the safety side of this, and it also matters for Greg. Both of those are real. This conversation isn't assigning him responsibility for what happened. What you just described won't be what concludes this investigation. Can we keep going?",
+      "_note": "Conductor's protective move — acknowledges the loyalty bind, re-frames information as context, confirms it's not fault-assignment."
+    },
+    {
+      "index": 15,
+      "role": "participant",
+      "text": "So about the guard — when Mandy and I went around the post, I saw the interlock. The interlock on 3B has a little micro-switch on the guard rail that clicks when the guard's in place. It was zip-tied open. Red zip tie, the thick kind, like a centimeter across. Looped around the switch body and tied off to the rail. That was obvious the second I saw it. You couldn't miss it.",
+      "_note": "Direct observation — explicit first-person visual."
+    },
+    {
+      "index": 16,
+      "role": "participant",
+      "text": "And obviously Greg zip-tied it. It'd been kicking out on safety cycle all week because the die was throwing off-centre and the guard was reading a false position. He was trying to hit his nightly quota and the safety stops were costing him 90 seconds per cycle. So he zip-tied it. That's what everyone figured.",
+      "_note": "Inference stated as observation. 'Obviously,' 'that's what everyone figured.'"
+    },
+    {
+      "index": 17,
+      "role": "host",
+      "text": "I want to separate two things you just put together. The red zip tie — you saw that yourself, walking past the press. That's a direct observation. The reason the zip tie was there — that Greg put it on because of the quota — you said 'obviously.' Did you watch him do it, or did you work that out from the situation?",
+      "_note": "CROSS-TURN CATCH — observed_vs_inferred + source_monitoring. Anchors: [15, 16]. Memory-science axiom (source monitoring error) applied."
+    },
+    {
+      "index": 18,
+      "role": "participant",
+      "text": "*stops*\n\nNo. I didn't see him do it. I wasn't on the floor. I came in at 6:42 and the incident was 6:58. The zip tie was already there when I walked past at 6:44. The story about him doing it because of quota — that was the story going around on the line by lunchtime. I've been telling it like I saw it, and I didn't. I saw a zip tie. I don't know who put it there or when.",
+      "_note": "Witness reclassifies the claim. Memory-science axiom visible."
+    },
+    {
+      "index": 19,
+      "role": "host",
+      "text": "One thing we haven't touched, and I'd like to raise it because it sits in the same space as what you just said. Press 3B's interlock — do you know if it was on the maintenance list, if it had been throwing fault codes before that night? The zip tie being there is real. Why it was there in the first place — that could be Greg, or it could be a piece of equipment that had been flagged and wasn't yet fixed. Would you have had line of sight on any of that?",
+      "_note": "CROSS-TURN CATCH — outside_consideration. The platform brings in an investigative angle not in the transcript. Anchor: [15] (the observation of the zip tie)."
+    },
+    {
+      "index": 20,
+      "role": "participant",
+      "text": "*pauses for a long time*\n\nNow that you say it — yes. 3B had an interlock fault ticket open from Tuesday. Gary from maintenance had it on the Monday list because the parts were on order. We'd all been running the die around the fault all week. Greg had been complaining the cycle was short by 90 seconds because of it. I'd completely forgotten — that ticket was there before Friday. The zip tie was on a part that was already known to be kicking out and was scheduled for repair. *quieter* I feel like an idiot for not saying that earlier. I've been talking about it as if Greg bypassed a working guard."
+    }
+  ]
+}

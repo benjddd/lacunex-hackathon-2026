@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-04-24T16:56:56.130Z",
+  "fixtures_total": 9,
+  "fixtures_per_template": {
+    "brief-designer": 1,
+    "civic-consultation": 2,
+    "founder-product-ideation": 3,
+    "post-incident-witness": 3
+  },
+  "transcript_turns_total": 163,
+  "catches_total": 14,
+  "catches_per_type": {
+    "scope_creep": 1,
+    "vague_participant": 1,
+    "minimisation_mask": 1,
+    "scope_displacement": 1,
+    "trust_contradiction": 1,
+    "implied_resignation": 1,
+    "contradiction": 2,
+    "implied_not_said": 2,
+    "avoidance": 1,
+    "source_monitoring": 1,
+    "hedging_pattern": 1,
+    "emotional_shift": 1
+  },
+  "catches_classic": 1,
+  "catches_annotated": 13,
+  "null_case_fixtures": [
+    "founder-strong-signal.json"
+  ],
+  "anchor_span_buckets": {
+    "n/a": 1,
+    "1-2": 4,
+    "3-5": 6,
+    "6+": 3
+  },
+  "multi_anchor_catches": 13,
+  "three_plus_anchor_catches": 5,
+  "templates_missing": [],
+  "violations": [],
+  "by_fixture": [
+    {
+      "file": "brief-designer-onboarding.json",
+      "template_id": "brief-designer",
+      "turn_count": 12,
+      "catches": 2,
+      "anchor_spans": [
+        2,
+        0
+      ],
+      "types": [
+        "scope_creep",
+        "vague_participant"
+      ],
+      "purpose": "Curated brief-designer session showing scope_creep and vague_participant catches. The host is trying to design a brief to study their own product's onboarding. The conductor catches both failure modes while helping the host get to a focused brief specification.",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "civic-consultation-bike-lane.json",
+      "template_id": "civic-consultation",
+      "turn_count": 18,
+      "catches": 2,
+      "anchor_spans": [
+        2,
+        8
+      ],
+      "types": [
+        "minimisation_mask",
+        "scope_displacement"
+      ],
+      "purpose": "Curated civic-consultation session showing minimisation_mask and scope_displacement catches. Resident downplays the issue verbally while describing behaviour that reveals real impact, and keeps returning to a topic outside the nominal scope.",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "civic-consultation-housing-density.json",
+      "template_id": "civic-consultation",
+      "turn_count": 22,
+      "catches": 2,
+      "anchor_spans": [
+        5,
+        3
+      ],
+      "types": [
+        "trust_contradiction",
+        "implied_resignation"
+      ],
+      "purpose": "Curated civic-consultation session showing trust_contradiction and implied_resignation catches. Resident expresses cynicism about the process while giving unusually detailed input, and describes accommodation in a way that implies they no longer believe change is possible.",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "founder-contradiction-pricing.json",
+      "template_id": "founder-product-ideation",
+      "turn_count": 20,
+      "catches": 2,
+      "anchor_spans": [
+        6,
+        10
+      ],
+      "types": [
+        "contradiction",
+        "implied_not_said"
+      ],
+      "purpose": "Curated founder-product-ideation session showing a contradiction catch across turns about pricing and market size — two claims the founder had not previously reconciled. Also demonstrates an implied_not_said catch about founder-market fit.",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "founder-session-example.json",
+      "template_id": "founder-product-ideation",
+      "turn_count": 15,
+      "catches": 1,
+      "anchor_spans": [
+        4
+      ],
+      "types": [
+        "implied_not_said"
+      ],
+      "purpose": "Example session — demonstrates meta-noticing, anchor_return, and extraction convergence",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "founder-strong-signal.json",
+      "template_id": "founder-product-ideation",
+      "turn_count": 14,
+      "catches": 0,
+      "anchor_spans": [],
+      "types": [],
+      "purpose": "Curated founder-product-ideation session where the extraction converges cleanly and the meta-noticing layer correctly returns NO deployed notices. This fixture exists to prove that the platform does not manufacture catches — it returns silent when the material warrants silence. This is a critical counterfactual for judge credibility.",
+      "is_null_case": true,
+      "violation_count": 0
+    },
+    {
+      "file": "post-incident-factory.json",
+      "template_id": "post-incident-witness",
+      "turn_count": 21,
+      "catches": 2,
+      "anchor_spans": [
+        4,
+        1
+      ],
+      "types": [
+        "avoidance",
+        "source_monitoring"
+      ],
+      "purpose": "Curated post-incident witness session from a manufacturing near-miss, demonstrating domain-neutrality of the template. Shows an avoidance pattern caught across turns, plus a source-monitoring catch (observed vs post-hoc reconstruction) distinct from the clinical fixture. Includes a welfare-signal the conductor surfaces gently.",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "post-incident-session-example.json",
+      "template_id": "post-incident-witness",
+      "turn_count": 25,
+      "catches": 1,
+      "anchor_spans": [
+        4
+      ],
+      "types": [
+        "contradiction"
+      ],
+      "purpose": "Curated post-incident witness session showing cross-turn reasoning in practice.",
+      "is_null_case": false,
+      "violation_count": 0
+    },
+    {
+      "file": "post-incident-software-outage.json",
+      "template_id": "post-incident-witness",
+      "turn_count": 16,
+      "catches": 2,
+      "anchor_spans": [
+        4,
+        2
+      ],
+      "types": [
+        "hedging_pattern",
+        "emotional_shift"
+      ],
+      "purpose": "Curated post-incident witness session from a software production outage, demonstrating the template on a third domain (after clinical and manufacturing). Shows a hedging_pattern catch across turns and an emotional_shift catch at the moment the witness reaches the decision point. A sixth fixture covering SRE/devops use of the incident witness brief.",
+      "is_null_case": false,
+      "violation_count": 0
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ChatPane } from "@/components/ChatPane";
 import { TakeawayArtifact } from "@/components/TakeawayArtifact";
+import { LetterReflection } from "@/components/convergence/LetterReflection";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
@@ -435,16 +436,45 @@ function ParticipantPageContent({
       )}
 
       <main className="flex-1 overflow-hidden">
-        <ChatPane
-          transcript={transcript}
-          isLoading={isLoading}
-          onSend={handleSend}
-          disabled={sessionClosed}
-          roleLabels={roleLabels}
-        />
+        {takeawayOpen && takeawayMarkdown ? (
+          // Surface transition: when the conversation has produced its final
+          // reflection, the chat is replaced by the letter — no modal — so
+          // the participant doesn't context-shift to read what they were just
+          // part of writing. Per the Anchor-Web design (Surface E).
+          <LetterReflection
+            markdown={takeawayMarkdown}
+            mode="final"
+            turnCount={transcript.length}
+            startedAt={transcript[0]?.at}
+            onSavePdf={() => window.print()}
+          />
+        ) : previewOpen && !takeawayOpen && previewMarkdown ? (
+          // Mid-conversation peek: full-screen takeover (Surface D₂½). Same
+          // surface as the final letter; "conversation paused" header bar in
+          // threadSoft; one button back to the chat. Replaces the prior
+          // modal-drawer peek.
+          <LetterReflection
+            markdown={previewMarkdown}
+            mode="peek"
+            turnCount={transcript.filter((t) => t.role === "participant").length}
+            lastRefreshedTurn={previewLastTurn ?? undefined}
+            onReturnToConversation={() => setPreviewOpen(false)}
+          />
+        ) : (
+          <ChatPane
+            transcript={transcript}
+            isLoading={isLoading}
+            onSend={handleSend}
+            disabled={sessionClosed}
+            roleLabels={roleLabels}
+          />
+        )}
       </main>
 
-      {takeawayOpen && (
+      {/* Spinner / error stays in the modal artifact for the brief window
+          before markdown arrives — surface transition only happens once we
+          have something worth reading. */}
+      {takeawayOpen && !takeawayMarkdown && (
         <TakeawayArtifact
           markdown={takeawayMarkdown}
           isGenerating={takeawayGenerating}
@@ -454,7 +484,7 @@ function ParticipantPageContent({
         />
       )}
 
-      {previewOpen && !takeawayOpen && (
+      {previewOpen && !takeawayOpen && !previewMarkdown && (
         <TakeawayArtifact
           markdown={previewMarkdown}
           isGenerating={previewGenerating}

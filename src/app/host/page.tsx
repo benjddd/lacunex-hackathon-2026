@@ -342,13 +342,15 @@ export default function HostPage() {
               );
             })}
 
-            {/* Brief Designer — same card grid, marked with thread accent so it
-                reads as a peer of the bundled briefs, not an afterthought. */}
+            {/* Brief Designer — peer card to the bundled briefs. Visually equal
+                weight (rule border, surface bg) — only the glyph + CTA carry the
+                thread accent. The earlier "alert" treatment was pulling attention
+                away from the three primary briefs (Claude Designer review, Apr 25). */}
             <Link
               href={`/p/${BRIEF_DESIGNER.template_id}`}
               style={{
-                background: aw.threadSoft,
-                border: `1px solid ${aw.thread}`,
+                background: aw.surface,
+                border: `1px solid ${aw.rule}`,
                 padding: "20px 22px",
                 display: "flex",
                 flexDirection: "column",
@@ -359,7 +361,7 @@ export default function HostPage() {
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <LogoGlyph size={18} variant="micro" />
-                <Mono u s={9} c={aw.thread}>
+                <Mono u s={9} c={aw.muted}>
                   meta · author your own brief
                 </Mono>
               </div>
@@ -377,7 +379,7 @@ export default function HostPage() {
               <p
                 style={{
                   fontSize: 12.5,
-                  color: aw.ink2,
+                  color: aw.muted,
                   lineHeight: 1.55,
                   margin: 0,
                 }}

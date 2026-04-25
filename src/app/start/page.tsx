@@ -126,7 +126,7 @@ export default function StartPage() {
       >
         <div>
           <Mono u s={10} c={aw.thread}>
-            adaptive interviews · 15 minutes · both sides leave with something
+            lacunex · brief gallery
           </Mono>
           <h1
             style={{
@@ -138,20 +138,26 @@ export default function StartPage() {
               margin: "12px 0 10px",
             }}
           >
-            Pick a brief — or design your own.
+            Try a brief — or design one of your own.
           </h1>
           <p style={{ fontSize: 14, color: aw.muted, lineHeight: 1.65, maxWidth: 600 }}>
-            Every question is decided turn by turn from what you say. There&apos;s no
-            questionnaire. You leave with a reflective summary written for you.
+            Run an interview as a participant against any of the bundled briefs below
+            — every question is decided turn by turn — or use the Brief Designer to
+            author a custom brief by being interviewed about your goals. Hosts who
+            want to invite participants and watch the dashboard fill should head to
+            the <Link href="/host" style={{ color: aw.thread }}>host hub</Link>.
           </p>
         </div>
 
-        {/* Brief Designer — the meta-card, prominent at the top of the list. */}
+        {/* Brief Designer — peer card to the bundled briefs. Visually equal
+            weight (rule border, surface bg) — only the glyph + CTA carry the
+            thread accent. The earlier "alert" treatment pulled attention away
+            from the bundled briefs (Claude Designer review, Apr 25). */}
         <Link
           href={`/p/${BRIEF_DESIGNER.template_id}`}
           style={{
-            background: aw.threadSoft,
-            border: `1px solid ${aw.thread}`,
+            background: aw.surface,
+            border: `1px solid ${aw.rule}`,
             padding: "26px 28px",
             display: "flex",
             flexDirection: "column",
@@ -162,7 +168,7 @@ export default function StartPage() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <LogoGlyph size={22} variant="micro" />
-            <Mono u s={9} c={aw.thread}>
+            <Mono u s={9} c={aw.muted}>
               meta · the platform interviews you to author the brief
             </Mono>
           </div>
@@ -180,7 +186,7 @@ export default function StartPage() {
           <p
             style={{
               fontSize: 13.5,
-              color: aw.ink2,
+              color: aw.muted,
               lineHeight: 1.6,
               margin: 0,
             }}
@@ -195,8 +201,8 @@ export default function StartPage() {
               fontFamily: aw.serif,
               fontStyle: "italic",
               fontSize: 13.5,
-              color: aw.thread,
-              borderLeft: `2px solid ${aw.thread}`,
+              color: aw.muted,
+              borderLeft: `2px solid ${aw.rule}`,
               paddingLeft: 12,
               margin: "4px 0 0",
             }}

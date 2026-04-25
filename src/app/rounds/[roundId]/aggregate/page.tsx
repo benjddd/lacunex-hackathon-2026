@@ -163,7 +163,7 @@ export default function AggregateHeroPage({
             </Mono>
             <Link href={`/rounds/${roundId}`} style={{ textDecoration: "none" }}>
               <Mono s={11} c={aw.muted}>
-                {roundShortLabel(roundId)}
+                {round?.label ? trim(round.label, 32) : roundShortLabel(roundId)}
               </Mono>
             </Link>
             <Mono s={11} c={aw.muted2}>

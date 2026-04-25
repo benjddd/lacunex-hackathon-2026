@@ -137,7 +137,7 @@ src/
   app/
     page.tsx                         # / — role chooser (Host / Participant-with-invite / Demo)
     demo/page.tsx                    # /demo — split-screen combined view (auto-starts a session)
-    start/page.tsx                   # /start — multi-brief selector + NL brief generator
+    start/page.tsx                   # /start — multi-brief selector + conversational Brief Designer (the platform interviews the Host to author their brief; recursive dog-food of the four-call architecture)
     host/page.tsx                    # /host — host hub (briefs, invite links, sessions, rounds)
     host/live/[sessionId]/page.tsx   # /host/live/:id — live dashboard; polls /api/sessions/:id/live every 4s so a second device watches fill in real time
     p/[templateId]/page.tsx          # /p/:id — participant interview (mic input, live takeaway preview drawer)
@@ -235,6 +235,24 @@ npm run test:suite
 The replay harness enforces the same three invariants the live meta-noticing layer does (see [D26](PROJECT.md) and [src/lib/prompts/meta-noticing.ts](src/lib/prompts/meta-noticing.ts)): every cross-turn catch must cite real turn indices, anchors must strictly precede the catch turn, and catches whose notice type requires cross-turn evidence must cite ≥2 distinct anchors. `npm run test:suite` exits non-zero on any violation, so new fixtures can't regress the invariant.
 
 Notice types exercised across the suite: `contradiction` (×2), `implied_not_said` (×2), `hedging_pattern`, `emotional_shift`, `avoidance`, `source_monitoring`, `minimisation_mask`, `scope_displacement`, `trust_contradiction`, `implied_resignation`, `scope_creep`, `vague_participant`.
+
+### Live cohort — congestion-charge consultation (April 2026)
+
+11 simulated residents and small business owners interviewed against a single Civic Consultation brief on a proposed congestion charge. Aggregate synthesised by Opus 4.7 across the cohort.
+
+| Metric | Value |
+|---|---:|
+| Sessions | **11** |
+| Total participant + host turns | **303** |
+| Deployed `◆` meta-notices | **54** (5 per session avg) |
+| Candidate notices considered | **243** |
+| Cross-cohort aggregate patterns | **12** (across 6 pattern types) |
+| Routing recommendations | **6** (different council teams) |
+| Signal strength across 5 objectives | **0.85–0.95** |
+
+**Read the synthesis:** [docs/cohort/congestion-charge-2026-04-24.md](docs/cohort/congestion-charge-2026-04-24.md). Includes per-session inventory, 12 patterns with verbatim quotes (one participant: *"The child with asthma is abstract — I made her up to make my point sound bigger than it is"*), 10 cohort themes, and the routing recommendations the platform produced from running the same brief across the cohort.
+
+Reproducible from the harness: `npm run sim -- --persona=<id> --turns=<N> --template=civic-consultation --round=<round-id>`. Personas: see [src/lib/personas.ts](src/lib/personas.ts).
 
 ---
 

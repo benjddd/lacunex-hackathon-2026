@@ -42,7 +42,7 @@ const CONDUCTOR_MAX_TOKENS = 1200;
 const EXTRACTION_MAX_TOKENS = 6000;
 const TAKEAWAY_MAX_TOKENS = 2500;
 const META_NOTICING_MAX_TOKENS = 2000;
-const AGGREGATE_MAX_TOKENS = 8000; // N sessions + patterns + quotes = larger output
+const AGGREGATE_MAX_TOKENS = 16000; // N sessions + patterns + quotes = larger output; raised from 8k after 11-session cohort truncated
 
 function textFromMessage(content: Array<{ type: string; text?: string }>): string {
   for (const block of content) {

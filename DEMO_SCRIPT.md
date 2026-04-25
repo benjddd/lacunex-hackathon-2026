@@ -1,192 +1,244 @@
-# Demo Recording Script — Lacunex
-> For Saturday recording. Target: 2:45–3:00. Hard cap 3:00.
-> Use a separate browser profile. Set display zoom to 125%. Font size legible at 720p.
+# Lacunex Demo Recording Script
+
+For the 3-min hackathon submission video. Target length **2:45** (hard cap 3:00).
+
+Source material (gitignored — local recording artefacts):
+- Winning sim session: `session-2026-04-24T20-59-09-733Z` (persona `congestion_supporter_hidden_cost`)
+- Takeaway markdown for that session
+- Managed Agent claim-verifier report for that session
+
+Cross-cohort evidence (committed): [docs/cohort/congestion-charge-2026-04-24.md](docs/cohort/congestion-charge-2026-04-24.md)
+
+All on-screen quotes are VERBATIM from the winning session, takeaway, or agent report. Do not paraphrase.
 
 ---
 
-## Pre-recording setup
+## 0:00–0:14 | Cold open — Capture A (post-production, no product UI)
 
-**Recording approach (decided):** Record two separate screen captures — participant view and host view — as independent sessions. Edit them together in post-production. Session state is client-side per tab so they cannot share live state; the edit sells the side-by-side story.
+**Visual:** Cloudflare postmortem pull-quote fades in; Grenfell Inquiry Phase 2 pull-quote fades in beside it.
 
-- Browser: fresh profile, no extensions visible
-- **Recording A (participant view):** `http://localhost:3000/p/founder-product-ideation` — capture just the chat pane; no badges, no dashboard
-- **Recording B (host view):** same URL but with the dashboard pane in focus, or the combined split-screen — capture dashboard filling, ◆ badges, ↩ chips
-- Terminal with `npm run dev` running, hidden behind
-- Practise the participant responses below until they flow naturally — you're typing them for both recordings
+**On-screen quotes:**
+> "unchallenged assumptions"
+> — Cloudflare incident postmortem · 18 Nov 2025
 
----
+> "decades of failure… to act on the information available to them"
+> — Grenfell Tower Inquiry Phase 2 · 4 Sept 2024
 
-## Narration (voiceover, recorded separately)
-
-### 0:00 – 0:12 | Cold-open — real-world hook
-
-> "In November 2025, Cloudflare's postmortem named 'unchallenged assumptions' as the root cause of a major outage. The assumption was in the conversation. Nobody noticed it across turns. That's what Lacunex builds for."
-
-*Screen: static title card or slow zoom on the Lacunex logo. No product UI yet — the problem lands first.*
-
-**On-screen callout (subtle, bottom-right):**
-> Source: Cloudflare postmortem · 18 Nov 2025
+**Voiceover:**
+> "In November 2025, Cloudflare's postmortem named 'unchallenged assumptions' as a root cause. A year earlier, the Grenfell inquiry described 'decades of failure to act on the information available to them.' Same pattern. Different scale."
 
 ---
 
-### 0:12 – 0:25 | Host sets a goal
+## 0:14–0:22 | Honest pivot — Capture A
 
-> "A Host describes their use case in plain language. Opus 4.7 generates the interview brief."
+**Visual:** simple text card on black.
 
-*Screen: `/start` page — NL generator open. Type a short description; watch the brief card appear. Click "Start interview."*
-
-**On-screen callout (appears as brief card renders):**
-> 5 objectives · schema-bound extraction · meta-noticing hints
+**Voiceover:**
+> "Postmortems find these patterns months later. Inquiries find them years later. Lacunex runs the same conversations in parallel — and the aggregate grows while they're still running. Hours, not months."
 
 ---
 
-### 0:25 – 0:45 | Interview opens
+## 0:22–0:42 | Brief-designer on camera — Capture B
 
-*Screen: participant view. The opening question appears.*
+**Visual:** `/start` page. Click "Design your brief" (violet card). Platform's opening question appears. Host types each response below in turn. Brief card materializes at end.
 
-**Participant types (slowly, so it reads on screen):**
-> "I'm building a tool for product teams to run structured retrospectives. We talk to early PMs and the feedback has been really strong."
+**Scripted Host responses (type live during recording):**
 
-*Host view: watch extraction fill — "problem: retrospectives for product teams", team signal: "early PMs"*
+**Response 1:**
+> I'm running a consultation for our borough council — we have a congestion charge proposal going to committee in eight weeks. I want to understand how residents actually live with the existing traffic, and what would genuinely change their view. Our last consultation had a 4% response rate; I want to reach the people who don't bother responding.
 
-> "The first question adapts to what was just said. The host dashboard starts filling in real time — structured signal, not a transcript."
+**Response 2:**
+> Small shop owners, school-run parents, people caring for elderly relatives. Not the people who already turn up to town halls. I want residents talking about their Tuesday, not their opinion.
 
-*Participant types:*
-> "We have maybe three or four people who've tried it. They said it's useful. We're still figuring out who exactly we're building for."
+**Response 3:**
+> My suspicion is that stated support and actual impact will diverge — people who say they support it may have lived workarounds they haven't named. And people who oppose it may care about air quality more than they let on.
 
-*Host view: extraction shows "validation: anecdotal (3–4 users), ICP: undefined"*
+**Voiceover (over the above):**
+> "Watch the platform design the brief — by interviewing the Host. Same conductor, same cross-turn reasoning. The brief that's about to run is being built, right now."
 
-> "Notice that the extraction already flags the evidence gap — not through a checklist, but from what the participant actually said."
-
-**On-screen callout (during dashboard fill, appears and fades):**
-> Extraction: live, not post-hoc — Haiku 4.5
-
----
-
-### 0:45 – 1:20 | PEAK 1 — Conductor adapts + meta-notice fires
-
-*A question arrives that probes the evidence gap — something like: "When you say the feedback has been strong — can you say more about what specific problem they described?"*
-
-**Participant types:**
-> "Honestly, it's more that they said they find retrospectives painful in general. We haven't done a super deep dive on the specific workflow yet."
-
-*Host view: a ◆ meta-notice badge appears on the host's question. Click it.*
-
-> "Cross-turn reasoning fired. The platform noticed that 'strong feedback' and 'haven't done a deep dive' sit in the same account — that's a structural signal, not just a fact check."
-
-*Show the notice panel: something like "Witness described 'strong feedback' at turn 1, then concedes limited depth of validation at turn 5. These two claims sit in tension — the strength of signal claimed at the top may rest on a thinner base than stated."*
-
-**On-screen callouts (hold ~3s — this is the peak):**
-
-Overlay 1 — next to the ◆ badge as it appears:
-> ◆ META-NOTICE · hedging_pattern
-> anchors: turn 1, turn 5
-
-Overlay 2 — below the host bubble, showing the observation verbatim:
-> "really strong" (turn 1) ↔ "haven't done a super deep dive" (turn 5)
-> Evidence softened across turns.
-
-Overlay 3 — tiny, bottom-right, citing source of truth:
-> Captured in session audit (/sessions/[id]) — exact platform output
-
-*Note to editor: pull exact observation text from the recorded session's audit panel. Do not paraphrase. If the live take's notice text reads flat, use alternate P1 (`outside_consideration`) — see §2 alternates.*
+**On-screen callout at end:**
+> brief authored · 5 objectives · extraction schema · meta-noticing hints
 
 ---
 
-### 1:20 – 1:50 | PEAK 2 — Anchor return
+## 0:42–0:55 | Interview opens + extraction fills — Capture C
 
-*The conductor returns to an earlier claim. Question arrives like: "You said at the start that feedback has been really strong. You've just described it as 'they find retrospectives painful in general' — is that the same thing, or did you mean something different earlier?"*
+**Visual:** split-screen. Participant chat (right) starts. Host dashboard (left) begins filling — `lived_experience`, `priorities_and_trade_offs`, `trust_and_process`, `barriers_and_access`, `adjacent_concerns` columns appear with rising completeness bars.
 
-*An amber ↩ chip appears on the host turn.*
+**Participant types (live — mirror sim content, turns 1, 3, 5):**
 
-> "Anchor return — the conductor flagged a contradiction and brought it back, in the same conversation, before it disappeared into the transcript."
+**Turn 1:**
+> I think it's broadly the right direction, honestly — we need to do something about the air quality and how car-dependent everything's become. I first heard about it maybe six months ago through a local news piece, and then it kept coming up on the community Facebook groups.
 
-**Participant types (the moment of honesty):**
-> "No, you're right — strong might have been overstating it. They're interested, they have the problem, but I don't have anyone who said 'I'd pay for this tomorrow.'"
+(Conductor adaptive follow-up)
 
-*Extraction updates: "validation: implied interest, no WTP established"*
+**Turn 3:**
+> Well, my mum-in-law has hospital appointments near the old market square — she can't manage the bus. Last Tuesday, five minutes out, I found myself checking my phone at a red light to see whether the charge had started yet. It hadn't. But I noticed the stress.
 
-> "That's the insight. It didn't come from a form. It came from a follow-up the platform knew to ask."
+(Conductor adaptive follow-up)
 
-**On-screen callouts (hold ~3s):**
+**Turn 5:**
+> I moved my Wednesday physio to a practice further out. There's a pharmacy I've used for years right in the middle of the zone — I went to the Boots near the ring road instead. I told myself it was about easier parking. But I wouldn't have done that six months ago.
 
-Overlay 1 — next to the ↩ chip:
+**Voiceover (over this sequence):**
+> "That brief now runs with a resident. Extraction fills turn-by-turn — not after the session, during it."
+
+---
+
+## 0:55–1:25 | PEAK 1 — ◆ meta-notice — Capture C
+
+**Visual:** ◆ badge appears on host turn (turn 7 or 8). Click badge. Notice panel opens.
+
+**On-screen overlay (verbatim from eval-noticing on winning session):**
+
+> ◆ META-NOTICE · contradiction
+> anchors: turn 1 · turn 7 · turn 9
+>
+> "The initial framing of the situation as 'fine' collapses once the specific adaptations are listed — the workarounds are the real signal, and the participant eventually acknowledges this himself."
+
+**Voiceover:**
+> "Cross-turn reasoning fired. The platform noticed that 'broadly supportive, just something to sort out' from turn 1 doesn't hold up against the physio move, the pharmacy switch, the restaurant he didn't push for. A careful reviewer might catch this on a second read. The platform caught it in time to probe."
+
+---
+
+## 1:25–1:50 | PEAK 2 — ↩ anchor-return + column mutation — Capture C
+
+**Visual:** ↩ amber chip appears on host turn 8 pointing back to turn 1. Dashboard extraction column visibly mutates: `lived_cost_assessment: "fine — just to sort out"` → `"already absorbing friction without the benefit yet"`.
+
+**On-screen overlay (VERBATIM from sim transcript turn 8):**
+
 > ↩ ANCHOR RETURN → turn 1
-> conductor.move_type: anchor_return
+>
+> *"Earlier you described this as basically fine, just something to sort out — but hearing the physio move, the pharmacy switch, the restaurant you didn't push for, does 'fine' still feel like the right word?"*
 
-Overlay 2 — below the host bubble, quoting the conductor's reasoning verbatim:
-> "The strength claim has softened twice.
-> Surfacing before it hardens into context."
+**Participant reply lands on screen (turn 9):**
+> "saying it's fine feels like I'm not being honest about what's actually going on"
 
-*Note to editor: pull the reasoning from the recorded session's audit panel — it's the "why this move" field on the host turn where the ↩ chip appears.*
-
----
-
-### 1:50 – 2:00 | Host dashboard — fully populated
-
-*Switch to host view. Show the fully-filled extraction dashboard — columns, not a transcript.*
-
-> "The host has structured signal — live, during the conversation. Not two hours of transcript work later."
-
-**On-screen callout (brief, as dashboard columns fade in):**
-> 5 objectives · N turns · grounded in participant quotes
+**Voiceover:**
+> "Anchor return. The conductor brought back the earlier claim, in the same conversation. The resident's softened position updates the extraction column — not a new row, the same row, corrected."
 
 ---
 
-### 2:00 – 2:35 | PEAK 3 — Participant takeaway: what you already have
+## 1:50–2:10 | PEAK 3 — takeaway with what_surfaced — Capture C
 
-*Participant side: click "End session". "See your reflection →" appears. Click it.*
-*Scroll slowly to the **"What you already have that's relevant"** section. Hold on it for ~3 seconds.*
+**Visual:** participant clicks "See your reflection →". Takeaway artifact opens. Scroll to **"What surfaced between the lines"** section. Hold.
 
-> "The participant gets a reflective takeaway — not a summary, but something they can act on. This section names specific resources already in their life they hadn't connected to the problem. No other tool in this category offers the participant anything to keep."
+**On-screen pull-quote (VERBATIM from generated takeaway):**
 
-**On-screen callouts (sparing — don't overload the emotional beat):**
+> **What surfaced between the lines**
+>
+> *"Early on you said it was basically fine — just something to sort out. By the middle of the conversation you'd listed enough quiet rearrangements that 'fine' stopped fitting, and you said so yourself."*
 
-Subtle underline animation under the section heading "What you already have that's relevant" as narration lands.
-
-Near end of beat (tiny, non-intrusive):
-> 4 Claude calls per session: conductor · meta-noticing · extraction · takeaway
-
----
-
-### 2:35 – 2:50 | Rounds — cohort scale (compressed)
-
-*Navigate briefly to `/rounds`. Show a round with 10+ sessions. Click "View aggregate". Show one pattern block with quoted evidence — don't pause.*
-
-> "Run the same brief across any number of participants — convergent problems, shared assumptions, outliers. Comparable structured signal, not a pile of idiosyncratic transcripts."
-
-**On-screen callout (flashes as aggregate renders):**
-> AGGREGATE · 15 sessions · 10 cross-cohort patterns
+**Voiceover:**
+> "The resident leaves with what this conversation surfaced that he hadn't named himself. Not a summary of what he said. Something he knows now that he didn't when he walked in."
 
 ---
 
-### 2:50 – 3:00 | Close
+## 2:10–2:30 | Managed Agent — claim verification — Capture D
 
-> "Founder evaluation, post-incident review, civic consultation — or yours. One brief, many participants."
+**Visual:** post-session view. Host clicks "Verify claims." Live SSE event stream renders:
 
-*Fade on the tagline (screen text):*
-**"Cross-turn reasoning, rendered live. Both sides leave with something."**
+- `▸ tool_use: web_search { query: "Stockholm congestion charge traffic reduction percentage" }`
+- `▸ tool_use: web_search { query: "UK clean air zone daily charge car" }`
+- `▸ tool_use: web_search { query: "UK clean air zone medical mobility exemption" }`
+- `▸ tool_result` × 3 (snippets collapse in)
+- Final verdict card
 
-**Sub-line (one size smaller, below tagline):**
-> Opus 4.7 · Sonnet 4.6 · Haiku 4.5 · MIT-licensed · built Apr 21–26 2026
+**On-screen final card (VERBATIM from agent report):**
+
+> **Stockholm 22% traffic reduction** · Verdict: Supported (ITF/OECD, Tools of Change)
+> **£50 charge for cars** · Verdict: Partially supported — £50 applies to HGVs, not cars (GOV.UK, Birmingham CAZ)
+> **Scheme has no mobility exemption** · Verdict: Refuted — Birmingham and Bristol CAZs do publish medical exemptions (Brum Breathes, Bristol CC)
+
+**Voiceover:**
+> "Post-session, a Managed Agent fact-checks against the live web. It verifies what the resident got right — Stockholm's figure holds. And flags what he had wrong, or what the scheme hasn't made visible. His real frustration wasn't about the charge. It was about the conversations the council never had with him."
+
+**On-screen callout (small, bottom-right):**
+> Managed Agent · web_search tool · 45s active · 3 queries · 4 claims adjudicated
 
 ---
 
-## Recording checklist
+## 2:30–2:45 | Close — Capture E
 
-- [ ] **Friday evening: dry-run.** Run one full session end-to-end; verify meta-notice fires and `what_you_already_have` section is specific. Record the dry-run — keep it if it's clean.
-- [ ] **Friday evening: decide tools** — screen recorder (ScreenApp or OBS), audio (headset or ElevenLabs), editing (Descript or CapCut). Don't install new tools Saturday morning.
-- [ ] Practise all typed responses twice cold before first take
-- [ ] Disable notifications (Focus mode)
-- [ ] Record at 1920×1080, 30fps minimum
-- [ ] Narration separately via line-in or good headset (no laptop mic)
-- [ ] Leave 0.5s pause between major beats for editing
-- [ ] Two takes minimum; keep the one where the meta-notice timing is cleanest
-- [ ] Export under 100MB for upload
+**Visual:** flash through `/start` template grid — founder product ideation · post-incident witness · civic consultation · brief-designer · "or design your own." Fade to tagline card.
+
+**Voiceover:**
+> "The brief that just ran — the platform authored it the same way it ran it. Cross-turn reasoning, all the way down. Founder evaluation, post-incident review, civic consultation, or yours. Both sides leave with something they didn't walk in with."
+
+**Final card:**
+> **Cross-turn reasoning, rendered live.**
+> **Both sides leave with something they didn't walk in with.**
+>
+> Opus 4.7 · Sonnet 4.6 · Haiku 4.5 · Managed Agents
+> MIT-licensed · built Apr 21–26 2026
+> lacunex.com
+
+---
+
+# Saturday Recording Plan
+
+## Pre-recording (Fri evening dry-run)
+
+1. Close all notifications, focus mode on
+2. Browser: fresh profile, 125% zoom, 1920×1080 window
+3. Terminal open with `npm run dev` running (hidden behind)
+4. Practice the Host brief-designer responses (three) and participant responses (turns 1/3/5/7/9) until they flow without hesitation
+5. Dry-run full flow once — confirm:
+   - Brief-designer flow completes cleanly
+   - ◆ meta-notice fires on or around turn 7-8
+   - ↩ anchor-return fires on turn 8
+   - Takeaway generates with `what_surfaced` section populated
+   - Managed Agent event stream renders live (takes ~45s)
+
+## Capture order (Sat morning)
+
+**Capture A — Cold open & pivot (voiceover + images, post-production).**
+- Record VO as a separate audio track (line-in or good headset, not laptop mic)
+- Source images: Cloudflare Nov 2025 incident report cover, Grenfell Phase 2 report cover (both are public Crown copyright / public blog; cite in the chyron)
+
+**Capture B — Brief-designer (screen capture).**
+- Recording 1: participant view of the brief-designer — clean, no browser chrome
+- Open `/start`, click the violet "Design your brief" card
+- Type the three scripted responses with natural pacing (5-8s between each)
+- Wait for brief card to materialize; hold for 2s
+- 2 takes minimum; pick cleanest
+
+**Capture C — Civic-consultation interview (split-screen, two recordings).**
+- Recording A: participant view (`/p/civic-consultation` or the generated brief URL from Capture B — decide before take 1)
+- Recording B: host live dashboard view (`/host/live/{sessionId}`)
+- Run both recordings simultaneously on two windows/devices OR record independently in two takes and edit-combine (session state is client-side; need to coordinate)
+- Host types the Host opening + adaptive follow-ups (platform generates these — no scripting needed)
+- Participant types the scripted turn 1/3/5/7/9 responses (copy from this doc)
+- Let the conductor generate turns 2/4/6/8/10 adaptively — DO NOT force; if meta-notice doesn't fire by turn 10, stop and re-take
+- Keep typing until session closes cleanly
+- 2-3 takes; pick the take with cleanest ◆ + ↩ timing
+
+**Capture D — Managed Agent claim verification (screen capture).**
+- On the winning-take session, navigate to `/sessions/{sessionId}`
+- Click "Verify claims"
+- Record the SSE event log rendering live for ~45 seconds (full run)
+- Final report card fills in
+- 1 take (agent already pre-verified on dry-run session); don't re-run unnecessarily (costs API)
+
+**Capture E — Close (screen capture + static card).**
+- Return to `/start` page; cursor hovers across each template card
+- Cut to final static tagline card (designed in post)
 
 ## Editing notes
 
-- Trim any visible loading spinners if they're > 1s (cut to after)
-- The ◆ badge and ↩ chip on-screen moments are the "wow" beats — hold on each for ~3s
-- Subtitle the typed participant text if the font is small at 720p
-- Keep narration pace slow — judges watch once at speed, not twice
+- Hold ~3s on each PEAK overlay — they're the memory-making moments
+- ↩ chip at 1:25-1:50 and column mutation are the single most important frames — if the column mutation is a subtle text diff, add a highlight animation in post
+- `what_surfaced` section at 1:50-2:10 must be readable at 720p — subtitle if font is small
+- Managed Agent event log at 2:10-2:30 — trim any waiting time between tool calls; preserve the reading moments on tool_result snippets
+- Narration pace: SLOW. Judges watch once at speed.
+- Target export: under 100MB, 1080p30, H.264
+
+## Checklist before submit
+
+- [ ] Full video under 2:50 (30s safety margin below 3:00 cap)
+- [ ] Every on-screen quote matches verbatim the winning session / takeaway / agent report
+- [ ] All Claude model names visible in final card
+- [ ] MIT + build-dates on final card
+- [ ] Tagline legible for ≥3s
+- [ ] Audio mixed: narration clear, no clipping
+- [ ] Test play on an unconnected laptop at 720p; confirm every overlay readable

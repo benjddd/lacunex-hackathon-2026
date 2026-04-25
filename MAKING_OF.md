@@ -200,6 +200,22 @@ The post-incident brief was authored but never stress-tested — no synthetic se
 
 ---
 
+## Day 5: 11-session cohort, harness instrumented (Apr 24–25)
+
+The platform's central claim is "comparable structured signal across N participants — and the aggregate grows while they're still running." Up through Day 4 we had per-session evidence (the fixture suite, the post-incident sessions), but no live cohort to point at. Day 5 produced one: 11 simulated residents and small business owners interviewed against the Civic Consultation brief on a single proposed congestion-charge scheme. 303 turns. 54 deployed `◆` meta-notices. A cross-cohort aggregate synthesised by Opus 4.7 over all 11 transcripts. Reproducible from the harness with one command per session.
+
+**The harness fix that made this possible.** `scripts/simulate-session.ts` was originally a smoke-test that drove a session through `/api/turn` and saved the transcript. It quietly dropped the conductor's decision metadata — `move_type`, `anchor_turn`, `reasoning`, `deployed_notice`, `notice_candidates`, `objective_id` — when persisting Turn objects. The data was returned by `/api/turn`; the sim just didn't capture it. So saved sim sessions looked unannotated when opened in `/sessions/[id]`, even though the live meta-noticing layer had been firing during the run. We caught this when the first cohort run produced great transcripts but no `◆` badges in the UI. Threaded `deployedNotices` state across turns and wired the response fields into the saved Turn — every cohort session is now first-class viewable, and re-running fixtures will preserve their badges.
+
+**Aggregate output bumped past truncation.** First aggregate call over 11 sessions hit `AGGREGATE_MAX_TOKENS=8000` and returned malformed JSON (`Unterminated string at position 21505`). Six pattern types × multiple supporting sessions × verbatim quotes × routing recommendations is more output than 8k tokens carries. Raised the cap to 16k; the second call landed clean at ~5.4k output tokens. Worth noting because this is a real consideration for any cross-cohort feature: aggregation cost scales linearly with N, but output complexity scales worse — patterns multiply, supporting evidence stacks, routing recommendations diversify. Knob set, problem retired.
+
+**What the cohort produced that the brief didn't ask for.** The Civic Consultation brief's objectives are about lived experience, priorities, trust, barriers, adjacent concerns. Standard. The aggregate found 12 patterns, several of which weren't anywhere in the brief: *"preemptive adaptation before policy is live"* (5 sessions changing routines around a scheme not yet in force); *"dependents as the unvoiced pressure point"* (7 sessions pivoting on a mother-in-law, grandchild, or elderly neighbour the participant was mediating access for, framed as personal logistics not scheme design); *"self-censorship to avoid being miscategorised as anti-progress"* (5 sessions hedging legitimate feedback because raising it felt politically disloyal); *"the irony of rerouting"* (residents creating the congestion the scheme claims to solve, by going around it). One participant in turn 19 admitted on tape: *"The child with asthma is abstract — I made her up to make my point sound bigger than it is"* — meta-awareness the cohort aggregate surfaces verbatim. Routing recommendations went to six different council teams (scheme design, public health, transport planning, small business, consultation engagement, equalities/social care), each with supporting session IDs. The aggregate is the cross-turn reasoning thesis at cohort scale: not summarising sessions, finding the patterns that only exist when the cohort is viewed together.
+
+**See the synthesis** at [docs/cohort/congestion-charge-2026-04-24.md](docs/cohort/congestion-charge-2026-04-24.md) — full session inventory, all 12 patterns with verbatim quotes, 10 themes, signal strengths per objective, all six routing recommendations.
+
+The cohort doc isn't the demo. It's the evidence the demo's "hours, not months" pivot points at: 11 conversations, structured signal across all of them, an aggregate growing while sessions ran, all reproducible from the harness in this repo. If the video says the platform makes this kind of conversation cheap enough to actually happen, this is what "happened" looks like.
+
+---
+
 ## File counts, domain depth, and committed artifacts
 
 **Codebase:** ~5,100 TS/TSX lines across 50+ files, 15 commits over 3 days of active building.

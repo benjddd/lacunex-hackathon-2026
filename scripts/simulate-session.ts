@@ -16,6 +16,12 @@ import type {
   ExtractionState,
   Turn,
 } from "../src/lib/types";
+import type { MetaNotice } from "../src/lib/prompts/meta-noticing";
+
+interface DeployedNoticeRef {
+  turn: number;
+  type: string;
+}
 
 const BASE_URL = "http://localhost:3000";
 const DEFAULT_TEMPLATE = "founder-product-ideation";
@@ -53,6 +59,10 @@ interface TurnResponse {
   decision: ConductorDecision;
   extraction: ExtractionState;
   activeObjectiveId: string | null;
+  notices?: {
+    candidates: MetaNotice[];
+    deployed: MetaNotice | null;
+  };
   error?: string;
 }
 
@@ -105,7 +115,8 @@ async function fetchHostTurn(
   transcript: Turn[],
   extraction: ExtractionState | undefined,
   activeObjectiveId: string | null,
-  startedAtIso: string
+  startedAtIso: string,
+  deployedNotices: DeployedNoticeRef[]
 ): Promise<TurnResponse> {
   return postJson<TurnResponse>("/api/turn", {
     templateId,
@@ -113,9 +124,47 @@ async function fetchHostTurn(
     extraction,
     activeObjectiveId,
     startedAtIso,
-    deployedNoticesCount: 0,
-    lastNoticeTurn: null,
+    deployedNotices,
   });
+}
+
+// Build a Turn object that captures everything the conductor decided for this
+// host turn — move_type, anchor_turn, reasoning, deployed notice, and all
+// candidate notices — so the saved session shows ◆ and ↩ badges in the UI
+// without re-running meta-noticing.
+function buildHostTurn(
+  index: number,
+  res: TurnResponse,
+  objectiveIdForThisTurn: string | null
+): Turn {
+  const turn: Turn = {
+    index,
+    role: "host",
+    text: res.decision.next_utterance,
+    at: new Date().toISOString(),
+  };
+  if (res.decision.reasoning) turn.reasoning = res.decision.reasoning;
+  if (res.decision.move_type) turn.move_type = res.decision.move_type;
+  if (res.decision.anchor_turn !== undefined) {
+    turn.anchor_turn = res.decision.anchor_turn;
+  }
+  if (objectiveIdForThisTurn) turn.objective_id = objectiveIdForThisTurn;
+  if (res.notices?.deployed) {
+    turn.deployed_notice = {
+      type: res.notices.deployed.type,
+      anchors: res.notices.deployed.transcript_anchors,
+      observation: res.notices.deployed.observation,
+    };
+  }
+  if (res.notices?.candidates && res.notices.candidates.length > 0) {
+    turn.notice_candidates = res.notices.candidates.map((c) => ({
+      type: c.type,
+      strength: c.strength,
+      transcript_anchors: c.transcript_anchors,
+      observation: c.observation,
+    }));
+  }
+  return turn;
 }
 
 async function main() {
@@ -129,24 +178,22 @@ async function main() {
   const transcript: Turn[] = [];
   let extraction: ExtractionState | undefined = undefined;
   let activeObjectiveId: string | null = null;
+  const deployedNotices: DeployedNoticeRef[] = [];
 
   // 1. Host opening turn (empty transcript in).
   {
+    const objectiveForThisTurn = activeObjectiveId;
     const res = await fetchHostTurn(
       args.template,
       transcript,
       extraction,
       activeObjectiveId,
-      startedAtIso
+      startedAtIso,
+      deployedNotices
     );
     extraction = res.extraction;
     activeObjectiveId = res.activeObjectiveId;
-    const hostTurn: Turn = {
-      index: transcript.length,
-      role: "host",
-      text: res.decision.next_utterance,
-      at: new Date().toISOString(),
-    };
+    const hostTurn = buildHostTurn(transcript.length, res, objectiveForThisTurn);
     transcript.push(hostTurn);
     printTurn(hostTurn);
   }
@@ -166,21 +213,34 @@ async function main() {
     transcript.push(participantTurn);
     printTurn(participantTurn);
 
+    const objectiveForThisTurn = activeObjectiveId;
     const res = await fetchHostTurn(
       args.template,
       transcript,
       extraction,
       activeObjectiveId,
-      startedAtIso
+      startedAtIso,
+      deployedNotices
     );
     extraction = res.extraction;
     activeObjectiveId = res.activeObjectiveId;
-    const hostTurn: Turn = {
-      index: transcript.length,
-      role: "host",
-      text: res.decision.next_utterance,
-      at: new Date().toISOString(),
-    };
+    const hostTurn = buildHostTurn(transcript.length, res, objectiveForThisTurn);
+
+    if (res.notices?.deployed) {
+      deployedNotices.push({
+        turn: hostTurn.index,
+        type: res.notices.deployed.type,
+      });
+      process.stdout.write(
+        `  ◆ deployed meta-notice (${res.notices.deployed.type}, anchors ${JSON.stringify(res.notices.deployed.transcript_anchors)})\n`
+      );
+    }
+    if (res.decision.move_type === "anchor_return") {
+      process.stdout.write(
+        `  ↩ anchor_return → turn ${res.decision.anchor_turn}\n`
+      );
+    }
+
     transcript.push(hostTurn);
     printTurn(hostTurn);
 

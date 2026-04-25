@@ -253,10 +253,13 @@ function ParticipantPageContent({
         // participant turns, once we have PREVIEW_MIN_TURNS of content. The
         // preview regen doesn't block the UI; participant keeps talking while
         // Sonnet works. Skipped on wrap_up (final Opus pass handles that).
+        // Also skipped for brief-designer — there's no "reflection" to peek
+        // at; the artifact is the brief itself, generated only at wrap_up.
         const participantCount = updatedTranscript.filter(
           (t) => t.role === "participant"
         ).length;
         const shouldRegenPreview =
+          template.template_id !== "brief-designer" &&
           data.decision.move_type !== "wrap_up" &&
           participantCount >= PREVIEW_MIN_TURNS &&
           participantCount - previewLastTurnRef.current >= PREVIEW_EVERY;
@@ -420,6 +423,20 @@ function ParticipantPageContent({
     }
   }, [sessionClosed, template, generatedBrief, takeawayOpen]);
 
+  // Force-close any peek modal once a brief-designer session closes — the
+  // preview surface is reflection-flavoured and conflicts visually with the
+  // brief artifact. (Reproduced as the "empty YOUR REFLECTION modal"
+  // screenshot during brief-designer wrap-up.)
+  useEffect(() => {
+    if (
+      sessionClosed &&
+      template?.template_id === "brief-designer" &&
+      previewOpen
+    ) {
+      setPreviewOpen(false);
+    }
+  }, [sessionClosed, template, previewOpen]);
+
   if (!template) {
     return (
       <div className="flex h-dvh items-center justify-center bg-stone-50">
@@ -460,7 +477,7 @@ function ParticipantPageContent({
           >
             {linkCopied ? "Copied!" : "Share host view"}
           </button>
-          {!sessionClosed && previewMarkdown && (
+          {!sessionClosed && previewMarkdown && template?.template_id !== "brief-designer" && (
             <button
               type="button"
               onClick={() => setPreviewOpen(true)}
@@ -498,8 +515,10 @@ function ParticipantPageContent({
                 : "Preparing your reflection…"}
             </span>
           )}
-          {sessionClosed && takeawayError && !takeawayGenerating && !takeawayMarkdown && (
-            <span className="text-xs text-red-600">Reflection failed — {takeawayError}</span>
+          {sessionClosed && takeawayError && !takeawayGenerating && !takeawayMarkdown && !generatedBrief && (
+            <span className="text-xs text-red-600">
+              {template?.template_id === "brief-designer" ? "Brief generation failed" : "Reflection failed"} — {takeawayError}
+            </span>
           )}
           {!sessionClosed && (
             <button
@@ -562,8 +581,10 @@ function ParticipantPageContent({
 
       {/* Spinner / error stays in the modal artifact for the brief window
           before markdown arrives — surface transition only happens once we
-          have something worth reading. */}
-      {takeawayOpen && !takeawayMarkdown && (
+          have something worth reading. Skipped for brief-designer: that flow
+          uses generatedBrief, never takeawayMarkdown, so this condition
+          would otherwise render an empty modal over the BriefAuthored card. */}
+      {takeawayOpen && !takeawayMarkdown && !generatedBrief && (
         <TakeawayArtifact
           markdown={takeawayMarkdown}
           isGenerating={takeawayGenerating}

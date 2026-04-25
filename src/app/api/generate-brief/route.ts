@@ -75,7 +75,16 @@ export async function POST(req: Request) {
       .filter((b) => b.type === "text")
       .map((b) => (b as { type: "text"; text: string }).text)
       .join("");
-    generated = JSON.parse(text) as Partial<Template>;
+    // Strip markdown fences + trailing commas before parsing — Opus
+    // occasionally wraps the JSON despite the prompt forbidding both.
+    let s = text.trim();
+    if (s.startsWith("```")) s = s.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+    try {
+      generated = JSON.parse(s) as Partial<Template>;
+    } catch {
+      const repaired = s.replace(/,\s*([}\]])/g, "$1");
+      generated = JSON.parse(repaired) as Partial<Template>;
+    }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ error: `Generation failed: ${msg}` }, { status: 500 });

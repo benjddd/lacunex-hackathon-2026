@@ -72,7 +72,7 @@
     "target_duration_minutes": 10,
     "demo_duration_minutes": 3,
     "opening": "Start by asking what they want to investigate — open and direct.",
-    "closing": "When you have enough to generate a brief, close by summarising what you've heard in 2–3 sentences and ask if anything's missing."
+    "closing": "When you have enough to generate a brief, close with a 2–3 sentence summary of what you've heard, then state plainly that you'll author the brief now from this. Do NOT end with a question — the brief generator runs immediately after this turn and the host can't reply."
   },
   "meta_noticing_layer": {
     "description": "Observe the host's clarity and focus as they describe their use case.",

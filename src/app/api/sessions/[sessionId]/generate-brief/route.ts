@@ -91,6 +91,34 @@ async function distilTranscript(turns: Turn[]): Promise<string> {
   return text;
 }
 
+// Robust JSON parser for the brief generator. Opus 4.7 occasionally wraps
+// output in markdown fences or emits a trailing comma despite the prompt
+// forbidding both — log the raw text for inspection and try common repairs
+// before giving up.
+function parseBriefJson(raw: string): Partial<Template> {
+  // Strip leading/trailing whitespace and common markdown fences.
+  let s = raw.trim();
+  if (s.startsWith("```")) {
+    s = s.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+  }
+  // First attempt — strict.
+  try {
+    return JSON.parse(s) as Partial<Template>;
+  } catch (firstErr) {
+    // Repair: remove trailing commas before } or ].
+    const repaired = s.replace(/,\s*([}\]])/g, "$1");
+    try {
+      return JSON.parse(repaired) as Partial<Template>;
+    } catch {
+      // Surface the original failure with a snippet of what we got, so the
+      // server log shows what to fix in the prompt next time.
+      const snippet = s.slice(0, 240).replace(/\n/g, "\\n");
+      const msg = firstErr instanceof Error ? firstErr.message : String(firstErr);
+      throw new Error(`Generated JSON unparseable (${msg}). Raw start: ${snippet}…`);
+    }
+  }
+}
+
 // ---- Generate brief from description (replicates /api/generate-brief logic) ----
 
 const GENERATE_SYSTEM = `You are an interview brief designer. Given a host's description of what they want to learn from a conversation, you produce a structured interview brief in JSON.
@@ -138,12 +166,12 @@ async function generateBriefFromDescription(description: string): Promise<Templa
     ],
   });
 
-  const text = response.content
+  const rawText = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b as { type: "text"; text: string }).text)
     .join("");
 
-  const generated = JSON.parse(text) as Partial<Template>;
+  const generated = parseBriefJson(rawText);
 
   if (!generated.name || !generated.objectives || !Array.isArray(generated.objectives)) {
     throw new Error("Generated brief missing required fields");

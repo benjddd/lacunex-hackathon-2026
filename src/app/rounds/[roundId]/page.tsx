@@ -13,6 +13,9 @@ import {
   type Template,
   type Turn,
 } from "@/lib/types";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 interface SessionDoc {
   session_id: string;
@@ -101,26 +104,62 @@ export default function RoundDetailPage({
   const roleLabels = template?.role_labels ?? DEFAULT_ROLE_LABELS;
 
   return (
-    <div className="min-h-dvh bg-stone-50">
-      <header className="border-b border-stone-200 bg-white px-6 py-3">
-        <div className="flex items-baseline justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              {round?.label ?? roundId}
-            </h1>
-            <p className="truncate text-xs text-stone-500">
-              {round
-                ? `${template?.name ?? round.template_id} · ${round.session_ids.length} session${
-                    round.session_ids.length === 1 ? "" : "s"
-                  } · ${new Date(round.created_at).toLocaleString()}`
-                : "loading…"}
-            </p>
+    <div style={{ minHeight: "100dvh", background: aw.bg, fontFamily: aw.sans, color: aw.ink }}>
+      <header
+        style={{
+          padding: "14px 28px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 18,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 24, minWidth: 0 }}>
+          <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+            <Wordmark size={20} />
+          </Link>
+          <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
+            <Link href="/rounds" style={{ textDecoration: "none" }}>
+              <Mono s={11} c={aw.muted}>
+                rounds
+              </Mono>
+            </Link>
+            <Mono s={11} c={aw.muted2}>/</Mono>
+            <Mono s={11} c={aw.ink} style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {round?.label ?? roundId.slice(0, 24)}
+            </Mono>
           </div>
+        </div>
+        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          {round?.aggregate && (
+            <Link href={`/rounds/${roundId}/aggregate`} style={{ textDecoration: "none" }}>
+              <Mono s={11} c={aw.thread}>
+                <span style={{ borderBottom: `1px solid ${aw.thread}`, paddingBottom: 1 }}>
+                  open aggregate →
+                </span>
+              </Mono>
+            </Link>
+          )}
           <Link
             href="/rounds"
-            className="shrink-0 rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+            style={{
+              padding: "6px 12px",
+              background: aw.surface,
+              color: aw.ink,
+              border: `1px solid ${aw.rule}`,
+              fontFamily: aw.mono,
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+            }}
           >
-            ← All rounds
+            ← all rounds
           </Link>
         </div>
       </header>

@@ -6,6 +6,9 @@ import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
 import type { Round, Template } from "@/lib/types";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 const TEMPLATES: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
@@ -83,29 +86,40 @@ export default function RoundsListPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-stone-50">
-      <header className="border-b border-stone-200 bg-white px-6 py-3">
-        <div className="flex items-baseline justify-between">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              Lacunex
-            </h1>
-            <p className="text-xs text-stone-500">Interview rounds</p>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href="/sessions"
-              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-            >
-              All sessions
-            </Link>
-            <Link
-              href="/demo"
-              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-            >
-              New session
-            </Link>
-          </div>
+    <div style={{ minHeight: "100dvh", background: aw.bg, fontFamily: aw.sans, color: aw.ink }}>
+      <header
+        style={{
+          padding: "14px 28px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 18,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+            <Wordmark size={20} />
+          </Link>
+          <Mono s={11} c={aw.muted} u>
+            rounds
+          </Mono>
+        </div>
+        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          <Link href="/host" style={{ textDecoration: "none" }}>
+            <Mono s={11} c={aw.muted}>
+              host
+            </Mono>
+          </Link>
+          <Link href="/sessions" style={{ textDecoration: "none" }}>
+            <Mono s={11} c={aw.muted}>
+              sessions
+            </Mono>
+          </Link>
         </div>
       </header>
 

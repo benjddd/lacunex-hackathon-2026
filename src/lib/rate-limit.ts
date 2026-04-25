@@ -79,14 +79,24 @@ function constantTimeEqual(a: string, b: string): boolean {
 // `x-bypass-token` header or a `lacunex_bypass` cookie. Used to let the
 // team run tests / rehearsals without tripping rate limits or draining
 // invite turn budgets. Silent if RATE_LIMIT_BYPASS_TOKEN isn't set.
+//
+// We normalize whitespace at the edges of both sides before the compare:
+// HTTP headers can't carry newlines, but env-var values pasted with a
+// trailing newline (a common Vercel-dashboard-paste artifact) would
+// otherwise be unmatchable. Constant-time equality still applies after
+// normalization.
+function normalizeBypass(s: string): string {
+  return s.replace(/^[\s\r\n]+|[\s\r\n]+$/g, "");
+}
+
 export function isBypassRequest(req: Request): boolean {
-  const secret = process.env.RATE_LIMIT_BYPASS_TOKEN;
+  const secret = normalizeBypass(process.env.RATE_LIMIT_BYPASS_TOKEN ?? "");
   if (!secret) return false;
   const header = req.headers.get("x-bypass-token");
-  if (header && constantTimeEqual(header, secret)) return true;
+  if (header && constantTimeEqual(normalizeBypass(header), secret)) return true;
   const cookie = req.headers.get("cookie") ?? "";
   const match = cookie.match(/(?:^|;\s*)lacunex_bypass=([^;]+)/);
-  if (match && constantTimeEqual(decodeURIComponent(match[1]), secret)) return true;
+  if (match && constantTimeEqual(normalizeBypass(decodeURIComponent(match[1])), secret)) return true;
   return false;
 }
 

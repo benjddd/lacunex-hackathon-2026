@@ -36,31 +36,8 @@ interface SeedPayload {
 
 export async function POST(req: Request) {
   if (!isBypassRequest(req)) {
-    // TEMP DIAGNOSTIC — emits only LENGTHS and equality bits, never values.
-    // Removed once seed succeeds.
-    const serverSecret = process.env.RATE_LIMIT_BYPASS_TOKEN ?? "";
-    const headerVal = req.headers.get("x-bypass-token") ?? "";
     return NextResponse.json(
-      {
-        error: "unauthorized — bypass token required",
-        debug: {
-          serverSecretLen: serverSecret.length,
-          headerLen: headerVal.length,
-          serverHasNewline:
-            serverSecret.includes("\n") || serverSecret.includes("\r"),
-          headerHasNewline:
-            headerVal.includes("\n") || headerVal.includes("\r"),
-          firstByteEq:
-            serverSecret.length > 0 &&
-            headerVal.length > 0 &&
-            serverSecret.charCodeAt(0) === headerVal.charCodeAt(0),
-          lastByteEq:
-            serverSecret.length > 0 &&
-            headerVal.length > 0 &&
-            serverSecret.charCodeAt(serverSecret.length - 1) ===
-              headerVal.charCodeAt(headerVal.length - 1),
-        },
-      },
+      { error: "unauthorized — bypass token required" },
       { status: 401 }
     );
   }

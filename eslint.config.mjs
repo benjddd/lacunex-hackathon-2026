@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local dev artefacts: hackathon scratch + extracted design references.
+    // The design-pkg JSX files use `window.X` and unescaped quotes; they're
+    // for visual reference only, never imported by the app, never shipped.
+    "tmp/**",
+    "scratch/**",
   ]),
 ]);
 

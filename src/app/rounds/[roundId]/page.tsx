@@ -217,14 +217,24 @@ export default function RoundDetailPage({
                     : "Closes the round and produces the definitive cross-participant picture."}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => void handleAggregate()}
-              disabled={aggregating || round.session_ids.length === 0}
-              className="rounded-md bg-amber-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:opacity-40"
-            >
-              {aggregating ? "Aggregating…" : round.aggregate ? "Regenerate" : "Generate final aggregate"}
-            </button>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <button
+                type="button"
+                onClick={() => void handleAggregate()}
+                disabled={aggregating || round.session_ids.length === 0}
+                className="rounded-md bg-amber-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:opacity-40"
+              >
+                {aggregating ? "Aggregating…" : round.aggregate ? "Regenerate" : "Generate final aggregate"}
+              </button>
+              {round.aggregate && (
+                <Link
+                  href={`/rounds/${roundId}/aggregate`}
+                  className="rounded-md border border-stone-900 bg-stone-900 px-4 py-1.5 text-xs font-medium text-white hover:bg-stone-800"
+                >
+                  Open convergence map →
+                </Link>
+              )}
+            </div>
           </section>
 
           {round.aggregate && (

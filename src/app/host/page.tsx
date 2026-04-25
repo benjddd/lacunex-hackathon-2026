@@ -5,13 +5,19 @@ import { useEffect, useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
+import briefDesignerTemplate from "@/templates/brief-designer.json";
 import { DEFAULT_ROLE_LABELS, type Round, type Template } from "@/lib/types";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark, LogoGlyph } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 const AVAILABLE_BRIEFS: Template[] = [
   founderTemplate as unknown as Template,
   postIncidentTemplate as unknown as Template,
   civicTemplate as unknown as Template,
 ];
+
+const BRIEF_DESIGNER = briefDesignerTemplate as unknown as Template;
 
 export default function HostPage() {
   const [rounds, setRounds] = useState<Round[] | null>(null);
@@ -45,7 +51,7 @@ export default function HostPage() {
         setCopied(templateId);
         setTimeout(() => setCopied((c) => (c === templateId ? null : c)), 2000);
       } catch {
-        // clipboard may be blocked; URL is still visible
+        /* clipboard may be blocked; URL still visible */
       }
     } catch (err) {
       setInviteError(err instanceof Error ? err.message : String(err));
@@ -64,12 +70,9 @@ export default function HostPage() {
           error?: string;
         };
         if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-        if (!cancelled) {
-          setRounds(data.rounds ?? []);
-        }
+        if (!cancelled) setRounds(data.rounds ?? []);
       } catch (err) {
-        if (!cancelled)
-          setRoundsError(err instanceof Error ? err.message : String(err));
+        if (!cancelled) setRoundsError(err instanceof Error ? err.message : String(err));
       }
     })();
     return () => {
@@ -78,97 +81,233 @@ export default function HostPage() {
   }, []);
 
   return (
-    <div className="min-h-dvh bg-stone-50">
-      <header className="border-b border-stone-200 bg-white px-6 py-3">
-        <div className="flex items-baseline justify-between">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              Lacunex
-            </h1>
-            <p className="text-xs text-stone-500">Host dashboard</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/start"
-              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-            >
-              Custom brief
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: aw.bg,
+        fontFamily: aw.sans,
+        color: aw.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <header
+        style={{
+          padding: "14px 36px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1080,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 24,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+              <Wordmark size={20} />
             </Link>
-            <Link
-              href="/sessions"
-              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-            >
-              Past sessions
+            <Mono s={11} c={aw.muted} u>
+              host
+            </Mono>
+          </div>
+          <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+            <Link href="/sessions" style={{ textDecoration: "none" }}>
+              <Mono s={11} c={aw.muted}>
+                past sessions
+              </Mono>
+            </Link>
+            <Link href="/rounds" style={{ textDecoration: "none" }}>
+              <Mono s={11} c={aw.muted}>
+                rounds
+              </Mono>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8 space-y-10">
-        {/* Start a live session */}
+      <main
+        style={{
+          maxWidth: 1080,
+          margin: "0 auto",
+          width: "100%",
+          padding: "40px 36px 56px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 40,
+        }}
+      >
+        {/* Run a session */}
         <section>
-          <h2 className="mb-1 text-xs uppercase tracking-wider text-stone-500">
-            Run a session
-          </h2>
-          <p className="mb-4 text-sm text-stone-600">
-            Pick a brief to open a combined host+participant view. In a real
-            deployment, the participant gets the{" "}
-            <code className="rounded bg-stone-100 px-1 py-0.5 text-[11px]">
-              /p/[brief]
-            </code>{" "}
-            link; you watch the dashboard separately.
+          <Mono u s={10} c={aw.muted}>
+            run a session
+          </Mono>
+          <div
+            style={{
+              fontFamily: aw.serif,
+              fontSize: 30,
+              fontWeight: 400,
+              letterSpacing: "-0.015em",
+              lineHeight: 1.1,
+              marginTop: 6,
+            }}
+          >
+            Pick a brief — or design your own.
+          </div>
+          <p
+            style={{
+              fontSize: 13.5,
+              color: aw.muted,
+              marginTop: 8,
+              lineHeight: 1.6,
+              maxWidth: 640,
+            }}
+          >
+            Open the combined view to drive both sides yourself, or generate an invite
+            link the participant opens in their own browser.
           </p>
-          <div className="grid gap-3 sm:grid-cols-2">
+
+          <div
+            style={{
+              marginTop: 22,
+              display: "grid",
+              gap: 18,
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            }}
+          >
             {AVAILABLE_BRIEFS.map((t) => {
               const roleLabels = t.role_labels ?? DEFAULT_ROLE_LABELS;
               const invite = invites[t.template_id];
               return (
                 <div
                   key={t.template_id}
-                  className="rounded-xl border border-stone-200 bg-white p-5"
+                  style={{
+                    background: aw.surface,
+                    border: `1px solid ${aw.rule}`,
+                    padding: "20px 22px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                  }}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-stone-900">
-                        {t.name}
-                      </h3>
-                      <p className="mt-0.5 text-[11px] text-stone-500">
-                        {roleLabels.host} · {roleLabels.participant}
-                      </p>
-                      <p className="mt-2 text-xs text-stone-600 leading-relaxed line-clamp-3">
-                        {t.description}
-                      </p>
-                    </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <LogoGlyph size={18} variant="default" />
+                    <Mono u s={9} c={aw.muted}>
+                      {roleLabels.host} · {roleLabels.participant}
+                    </Mono>
                   </div>
-                  <div className="mt-4 flex gap-2">
+                  <div
+                    style={{
+                      fontFamily: aw.serif,
+                      fontSize: 19,
+                      fontWeight: 400,
+                      letterSpacing: "-0.01em",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {t.name}
+                  </div>
+                  <p
+                    style={{
+                      fontSize: 12.5,
+                      color: aw.muted,
+                      lineHeight: 1.55,
+                      margin: 0,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {t.description}
+                  </p>
+                  <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
                     <Link
                       href={`/demo?brief=${t.template_id}`}
-                      className="flex-1 rounded-md bg-amber-600 px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-amber-700"
+                      style={{
+                        flex: 1,
+                        textAlign: "center",
+                        padding: "9px 10px",
+                        background: aw.ink,
+                        color: aw.surface,
+                        fontFamily: aw.mono,
+                        fontSize: 10,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        textDecoration: "none",
+                      }}
                     >
-                      Combined view
+                      combined view
                     </Link>
                     <button
                       type="button"
                       onClick={() => createInvite(t.template_id)}
                       disabled={invitingBrief === t.template_id}
-                      className="flex-1 rounded-md border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-700 hover:bg-stone-50 disabled:opacity-50"
+                      style={{
+                        flex: 1,
+                        padding: "9px 10px",
+                        background: aw.surface,
+                        color: aw.ink,
+                        border: `1px solid ${aw.rule}`,
+                        fontFamily: aw.mono,
+                        fontSize: 10,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        cursor: invitingBrief === t.template_id ? "wait" : "pointer",
+                      }}
                     >
                       {invitingBrief === t.template_id
-                        ? "Creating…"
+                        ? "creating…"
                         : copied === t.template_id
-                        ? "Copied ✓"
-                        : invite
-                        ? "New invite"
-                        : "Create invite link"}
+                          ? "copied ✓"
+                          : invite
+                            ? "new invite"
+                            : "invite link"}
                     </button>
                   </div>
                   {invite && (
-                    <div className="mt-3 rounded-md border border-emerald-200 bg-emerald-50/40 p-2">
-                      <p className="text-[10px] uppercase tracking-wider text-emerald-800">
-                        Invite link — share with participant
-                      </p>
-                      <div className="mt-1 flex items-center gap-2">
-                        <code className="flex-1 truncate rounded bg-white px-2 py-1 text-[11px] text-stone-800 border border-stone-200 select-all">
+                    <div
+                      style={{
+                        marginTop: 4,
+                        padding: "8px 10px",
+                        background: aw.threadSoft,
+                        border: `1px solid ${aw.thread}`,
+                      }}
+                    >
+                      <Mono u s={9} c={aw.thread}>
+                        share with participant
+                      </Mono>
+                      <div
+                        style={{
+                          marginTop: 4,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                        }}
+                      >
+                        <code
+                          style={{
+                            flex: 1,
+                            background: aw.surface,
+                            border: `1px solid ${aw.rule}`,
+                            padding: "5px 8px",
+                            fontFamily: aw.mono,
+                            fontSize: 11,
+                            color: aw.ink,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            userSelect: "all",
+                          }}
+                        >
                           {invite.url}
                         </code>
                         <button
@@ -177,13 +316,24 @@ export default function HostPage() {
                             void navigator.clipboard.writeText(invite.url);
                             setCopied(t.template_id);
                             setTimeout(
-                              () => setCopied((c) => (c === t.template_id ? null : c)),
+                              () =>
+                                setCopied((c) => (c === t.template_id ? null : c)),
                               2000
                             );
                           }}
-                          className="shrink-0 rounded border border-stone-300 bg-white px-2 py-1 text-[10px] text-stone-700 hover:bg-stone-50"
+                          style={{
+                            background: aw.surface,
+                            border: `1px solid ${aw.rule}`,
+                            padding: "5px 8px",
+                            fontFamily: aw.mono,
+                            fontSize: 9,
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                            color: aw.ink,
+                            cursor: "pointer",
+                          }}
                         >
-                          {copied === t.template_id ? "✓" : "Copy"}
+                          {copied === t.template_id ? "✓" : "copy"}
                         </button>
                       </div>
                     </div>
@@ -191,101 +341,164 @@ export default function HostPage() {
                 </div>
               );
             })}
-          </div>
-          {inviteError && (
-            <p className="mt-2 text-xs text-red-700">
-              Couldn&apos;t create invite: {inviteError}
-            </p>
-          )}
-        </section>
 
-        {/* How the split works */}
-        <section className="rounded-xl border border-amber-200 bg-amber-50/40 px-5 py-4">
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-amber-800">
-            How screen separation works
-          </h2>
-          <div className="space-y-1.5 text-xs text-stone-700 leading-relaxed">
-            <p>
-              <span className="font-medium">Participant view</span> (
-              <code className="rounded bg-white/80 px-1">/p/[brief]</code>) — a
-              clean, minimal chat interface. No dashboard, no objective bars, no
-              meta-notice badges. The participant types, sees responses, and
-              receives their reflective takeaway at the end.
-            </p>
-            <p>
-              <span className="font-medium">Combined demo view</span> (
-              <code className="rounded bg-white/80 px-1">/demo</code>) — both
-              sides in one window. Useful for demos, evaluation, or debugging.
-              Shows the host dashboard alongside the chat.
-            </p>
-            <p>
-              <span className="font-medium">Cross-turn reasoning</span> is
-              invisible to participants — badges for anchor_return (amber) and
-              meta-notices (green) appear only in the combined view.
-            </p>
+            {/* Brief Designer — same card grid, marked with thread accent so it
+                reads as a peer of the bundled briefs, not an afterthought. */}
+            <Link
+              href={`/p/${BRIEF_DESIGNER.template_id}`}
+              style={{
+                background: aw.threadSoft,
+                border: `1px solid ${aw.thread}`,
+                padding: "20px 22px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+                textDecoration: "none",
+                color: aw.ink,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <LogoGlyph size={18} variant="micro" />
+                <Mono u s={9} c={aw.thread}>
+                  meta · author your own brief
+                </Mono>
+              </div>
+              <div
+                style={{
+                  fontFamily: aw.serif,
+                  fontSize: 19,
+                  fontWeight: 400,
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.2,
+                }}
+              >
+                {BRIEF_DESIGNER.name}
+              </div>
+              <p
+                style={{
+                  fontSize: 12.5,
+                  color: aw.ink2,
+                  lineHeight: 1.55,
+                  margin: 0,
+                }}
+              >
+                Tell the platform what you&apos;re trying to learn — it interviews you to
+                build the brief, then the brief runs against your participants. Same
+                four-call architecture, recursive.
+              </p>
+              <div style={{ marginTop: "auto", paddingTop: 6 }}>
+                <Mono s={10} c={aw.thread}>
+                  <span style={{ borderBottom: `1px solid ${aw.thread}`, paddingBottom: 1 }}>
+                    design your brief →
+                  </span>
+                </Mono>
+              </div>
+            </Link>
           </div>
+
+          {inviteError && (
+            <div style={{ marginTop: 12 }}>
+              <Mono s={11} c={aw.thread}>
+                Couldn&apos;t create invite: {inviteError}
+              </Mono>
+            </div>
+          )}
         </section>
 
         {/* Rounds */}
         <section>
-          <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-xs uppercase tracking-wider text-stone-500">
-              Rounds (cross-participant aggregates)
-            </h2>
-            <div className="flex items-center gap-3">
-              <Link href="/rounds" className="text-xs text-amber-700 hover:underline">
-                New round →
-              </Link>
-              <Link href="/rounds" className="text-xs text-stone-500 hover:underline">
-                All rounds
-              </Link>
-            </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
+          >
+            <Mono u s={10} c={aw.muted}>
+              rounds · cross-participant aggregates
+            </Mono>
+            <Link href="/rounds" style={{ textDecoration: "none" }}>
+              <Mono s={10} c={aw.thread}>
+                <span style={{ borderBottom: `1px solid ${aw.thread}`, paddingBottom: 1 }}>
+                  all rounds →
+                </span>
+              </Mono>
+            </Link>
           </div>
 
           {roundsError && (
-            <p className="text-xs text-red-700">{roundsError}</p>
+            <Mono s={11} c={aw.thread}>
+              {roundsError}
+            </Mono>
           )}
           {!rounds && !roundsError && (
-            <p className="text-xs text-stone-500">Loading…</p>
+            <Mono s={11} c={aw.muted}>
+              loading…
+            </Mono>
           )}
           {rounds && rounds.length === 0 && (
-            <div className="rounded-lg border border-stone-200 bg-white px-5 py-4 text-sm text-stone-600">
-              No rounds yet.{" "}
-              <Link href="/rounds" className="text-amber-700 underline">
-                Create a round →
-              </Link>
+            <div
+              style={{
+                background: aw.surface,
+                border: `1px solid ${aw.rule}`,
+                padding: "16px 22px",
+              }}
+            >
+              <Mono s={12} c={aw.muted}>
+                No rounds yet. <Link href="/rounds" style={{ color: aw.thread }}>Create one →</Link>
+              </Mono>
             </div>
           )}
           {rounds && rounds.length > 0 && (
-            <ul className="space-y-2">
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {rounds.slice(0, 5).map((r) => (
-                <li key={r.round_id}>
-                  <Link
-                    href={`/rounds/${r.round_id}`}
-                    className="flex items-baseline justify-between rounded-lg border border-stone-200 bg-white px-4 py-3 transition hover:border-amber-300 hover:bg-amber-50/20"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm text-stone-900">
-                        {r.label}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-stone-500">
-                        {r.session_ids.length} session
-                        {r.session_ids.length === 1 ? "" : "s"} ·{" "}
-                        {new Date(r.created_at).toLocaleDateString()}
-                        {r.aggregate && (
-                          <span className="ml-2 text-emerald-700">
-                            · aggregate ready
-                          </span>
-                        )}
-                      </p>
+                <Link
+                  key={r.round_id}
+                  href={`/rounds/${r.round_id}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    justifyContent: "space-between",
+                    background: aw.surface,
+                    border: `1px solid ${aw.rule}`,
+                    padding: "12px 18px",
+                    textDecoration: "none",
+                    color: aw.ink,
+                    gap: 12,
+                  }}
+                >
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      style={{
+                        fontFamily: aw.serif,
+                        fontSize: 15,
+                        letterSpacing: "-0.005em",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {r.label}
                     </div>
-                    <span className="shrink-0 ml-3 text-[10px] uppercase tracking-wider text-stone-400">
-                      {r.status ?? "open"}
-                    </span>
-                  </Link>
-                </li>
+                    <div style={{ marginTop: 2 }}>
+                      <Mono s={10} c={aw.muted2}>
+                        {r.session_ids.length} session{r.session_ids.length === 1 ? "" : "s"} ·{" "}
+                        {new Date(r.created_at).toLocaleDateString(undefined, {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        {r.aggregate ? " · aggregate ready" : ""}
+                      </Mono>
+                    </div>
+                  </div>
+                  <Mono s={9} c={r.aggregate ? aw.thread : aw.muted2} u>
+                    {r.status ?? "open"}
+                  </Mono>
+                </Link>
               ))}
-            </ul>
+            </div>
           )}
         </section>
       </main>

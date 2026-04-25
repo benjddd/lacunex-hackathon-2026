@@ -9,6 +9,7 @@ import { LetterReflection } from "@/components/convergence/LetterReflection";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
+import briefDesignerTemplate from "@/templates/brief-designer.json";
 import {
   emptyExtraction,
   DEFAULT_ROLE_LABELS,
@@ -23,6 +24,7 @@ const TEMPLATE_MAP: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
   [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
   [civicTemplate.template_id]: civicTemplate as unknown as Template,
+  [briefDesignerTemplate.template_id]: briefDesignerTemplate as unknown as Template,
 };
 
 interface DeployedNoticePayload {

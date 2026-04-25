@@ -286,7 +286,13 @@ export function ChatPane({
               }
             }}
             rows={2}
-            placeholder={disabled ? "Session closed." : "Your turn. (Enter to send, Shift+Enter for newline.)"}
+            placeholder={
+              disabled
+                ? "Session closed."
+                : isLoading
+                  ? "Waiting for the host…"
+                  : "Your turn. (Enter to send, Shift+Enter for newline.)"
+            }
             disabled={disabled || isLoading}
             className="flex-1 resize-none rounded-md border border-stone-300 px-3 py-2 text-sm leading-relaxed focus:border-amber-500 focus:outline-none disabled:bg-stone-100"
           />

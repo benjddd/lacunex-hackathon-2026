@@ -6,15 +6,20 @@ import { DashboardPane } from "@/components/DashboardPane";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
+import briefDesignerTemplate from "@/templates/brief-designer.json";
 import {
   type ExtractionState,
   type Template,
 } from "@/lib/types";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 const TEMPLATE_MAP: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
   [postIncidentTemplate.template_id]: postIncidentTemplate as unknown as Template,
   [civicTemplate.template_id]: civicTemplate as unknown as Template,
+  [briefDesignerTemplate.template_id]: briefDesignerTemplate as unknown as Template,
 };
 
 interface LiveState {
@@ -105,69 +110,148 @@ export default function LiveHostPage({
     return () => clearInterval(id);
   }, []);
 
-  const shortId = sessionId.replace(/-live$/, "").slice(0, 23);
+  // Live session ids look like "2026-04-25T09-19-31-699Z-live". Format the
+  // timestamp portion human-readably for the header.
+  const friendlyStarted = (() => {
+    const m = /^(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})/.exec(sessionId);
+    if (!m) return sessionId.slice(0, 16);
+    const [, ymd, hh, mm] = m;
+    const d = new Date(`${ymd}T${hh}:${mm}:00Z`);
+    if (Number.isNaN(d.getTime())) return ymd;
+    return d.toLocaleString(undefined, {
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  })();
 
   return (
-    <div className="min-h-dvh bg-stone-50 flex flex-col">
-      {/* Header */}
-      <header className="shrink-0 border-b border-stone-200 bg-white px-6 py-3 flex items-center justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-xs text-stone-500 uppercase tracking-wider">
-            Live — watching session
-          </p>
-          <h1 className="mt-0.5 text-sm font-mono text-stone-700 truncate">
-            {shortId}&hellip;
-          </h1>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: aw.bg,
+        fontFamily: aw.sans,
+        color: aw.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <header
+        style={{
+          padding: "14px 28px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 18,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 24, minWidth: 0 }}>
+          <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+            <Wordmark size={20} />
+          </Link>
+          <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+            <Mono u s={9} c={aw.muted}>
+              live · watching session
+            </Mono>
+            <Mono s={11} c={aw.ink}>
+              started {friendlyStarted}
+            </Mono>
+          </div>
         </div>
-        <div className="flex items-center gap-4 shrink-0">
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           {liveState && (
-            <span className="text-xs text-stone-500 tabular-nums">
-              Turn {liveState.turn_count}
+            <Mono s={11} c={aw.muted}>
+              turn {liveState.turn_count}
               {secondsSinceUpdate !== null && (
-                <span className="ml-2 text-stone-400">
-                  · updated {secondsSinceUpdate}s ago
-                </span>
+                <span style={{ color: aw.muted2 }}> · updated {secondsSinceUpdate}s ago</span>
               )}
-            </span>
+            </Mono>
           )}
           <Link
             href="/host"
-            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
+            style={{
+              padding: "6px 12px",
+              background: aw.surface,
+              color: aw.ink,
+              border: `1px solid ${aw.rule}`,
+              fontFamily: aw.mono,
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+            }}
           >
-            Back to host
+            ← back to host
           </Link>
         </div>
       </header>
 
-      {/* Body */}
-      <main className="flex-1 overflow-hidden">
+      <main style={{ flex: 1, overflow: "hidden" }}>
         {notStarted && (
-          <div className="flex h-full items-center justify-center">
-            <p className="max-w-sm text-center text-sm text-stone-500 leading-relaxed">
-              Session not started yet or already ended — live data appears here
-              when the participant is active.
-            </p>
+          <div
+            style={{
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 32,
+            }}
+          >
+            <div style={{ maxWidth: 420, textAlign: "center" }}>
+              <Mono u s={10} c={aw.muted}>
+                no live data yet
+              </Mono>
+              <p
+                style={{
+                  marginTop: 10,
+                  fontFamily: aw.serif,
+                  fontSize: 17,
+                  lineHeight: 1.5,
+                  color: aw.ink2,
+                }}
+              >
+                Session not started yet or already ended — live data appears here when
+                the participant is active.
+              </p>
+            </div>
           </div>
         )}
 
         {!notStarted && !liveState && (
-          <div className="flex h-full items-center justify-center">
-            <p className="text-sm text-stone-400 animate-pulse">
-              Waiting for first turn data…
-            </p>
+          <div
+            style={{
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Mono s={11} c={aw.muted}>
+              waiting for first turn…
+            </Mono>
           </div>
         )}
 
         {liveState && !template && (
-          <div className="flex h-full items-center justify-center">
-            <p className="text-sm text-stone-400 animate-pulse">
-              Resolving template…
-            </p>
+          <div
+            style={{
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Mono s={11} c={aw.muted}>
+              resolving template…
+            </Mono>
           </div>
         )}
 
         {liveState && template && (
-          <div className="h-full overflow-auto">
+          <div style={{ height: "100%", overflow: "auto" }}>
             <DashboardPane
               template={template}
               extraction={liveState.extraction}

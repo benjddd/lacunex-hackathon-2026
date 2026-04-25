@@ -8,6 +8,9 @@ import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
 import briefDesignerTemplate from "@/templates/brief-designer.json";
 import { DEFAULT_ROLE_LABELS, type Template } from "@/lib/types";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark, LogoGlyph } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 const BRIEFS: Template[] = [
   founderTemplate as unknown as Template,
@@ -16,9 +19,12 @@ const BRIEFS: Template[] = [
 ];
 
 const HOOKS: Record<string, string> = {
-  "founder-product-ideation": "Walk me through the moment you realised you were solving a real problem — not a hypothesis, a moment.",
-  "post-incident-witness": "Before we look at any reports — tell me what you personally saw or heard in the minutes before the incident.",
-  "civic-consultation": "Forget the options on the table for a second. What outcome would make you feel this process was worth your time?",
+  "founder-product-ideation":
+    "Walk me through the moment you realised you were solving a real problem — not a hypothesis, a moment.",
+  "post-incident-witness":
+    "Before we look at any reports — tell me what you personally saw or heard in the minutes before the incident.",
+  "civic-consultation":
+    "Forget the options on the table for a second. What outcome would make you feel this process was worth your time?",
 };
 
 const BRIEF_DESIGNER = briefDesignerTemplate as unknown as Template;
@@ -54,7 +60,6 @@ export default function StartPage() {
 
   const handleStartGenerated = () => {
     if (!generatedBrief) return;
-    // Store in sessionStorage so the participant page can retrieve it
     sessionStorage.setItem(
       `lacunex:brief:${generatedBrief.template_id}`,
       JSON.stringify(generatedBrief)
@@ -63,216 +68,383 @@ export default function StartPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-stone-50">
-      <header className="border-b border-stone-200 bg-white px-6 py-4">
-        <div className="flex items-baseline justify-between">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              Lacunex
-            </h1>
-            <p className="text-xs text-stone-500">Start a conversation</p>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: aw.bg,
+        fontFamily: aw.sans,
+        color: aw.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <header
+        style={{
+          padding: "14px 36px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 880,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+              <Wordmark size={20} />
+            </Link>
+            <Mono s={11} c={aw.muted} u>
+              start
+            </Mono>
           </div>
-          <Link
-            href="/host"
-            className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-          >
-            Host dashboard
+          <Link href="/host" style={{ textDecoration: "none" }}>
+            <Mono s={11} c={aw.muted}>
+              host dashboard ↗
+            </Mono>
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-12">
-        <div className="mb-8 text-center">
-          <p className="text-sm text-stone-600 max-w-lg mx-auto leading-relaxed">
-            A 15-minute adaptive interview. No questionnaire — every question is
-            decided turn by turn based on what you say. You leave with a
-            reflective summary written for you.
+      <main
+        style={{
+          maxWidth: 880,
+          margin: "0 auto",
+          width: "100%",
+          padding: "48px 36px 64px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 36,
+        }}
+      >
+        <div>
+          <Mono u s={10} c={aw.thread}>
+            adaptive interviews · 15 minutes · both sides leave with something
+          </Mono>
+          <h1
+            style={{
+              fontFamily: aw.serif,
+              fontSize: 42,
+              fontWeight: 400,
+              letterSpacing: "-0.015em",
+              lineHeight: 1.05,
+              margin: "12px 0 10px",
+            }}
+          >
+            Pick a brief — or design your own.
+          </h1>
+          <p style={{ fontSize: 14, color: aw.muted, lineHeight: 1.65, maxWidth: 600 }}>
+            Every question is decided turn by turn from what you say. There&apos;s no
+            questionnaire. You leave with a reflective summary written for you.
           </p>
         </div>
 
-        <div className="space-y-4">
-          {BRIEFS.map((brief) => {
-            const roleLabels = brief.role_labels ?? DEFAULT_ROLE_LABELS;
-            const hook = HOOKS[brief.template_id] ?? "";
-            return (
-              <div
-                key={brief.template_id}
-                className="rounded-xl border border-stone-200 bg-white p-6 transition hover:border-amber-300"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <h2 className="text-sm font-semibold text-stone-900">
-                      {brief.name}
-                    </h2>
-                    <p className="mt-0.5 text-[11px] text-stone-500 uppercase tracking-wider">
+        {/* Brief Designer — the meta-card, prominent at the top of the list. */}
+        <Link
+          href={`/p/${BRIEF_DESIGNER.template_id}`}
+          style={{
+            background: aw.threadSoft,
+            border: `1px solid ${aw.thread}`,
+            padding: "26px 28px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            textDecoration: "none",
+            color: aw.ink,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <LogoGlyph size={22} variant="micro" />
+            <Mono u s={9} c={aw.thread}>
+              meta · the platform interviews you to author the brief
+            </Mono>
+          </div>
+          <div
+            style={{
+              fontFamily: aw.serif,
+              fontSize: 24,
+              fontWeight: 400,
+              letterSpacing: "-0.01em",
+              lineHeight: 1.15,
+            }}
+          >
+            {BRIEF_DESIGNER.name}
+          </div>
+          <p
+            style={{
+              fontSize: 13.5,
+              color: aw.ink2,
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            Tell the platform what you&apos;re trying to learn — your goals, your
+            participants, your hypotheses. Same conductor, same cross-turn
+            reasoning. The brief that runs your interview is built by the same
+            engine that runs it.
+          </p>
+          <p
+            style={{
+              fontFamily: aw.serif,
+              fontStyle: "italic",
+              fontSize: 13.5,
+              color: aw.thread,
+              borderLeft: `2px solid ${aw.thread}`,
+              paddingLeft: 12,
+              margin: "4px 0 0",
+            }}
+          >
+            &ldquo;What question are you trying to answer — and what decision will
+            the answer inform?&rdquo;
+          </p>
+          <div style={{ marginTop: 6 }}>
+            <Mono s={10} c={aw.thread}>
+              <span style={{ borderBottom: `1px solid ${aw.thread}`, paddingBottom: 1 }}>
+                design your brief →
+              </span>
+            </Mono>
+          </div>
+        </Link>
+
+        {/* Or pick one of the bundled briefs */}
+        <div>
+          <Mono u s={10} c={aw.muted}>
+            or pick a bundled brief
+          </Mono>
+          <div
+            style={{
+              marginTop: 14,
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+            }}
+          >
+            {BRIEFS.map((brief) => {
+              const roleLabels = brief.role_labels ?? DEFAULT_ROLE_LABELS;
+              const hook = HOOKS[brief.template_id] ?? "";
+              return (
+                <div
+                  key={brief.template_id}
+                  style={{
+                    background: aw.surface,
+                    border: `1px solid ${aw.rule}`,
+                    padding: "20px 24px",
+                    display: "grid",
+                    gridTemplateColumns: "1fr auto",
+                    gap: 18,
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <Mono u s={9} c={aw.muted}>
                       {roleLabels.host} · {roleLabels.participant}
-                    </p>
-                    <p className="mt-2 text-xs text-stone-600 leading-relaxed">
+                    </Mono>
+                    <div
+                      style={{
+                        fontFamily: aw.serif,
+                        fontSize: 20,
+                        fontWeight: 400,
+                        letterSpacing: "-0.01em",
+                        marginTop: 4,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {brief.name}
+                    </div>
+                    <p
+                      style={{
+                        fontSize: 12.5,
+                        color: aw.muted,
+                        lineHeight: 1.55,
+                        margin: "8px 0 0",
+                      }}
+                    >
                       {brief.description}
                     </p>
                     {hook && (
-                      <p className="mt-3 text-[11px] italic text-stone-400 border-l-2 border-stone-200 pl-3">
+                      <p
+                        style={{
+                          margin: "10px 0 0",
+                          paddingLeft: 12,
+                          borderLeft: `2px solid ${aw.rule}`,
+                          fontFamily: aw.serif,
+                          fontStyle: "italic",
+                          fontSize: 13,
+                          color: aw.muted,
+                          lineHeight: 1.5,
+                        }}
+                      >
                         &ldquo;{hook}&rdquo;
                       </p>
                     )}
                   </div>
-                  <div className="shrink-0 flex flex-col gap-2">
-                    <Link
-                      href={`/p/${brief.template_id}`}
-                      className="rounded-md bg-amber-600 px-4 py-2 text-center text-xs font-medium text-white hover:bg-amber-700 whitespace-nowrap"
-                    >
-                      Start as {roleLabels.participant}
-                    </Link>
-                  </div>
+                  <Link
+                    href={`/p/${brief.template_id}`}
+                    style={{
+                      padding: "10px 16px",
+                      background: aw.ink,
+                      color: aw.surface,
+                      fontFamily: aw.mono,
+                      fontSize: 10,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    start as {roleLabels.participant.toLowerCase()}
+                  </Link>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {brief.objectives.slice(0, 4).map((obj) => (
-                    <span
-                      key={obj.id}
-                      className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] text-stone-600"
-                    >
-                      {obj.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Brief Designer — meta card */}
-        <div className="mt-6 rounded-xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-white p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="mb-1.5 inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-violet-700">
-                Meta
-              </div>
-              <h2 className="text-sm font-semibold text-stone-900">{BRIEF_DESIGNER.name}</h2>
-              <p className="mt-0.5 text-[11px] text-stone-500 uppercase tracking-wider">
-                {BRIEF_DESIGNER.role_labels?.host ?? "Brief Designer"} · {BRIEF_DESIGNER.role_labels?.participant ?? "You"}
-              </p>
-              <p className="mt-2 text-xs text-stone-600 leading-relaxed">
-                Design your own brief — the platform interviews you to build it. Describe your use case, your participants, and what you want to learn. You get a ready-to-use brief at the end.
-              </p>
-              <p className="mt-3 text-[11px] italic text-violet-500 border-l-2 border-violet-200 pl-3">
-                &ldquo;What question are you trying to answer — and what decision will the answer inform?&rdquo;
-              </p>
-            </div>
-            <div className="shrink-0 flex flex-col gap-2">
-              <Link
-                href={`/p/${BRIEF_DESIGNER.template_id}`}
-                className="rounded-md bg-violet-600 px-4 py-2 text-center text-xs font-medium text-white hover:bg-violet-700 whitespace-nowrap"
-              >
-                Design your brief →
-              </Link>
-            </div>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {BRIEF_DESIGNER.objectives.slice(0, 4).map((obj) => (
-              <span
-                key={obj.id}
-                className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] text-violet-700"
-              >
-                {obj.label}
-              </span>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* NL brief generator */}
-        <div className="mt-8 rounded-xl border border-dashed border-stone-300 bg-white">
+        {/* Quick one-shot brief generator — kept for the keyboard-first path. */}
+        <div style={{ borderTop: `1px solid ${aw.rule}`, paddingTop: 24 }}>
           <button
             type="button"
             onClick={() => setShowGenerator((v) => !v)}
-            className="flex w-full items-center justify-between px-6 py-4 text-left"
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              fontFamily: aw.sans,
+              color: aw.ink,
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              width: "100%",
+              gap: 18,
+            }}
           >
-            <div>
-              <p className="text-sm font-medium text-stone-700">
-                Don&apos;t see your use case?
-              </p>
-              <p className="text-xs text-stone-500">
-                Describe what you want to learn — we&apos;ll generate a custom brief.
-              </p>
+            <div style={{ textAlign: "left" }}>
+              <Mono u s={9} c={aw.muted}>
+                quick generator · one-shot
+              </Mono>
+              <div
+                style={{
+                  fontFamily: aw.serif,
+                  fontSize: 17,
+                  marginTop: 4,
+                  letterSpacing: "-0.005em",
+                }}
+              >
+                Skip the conversation — describe your use case and generate a brief.
+              </div>
             </div>
-            <span className="text-stone-400 text-sm">{showGenerator ? "↑" : "↓"}</span>
+            <Mono s={11} c={aw.muted2}>
+              {showGenerator ? "hide" : "open"}
+            </Mono>
           </button>
 
           {showGenerator && (
-            <div className="border-t border-stone-100 px-6 pb-6 pt-4 space-y-4">
-              <div>
-                <label className="text-xs uppercase tracking-wider text-stone-500">
-                  What are you trying to learn?
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="e.g. I want to understand how frontline nurses make triage decisions under time pressure — specifically what information they use and what they ignore."
-                  rows={3}
-                  disabled={generating}
-                  className="mt-1.5 w-full rounded-md border border-stone-300 px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:border-amber-500 focus:outline-none resize-none disabled:opacity-50"
-                />
-              </div>
-
+            <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 10 }}>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="One paragraph: who's the host, who's the participant, what are you trying to learn?"
+                rows={4}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  background: aw.surface,
+                  border: `1px solid ${aw.rule}`,
+                  fontFamily: aw.sans,
+                  fontSize: 13,
+                  color: aw.ink,
+                  outline: "none",
+                  resize: "vertical",
+                  lineHeight: 1.55,
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => void handleGenerate()}
+                disabled={generating || !description.trim()}
+                style={{
+                  alignSelf: "flex-start",
+                  padding: "10px 18px",
+                  background: aw.ink,
+                  color: aw.surface,
+                  border: "none",
+                  fontFamily: aw.mono,
+                  fontSize: 11,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  cursor: generating ? "wait" : "pointer",
+                  opacity: !description.trim() ? 0.4 : 1,
+                }}
+              >
+                {generating ? "generating · 15-30s" : "generate brief"}
+              </button>
               {genError && (
-                <p className="text-xs text-red-600">{genError}</p>
+                <Mono s={11} c={aw.thread}>
+                  {genError}
+                </Mono>
               )}
-
-              {!generatedBrief && (
-                <button
-                  type="button"
-                  onClick={() => void handleGenerate()}
-                  disabled={!description.trim() || generating}
-                  className="rounded-md bg-slate-800 px-4 py-2 text-xs font-medium text-white hover:bg-slate-900 disabled:opacity-40"
-                >
-                  {generating ? "Generating brief…" : "Generate custom brief"}
-                </button>
-              )}
-
               {generatedBrief && (
-                <div className="rounded-lg border border-emerald-200 bg-emerald-50/40 p-4 space-y-3">
-                  <div>
-                    <p className="text-sm font-semibold text-stone-900">{generatedBrief.name}</p>
-                    <p className="mt-0.5 text-[11px] uppercase tracking-wider text-stone-500">
-                      {generatedBrief.role_labels?.host} · {generatedBrief.role_labels?.participant}
-                    </p>
-                    <p className="mt-1.5 text-xs text-stone-600">{generatedBrief.description}</p>
+                <div
+                  style={{
+                    background: aw.surface,
+                    border: `1px solid ${aw.rule}`,
+                    padding: "14px 18px",
+                    marginTop: 4,
+                  }}
+                >
+                  <Mono u s={9} c={aw.thread}>
+                    brief generated
+                  </Mono>
+                  <div
+                    style={{
+                      fontFamily: aw.serif,
+                      fontSize: 18,
+                      letterSpacing: "-0.005em",
+                      marginTop: 4,
+                    }}
+                  >
+                    {generatedBrief.name}
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {generatedBrief.objectives.slice(0, 5).map((obj) => (
-                      <span
-                        key={obj.id}
-                        className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] text-stone-700 ring-1 ring-stone-200"
-                      >
-                        {obj.label}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={handleStartGenerated}
-                      className="rounded-md bg-amber-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-amber-700"
-                    >
-                      Start with this brief →
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setGeneratedBrief(null); setDescription(""); }}
-                      className="text-xs text-stone-500 underline hover:text-stone-700"
-                    >
-                      Try again
-                    </button>
-                  </div>
+                  <p
+                    style={{
+                      fontSize: 12.5,
+                      color: aw.muted,
+                      lineHeight: 1.55,
+                      margin: "6px 0 12px",
+                    }}
+                  >
+                    {generatedBrief.description}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleStartGenerated}
+                    style={{
+                      padding: "9px 14px",
+                      background: aw.thread,
+                      color: aw.surface,
+                      border: "none",
+                      fontFamily: aw.mono,
+                      fontSize: 10,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                    }}
+                  >
+                    start as participant →
+                  </button>
                 </div>
               )}
             </div>
           )}
         </div>
-
-        <p className="mt-10 text-center text-[11px] text-stone-400">
-          No account required. Your transcript stays in your browser tab.
-          The host receives structured insight; you receive your reflective takeaway at the end.
-        </p>
       </main>
     </div>
   );

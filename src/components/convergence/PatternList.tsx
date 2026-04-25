@@ -64,7 +64,7 @@ export function PatternList({ patterns, selectedIndex, onSelect }: PatternListPr
                 ◆ {p.type.replace(/_/g, " ")}
               </Mono>
               <Mono s={9} c={aw.muted2}>
-                {Math.round(score * 100)}
+                {p.strength === "strong" ? "strong" : "weak"}
               </Mono>
             </div>
             <div
@@ -93,6 +93,7 @@ export function PatternList({ patterns, selectedIndex, onSelect }: PatternListPr
                   background: aw.rule2,
                   marginRight: 8,
                 }}
+                title={`Signal strength · ${Math.round(score * 100)}/100 (${p.strength}, covers ${p.supporting_session_ids.length} session${p.supporting_session_ids.length === 1 ? "" : "s"})`}
               >
                 <div
                   style={{
@@ -103,7 +104,9 @@ export function PatternList({ patterns, selectedIndex, onSelect }: PatternListPr
                 />
               </div>
               <Mono s={9} c={aw.muted2}>
-                n={p.supporting_session_ids.length}
+                <span title={`${p.supporting_session_ids.length} sessions cite this pattern`}>
+                  n={p.supporting_session_ids.length}
+                </span>
               </Mono>
             </div>
           </button>

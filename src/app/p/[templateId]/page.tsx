@@ -2,7 +2,7 @@
 
 import { Suspense, use, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChatPane } from "@/components/ChatPane";
 import { TakeawayArtifact } from "@/components/TakeawayArtifact";
 import { LetterReflection } from "@/components/convergence/LetterReflection";
@@ -109,6 +109,11 @@ function ParticipantPageContent({
   const [takeawayMarkdown, setTakeawayMarkdown] = useState<string | null>(null);
   const [takeawayGenerating, setTakeawayGenerating] = useState(false);
   const [takeawayError, setTakeawayError] = useState<string | null>(null);
+  // Brief-designer terminal state. When this template runs to its end, the
+  // "takeaway" the participant should see is the brief they just authored,
+  // not a reflective letter. Set by handleEndSession when template_id is
+  // "brief-designer"; rendered in place of LetterReflection.
+  const [generatedBrief, setGeneratedBrief] = useState<Template | null>(null);
   // Live "peek at your reflection" — a Sonnet-generated draft that refreshes
   // every 3 participant turns. Participant can open the drawer to peek and
   // close to continue. Final Opus pass still runs at session close.
@@ -294,12 +299,13 @@ function ParticipantPageContent({
   const handleEndSession = useCallback(async () => {
     setSessionClosed(true);
     // Don't auto-open — let participant choose when to reveal their reflection.
-    if (takeawayMarkdown || !template) return;
+    if (takeawayMarkdown || generatedBrief || !template) return;
     setTakeawayGenerating(true);
     setTakeawayError(null);
 
-    // Save session first so we get the sessionId to pair with the takeaway.
-    // Also handles round association. Non-fatal if it fails.
+    // Save session first so we get the sessionId to pair with the takeaway
+    // (or with the brief generation, for brief-designer sessions).
+    // Non-fatal if it fails.
     let sessionId: string | undefined;
     try {
       const saveRes = await fetch("/api/save-session", {
@@ -324,6 +330,35 @@ function ParticipantPageContent({
       // save failure is non-fatal
     }
 
+    // Brief-designer terminal state diverges: instead of producing a
+    // reflective takeaway for the host, distil the conversation into a brief
+    // and show it as the artifact. The takeaway frame doesn't fit the meta
+    // flow — the host's "reward" for completing brief-designer is the brief
+    // itself.
+    if (template.template_id === "brief-designer" && sessionId) {
+      try {
+        const res = await fetch(
+          `/api/sessions/${encodeURIComponent(sessionId)}/generate-brief`,
+          { method: "POST" }
+        );
+        const data = (await res.json()) as {
+          template?: Template;
+          error?: string;
+          userMessage?: string;
+        };
+        if (!res.ok || !data.template) {
+          throw new Error(data.userMessage ?? data.error ?? `HTTP ${res.status}`);
+        }
+        setGeneratedBrief(data.template);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        setTakeawayError(msg);
+      } finally {
+        setTakeawayGenerating(false);
+      }
+      return;
+    }
+
     try {
       const res = await fetch("/api/takeaway", {
         method: "POST",
@@ -346,7 +381,7 @@ function ParticipantPageContent({
     } finally {
       setTakeawayGenerating(false);
     }
-  }, [transcript, extraction, activeObjectiveId, template, generatedTemplate, takeawayMarkdown, roundId]);
+  }, [transcript, extraction, activeObjectiveId, template, generatedTemplate, takeawayMarkdown, generatedBrief, roundId]);
 
   if (!template) {
     return (
@@ -410,9 +445,20 @@ function ParticipantPageContent({
               See your reflection →
             </button>
           )}
+          {sessionClosed && !takeawayOpen && generatedBrief && (
+            <button
+              type="button"
+              onClick={() => setTakeawayOpen(true)}
+              className="rounded-md bg-slate-800 px-4 py-1.5 text-xs font-medium text-white hover:bg-slate-900 ring-2 ring-slate-300 ring-offset-1"
+            >
+              See your brief →
+            </button>
+          )}
           {sessionClosed && takeawayGenerating && (
             <span className="text-xs text-stone-500 animate-pulse">
-              Preparing your reflection…
+              {template?.template_id === "brief-designer"
+                ? "Authoring your brief…"
+                : "Preparing your reflection…"}
             </span>
           )}
           {sessionClosed && takeawayError && !takeawayGenerating && !takeawayMarkdown && (
@@ -438,7 +484,11 @@ function ParticipantPageContent({
       )}
 
       <main className="flex-1 overflow-hidden">
-        {takeawayOpen && takeawayMarkdown ? (
+        {takeawayOpen && generatedBrief ? (
+          // Brief-designer terminal state: the artifact is the brief itself,
+          // not a reflective letter.
+          <BriefAuthored brief={generatedBrief} />
+        ) : takeawayOpen && takeawayMarkdown ? (
           // Surface transition: when the conversation has produced its final
           // reflection, the chat is replaced by the letter — no modal — so
           // the participant doesn't context-shift to read what they were just
@@ -496,6 +546,256 @@ function ParticipantPageContent({
           lastUpdatedTurn={previewLastTurn}
         />
       )}
+    </div>
+  );
+}
+
+// Brief-designer terminal surface. The conversation produced an interview
+// brief — show it, list the objectives the host can expect, offer a single
+// CTA to run it (sessionStorage handoff matches the path the one-shot
+// /start generator uses).
+function BriefAuthored({ brief }: { brief: Template }) {
+  const router = useRouter();
+
+  const handleUseBrief = () => {
+    sessionStorage.setItem(
+      `lacunex:brief:${brief.template_id}`,
+      JSON.stringify(brief)
+    );
+    router.push(`/p/${brief.template_id}`);
+  };
+
+  const aw = {
+    bg: "#f7f6f2",
+    surface: "#ffffff",
+    ink: "#0c0c0a",
+    ink2: "#2a2925",
+    muted: "#6b6862",
+    muted2: "#a8a49d",
+    rule: "#e6e3dc",
+    thread: "#b42318",
+    threadSoft: "#fdf2f1",
+    sans: "var(--font-anchor-sans), 'Inter Tight', system-ui, sans-serif",
+    serif: "var(--font-anchor-serif), 'Instrument Serif', Georgia, serif",
+    mono: "var(--font-anchor-mono), 'JetBrains Mono', ui-monospace, monospace",
+  };
+
+  return (
+    <div
+      style={{
+        height: "100%",
+        background: aw.surface,
+        fontFamily: aw.sans,
+        color: aw.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          padding: "14px 28px",
+          borderBottom: `1px solid ${aw.rule}`,
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: aw.sans,
+            fontWeight: 500,
+            fontSize: 16,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          lacunex
+        </div>
+        <span
+          style={{
+            fontFamily: aw.mono,
+            fontSize: 9,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: aw.muted,
+          }}
+        >
+          your brief · ready
+        </span>
+      </div>
+
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "40px 0 60px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 680,
+            width: "100%",
+            padding: "0 40px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 22,
+          }}
+        >
+          <div>
+            <span
+              style={{
+                fontFamily: aw.mono,
+                fontSize: 10,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: aw.thread,
+              }}
+            >
+              the platform built this from your conversation
+            </span>
+            <h1
+              style={{
+                fontFamily: aw.serif,
+                fontSize: 36,
+                fontWeight: 400,
+                letterSpacing: "-0.015em",
+                lineHeight: 1.05,
+                margin: "10px 0 6px",
+                color: aw.ink,
+              }}
+            >
+              {brief.name}
+            </h1>
+            {brief.role_labels && (
+              <span
+                style={{
+                  fontFamily: aw.mono,
+                  fontSize: 10,
+                  color: aw.muted,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {brief.role_labels.host} · {brief.role_labels.participant}
+              </span>
+            )}
+          </div>
+
+          <p
+            style={{
+              fontSize: 15,
+              color: aw.ink2,
+              lineHeight: 1.65,
+              margin: 0,
+              fontFamily: aw.serif,
+            }}
+          >
+            {brief.description}
+          </p>
+
+          <section>
+            <span
+              style={{
+                fontFamily: aw.mono,
+                fontSize: 10,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: aw.muted,
+              }}
+            >
+              {brief.objectives.length} objectives the conductor will probe
+            </span>
+            <ol style={{ marginTop: 12, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
+              {brief.objectives.map((obj, i) => (
+                <li
+                  key={obj.id}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "28px 1fr",
+                    gap: 12,
+                    paddingTop: i > 0 ? 12 : 0,
+                    borderTop: i > 0 ? `1px solid ${aw.rule}` : "none",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: aw.mono,
+                      fontSize: 11,
+                      color: aw.muted2,
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: aw.ink, lineHeight: 1.3 }}>
+                      {obj.label}
+                    </div>
+                    <div style={{ fontSize: 12.5, color: aw.muted, lineHeight: 1.55, marginTop: 4 }}>
+                      {obj.goal}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <div
+            style={{
+              padding: "16px 18px",
+              background: aw.threadSoft,
+              border: `1px solid ${aw.thread}`,
+              fontSize: 13,
+              color: aw.ink2,
+              lineHeight: 1.6,
+              fontFamily: aw.sans,
+            }}
+          >
+            The brief is yours. Hit the button below to run it as a participant
+            yourself, or share an invite link from the host hub. The same
+            four-call architecture — conductor, extraction, meta-noticing,
+            takeaway — that just authored this brief is what runs against your
+            interviewees.
+          </div>
+
+          <button
+            type="button"
+            onClick={handleUseBrief}
+            style={{
+              width: "100%",
+              padding: "14px 18px",
+              background: aw.ink,
+              color: aw.surface,
+              border: "none",
+              fontFamily: aw.mono,
+              fontSize: 11,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+            }}
+          >
+            run this brief →
+          </button>
+          <div style={{ textAlign: "center" }}>
+            <a
+              href="/host"
+              style={{
+                fontFamily: aw.mono,
+                fontSize: 10,
+                color: aw.muted,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                borderBottom: `1px solid ${aw.rule}`,
+                paddingBottom: 1,
+              }}
+            >
+              back to host hub
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

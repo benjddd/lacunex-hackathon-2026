@@ -262,12 +262,7 @@ export function ChatPane({
             showHostMeta={showHostMeta}
           />
         ))}
-        {isLoading && (
-          <div className="flex items-center gap-2 text-stone-500 text-sm">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-amber-600" />
-            {roleLabels.host} is thinking…
-          </div>
-        )}
+        {isLoading && <HostThinkingIndicator hostLabel={roleLabels.host} />}
       </div>
 
       <form
@@ -451,6 +446,57 @@ function MessageBubble({
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// Three-dot typing indicator + progressive copy. The host's turn can take
+// 5–10 seconds while Opus generates; a single small dot read as "stall".
+// This animates clearly enough to show the platform is working, and the
+// copy progresses every couple of seconds so participants don't feel stuck.
+function HostThinkingIndicator({ hostLabel }: { hostLabel: string }) {
+  const [phaseIdx, setPhaseIdx] = useState(0);
+  const phases = [
+    `${hostLabel} is reading what you said…`,
+    `${hostLabel} is thinking across the conversation…`,
+    `${hostLabel} is writing your next question…`,
+  ];
+  useEffect(() => {
+    // Cycling the phase via timers is a deliberate setState-in-effect: the
+    // copy progresses to keep the participant oriented during a long wait.
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setPhaseIdx(0);
+    const a = setTimeout(() => setPhaseIdx(1), 2200);
+    const b = setTimeout(() => setPhaseIdx(2), 4800);
+    /* eslint-enable react-hooks/set-state-in-effect */
+    return () => {
+      clearTimeout(a);
+      clearTimeout(b);
+    };
+  }, [hostLabel]);
+  return (
+    <div className="flex items-center gap-3 rounded-md bg-stone-100 px-4 py-3 text-stone-600">
+      <span aria-hidden className="inline-flex items-center gap-1">
+        <span className="lacunex-thinking-dot" style={{ animationDelay: "0ms" }} />
+        <span className="lacunex-thinking-dot" style={{ animationDelay: "180ms" }} />
+        <span className="lacunex-thinking-dot" style={{ animationDelay: "360ms" }} />
+      </span>
+      <span className="text-sm">{phases[phaseIdx]}</span>
+      <style>{`
+        .lacunex-thinking-dot {
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #b42318;
+          opacity: 0.35;
+          animation: lacunex-thinking-bounce 1.2s ease-in-out infinite;
+        }
+        @keyframes lacunex-thinking-bounce {
+          0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+          40%           { opacity: 1;    transform: translateY(-3px); }
+        }
+      `}</style>
     </div>
   );
 }

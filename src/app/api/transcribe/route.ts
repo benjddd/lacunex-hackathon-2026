@@ -64,7 +64,6 @@ export async function POST(req: Request) {
   outbound.append("language", language);
   outbound.append("response_format", "json");
 
-  const started = Date.now();
   let groqRes: Response;
   try {
     groqRes = await fetch(GROQ_URL, {
@@ -80,11 +79,6 @@ export async function POST(req: Request) {
       { status: 502 }
     );
   }
-  const elapsedMs = Date.now() - started;
-  console.log(
-    `[/api/transcribe] groq whisper-large-v3 responded in ${elapsedMs}ms status=${groqRes.status} bytes=${audio.size}`
-  );
-
   if (!groqRes.ok) {
     let detail = "";
     try {

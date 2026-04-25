@@ -15,6 +15,14 @@ import { chromium, type Browser, type Page } from "playwright";
 const BASE = "http://localhost:3000";
 const URL = `${BASE}/p/brief-designer`;
 
+// Test mode:
+//   --mode=manual   (default) clicks End & reflect after 5 turns — validates
+//                   the explicit-end path that the demo uses.
+//   --mode=natural  sends a 6th "I think that's everything" response and
+//                   waits for the conductor's natural wrap_up — validates
+//                   the auto-trigger useEffect on move_type=wrap_up.
+const TEST_MODE = process.argv.includes("--mode=natural") ? "natural" : "manual";
+
 // Founder persona canned responses (5 turns — enough to satisfy 4 high-prio
 // objectives + the "anything else?" check-in).
 const RESPONSES = [
@@ -108,13 +116,29 @@ async function run(): Promise<Result> {
       }
     }
 
-    // Click "End & reflect" to force wrap_up — this is the demo-realistic
-    // path (host can also wait for natural wrap_up; same handleEndSession
-    // entry point). Enabled once participantCount >= 2; we have 5 by now.
-    const endButton = page.locator('button:has-text("End & reflect")');
-    await endButton.waitFor({ state: "visible", timeout: 5_000 });
-    await endButton.click();
-    r.notes.push("clicked End & reflect");
+    if (TEST_MODE === "manual") {
+      // Click "End & reflect" to force wrap_up — demo-realistic explicit path.
+      const endButton = page.locator('button:has-text("End & reflect")');
+      await endButton.waitFor({ state: "visible", timeout: 5_000 });
+      await endButton.click();
+      r.notes.push("clicked End & reflect (manual mode)");
+    } else {
+      // Natural mode: send a closing-flavour reply, then wait for the
+      // conductor's wrap_up to fire on its own. Validates the auto-trigger.
+      await page.waitForFunction(
+        () => {
+          const ta = document.querySelector('textarea') as HTMLTextAreaElement | null;
+          return ta && !ta.disabled;
+        },
+        null,
+        { timeout: 90_000 }
+      );
+      await sendParticipantTurn(
+        page,
+        "I think that's everything from my side. Nothing else I'm holding back."
+      );
+      r.notes.push("sent closing-flavour reply (natural mode); waiting for wrap_up");
+    }
 
     // Header should flip to "Authoring your brief…" (brief-designer copy).
     await page.waitForFunction(

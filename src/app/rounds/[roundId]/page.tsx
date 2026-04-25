@@ -16,6 +16,7 @@ import {
 import { aw } from "@/components/convergence/tokens";
 import { Wordmark } from "@/components/convergence/LogoGlyph";
 import { Mono } from "@/components/convergence/Mono";
+import { formatDate, formatDateTime } from "@/lib/format";
 
 interface SessionDoc {
   session_id: string;
@@ -216,7 +217,7 @@ export default function RoundDetailPage({
                   </p>
                   <p className="mt-1 text-xs text-stone-600">
                     {round.live_synthesis
-                      ? `${round.live_synthesis.session_count} session${round.live_synthesis.session_count === 1 ? "" : "s"} · updated ${new Date(round.live_synthesis.generated_at).toLocaleString()}`
+                      ? `${round.live_synthesis.session_count} session${round.live_synthesis.session_count === 1 ? "" : "s"} · updated ${formatDateTime(round.live_synthesis.generated_at)}`
                       : round.session_ids.length === 0
                         ? "Collect at least one session, then refresh to see early signal."
                         : "An agent reads all sessions and surfaces emerging patterns. Runs incrementally — no need to close the round first."}
@@ -228,7 +229,7 @@ export default function RoundDetailPage({
                   disabled={synthesizing || round.session_ids.length === 0}
                   className="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-40"
                 >
-                  {synthesizing ? "Synthesizing…" : round.live_synthesis ? "Refresh signal" : "Run live synthesis"}
+                  {synthesizing ? "Synthesising…" : round.live_synthesis ? "Refresh signal" : "Run live synthesis"}
                 </button>
               </div>
               {round.live_synthesis && (
@@ -250,7 +251,7 @@ export default function RoundDetailPage({
               </p>
               <p className="mt-1 text-sm text-stone-700">
                 {round.aggregate
-                  ? `Generated ${new Date(round.aggregate.generated_at).toLocaleString()} · ${round.aggregate.session_count} sessions`
+                  ? `Generated ${formatDateTime(round.aggregate.generated_at)} · ${round.aggregate.session_count} sessions`
                   : round.session_ids.length === 0
                     ? "Attach at least one session, then generate."
                     : "Closes the round and produces the definitive cross-participant picture."}
@@ -310,7 +311,7 @@ export default function RoundDetailPage({
                           {s.turn_count} turn{s.turn_count === 1 ? "" : "s"}
                         </p>
                         <p className="mt-0.5 text-[11px] text-stone-500">
-                          {new Date(s.saved_at).toLocaleString()}
+                          {formatDateTime(s.saved_at)}
                         </p>
                       </div>
                       <span className="shrink-0 text-[10px] text-stone-400">{s.session_id}</span>
@@ -363,11 +364,11 @@ function RoundStats({
         {partial > 0 && stat("Partial / abandoned", partial)}
         <div className="ml-auto flex flex-col items-end gap-0.5">
           <span className="text-xs text-stone-500">
-            Opened {new Date(round.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+            Opened {formatDate(round.created_at)}
           </span>
           {round.target_date && (
             <span className="text-xs text-stone-500">
-              Closes {new Date(round.target_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+              Closes {formatDate(round.target_date)}
             </span>
           )}
           <span

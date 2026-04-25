@@ -11,6 +11,7 @@ import { DEFAULT_ROLE_LABELS, type Round, type Template } from "@/lib/types";
 import { aw } from "@/components/convergence/tokens";
 import { Wordmark, LogoGlyph } from "@/components/convergence/LogoGlyph";
 import { Mono } from "@/components/convergence/Mono";
+import { formatDate } from "@/lib/format";
 
 const AVAILABLE_BRIEFS: Template[] = [
   founderTemplate as unknown as Template,
@@ -274,6 +275,7 @@ export default function HostPage() {
                   <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
                     <Link
                       href={`/demo?brief=${t.template_id}`}
+                      title="Demo affordance — both sides of the conversation in one window. In production, participants would only see /p/<brief>."
                       style={{
                         flex: 1,
                         textAlign: "center",
@@ -287,7 +289,7 @@ export default function HostPage() {
                         textDecoration: "none",
                       }}
                     >
-                      combined view
+                      demo · both sides
                     </Link>
                     <button
                       type="button"
@@ -670,11 +672,7 @@ export default function HostPage() {
                     <div style={{ marginTop: 2 }}>
                       <Mono s={10} c={aw.muted2}>
                         {r.session_ids.length} session{r.session_ids.length === 1 ? "" : "s"} ·{" "}
-                        {new Date(r.created_at).toLocaleDateString(undefined, {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                        {formatDate(r.created_at)}
                         {r.aggregate ? " · aggregate ready" : ""}
                       </Mono>
                     </div>

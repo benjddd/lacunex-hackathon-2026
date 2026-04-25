@@ -129,15 +129,10 @@ export async function POST(req: Request, { params }: Params) {
         const transcriptText =
           `Here is the interview transcript:\n\n${transcriptToText(transcript)}\n\nPlease identify the key verifiable claims and check them now.`;
 
-        const t0 = Date.now();
         const result = await runClaimVerifierAgent({
           transcriptText,
           onEvent: (ev) => emit(ev),
         });
-        const elapsed = Date.now() - t0;
-        console.log(
-          `[research] ${elapsed}ms | active=${result.active_seconds ?? "?"}s | in=${result.input_tokens ?? 0} out=${result.output_tokens ?? 0} cache_read=${result.cache_read_input_tokens ?? 0} | session=${result.session_id}`
-        );
 
         await saveResearch(sessionId, result.report);
         emit({

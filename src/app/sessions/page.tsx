@@ -9,6 +9,7 @@ import briefDesignerTemplate from "@/templates/brief-designer.json";
 import { aw } from "@/components/convergence/tokens";
 import { Wordmark } from "@/components/convergence/LogoGlyph";
 import { Mono } from "@/components/convergence/Mono";
+import { formatDateTime } from "@/lib/format";
 
 const TEMPLATE_NAMES: Record<string, string> = {
   [founderTemplate.template_id]: founderTemplate.name,
@@ -253,15 +254,7 @@ export default function SessionsListPage() {
                       </div>
                       <div style={{ marginTop: 3 }}>
                         <Mono s={10} c={aw.muted2}>
-                          {s.saved_at
-                            ? new Date(s.saved_at).toLocaleString(undefined, {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : "—"}
+                          {s.saved_at ? formatDateTime(s.saved_at) : "—"}
                           {" · "}
                           {s.turn_count} turn{s.turn_count === 1 ? "" : "s"}
                           {s.has_takeaway && (

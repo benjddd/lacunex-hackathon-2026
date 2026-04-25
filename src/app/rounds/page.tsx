@@ -9,6 +9,7 @@ import type { Round, Template } from "@/lib/types";
 import { aw } from "@/components/convergence/tokens";
 import { Wordmark } from "@/components/convergence/LogoGlyph";
 import { Mono } from "@/components/convergence/Mono";
+import { formatDateTime } from "@/lib/format";
 
 const TEMPLATES: Record<string, Template> = {
   [founderTemplate.template_id]: founderTemplate as unknown as Template,
@@ -274,7 +275,7 @@ export default function RoundsListPage() {
                       <p className="mt-0.5 text-xs text-stone-500">
                         {TEMPLATES[r.template_id]?.name ?? r.template_id}
                         {" · "}
-                        {new Date(r.created_at).toLocaleString()}
+                        {formatDateTime(r.created_at)}
                         {" · "}
                         {r.session_ids.length} session{r.session_ids.length === 1 ? "" : "s"}
                         {r.aggregate && (

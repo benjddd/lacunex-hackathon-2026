@@ -130,6 +130,23 @@ export async function hostedSaveResearch(sessionId: string, report: string): Pro
   }
 }
 
+// ---- Round-level research (cohort claim verification) store ----
+
+const roundResearchMem = new Map<string, string>();
+
+export async function hostedGetRoundResearch(roundId: string): Promise<string | null> {
+  if (hasKV) return kvGet<string>(`round_research:${roundId}`);
+  return roundResearchMem.get(roundId) ?? null;
+}
+
+export async function hostedSaveRoundResearch(roundId: string, report: string): Promise<void> {
+  if (hasKV) {
+    await kvSet(`round_research:${roundId}`, report);
+  } else {
+    roundResearchMem.set(roundId, report);
+  }
+}
+
 // ---- Invite store ----
 
 export interface InviteRecord {

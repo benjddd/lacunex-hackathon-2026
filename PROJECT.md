@@ -251,7 +251,7 @@ They have a question only real people can answer. Getting that answer requires d
 - **Managed Agents (D40):** user watching Cohen talk. GO signal → build `/api/sessions/[id]/research` claim-verification agent today. NO-GO → move to Fri polish.
 - **6 civic simulations:** running in background (bdoxl3et7). Aggregate after completion.
 - **Problem statements:** user must visit the submission form to inspect the "Track Name" dropdown — can't be found externally.
-- **Demo subject (Q4):** still undecided. Gate: today by end of Cohen talk.
+- **Demo subject (Q4):** **LOCKED** — civic consultation (proposed weekday congestion charge zone). See D46 above. Aggregate, takeaways, and seed cohort all built around this scenario.
 - **Terminology pass:** UI still uses some internal terms (objectives, meta-noticing). Low priority, Fri task.
 - **Sat:** Record demo video. Tool recommendation: ScreenApp (free) + ElevenLabs voiceover OR one month Pictory (~$30).
 - **Sun:** Final video edit + written summary + submit.

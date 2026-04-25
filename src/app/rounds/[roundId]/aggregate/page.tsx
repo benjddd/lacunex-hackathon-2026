@@ -34,6 +34,22 @@ export default function AggregateHeroPage({
   const [aggregating, setAggregating] = useState(false);
   const [selectedPatternIdx, setSelectedPatternIdx] = useState(0);
 
+  // Cohort claim verification — same Managed Agent as the per-session route,
+  // but transcripts from every session in the round are concatenated with
+  // attribution markers. Result is cached at round_research:<id>.
+  type RoundResearchEvent =
+    | { type: "status"; status: string; stop_reason?: string }
+    | { type: "thinking" }
+    | { type: "tool_use"; name: string; input: unknown }
+    | { type: "tool_result"; is_error: boolean; block_count: number }
+    | { type: "message_text"; text: string }
+    | { type: "error"; message: string };
+  const [cohortResearchMd, setCohortResearchMd] = useState<string | null>(null);
+  const [cohortResearching, setCohortResearching] = useState(false);
+  const [cohortResearchError, setCohortResearchError] = useState<string | null>(null);
+  const [cohortResearchEvents, setCohortResearchEvents] = useState<RoundResearchEvent[]>([]);
+  const [cohortResearchOpen, setCohortResearchOpen] = useState(false);
+
   const load = useCallback(async () => {
     try {
       const res = await fetch(`/api/rounds/${roundId}`);
@@ -70,6 +86,75 @@ export default function AggregateHeroPage({
       setAggregating(false);
     }
   }, [aggregating, roundId]);
+
+  // Pre-load any cached cohort verification on mount so a re-visit doesn't
+  // re-trigger the Managed Agent.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/rounds/${roundId}/research`);
+        if (!res.ok) return;
+        const data = (await res.json()) as { report?: string | null };
+        if (!cancelled && data.report) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setCohortResearchMd(data.report);
+        }
+      } catch {
+        // non-fatal — endpoint is optional, may not exist on older deploys
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [roundId]);
+
+  const handleCohortResearch = useCallback(async () => {
+    if (cohortResearching) return;
+    setCohortResearching(true);
+    setCohortResearchError(null);
+    setCohortResearchEvents([]);
+    setCohortResearchOpen(true);
+    try {
+      const res = await fetch(`/api/rounds/${roundId}/research`, { method: "POST" });
+      if (!res.ok || !res.body) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status}${txt ? ` · ${txt.slice(0, 200)}` : ""}`);
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() ?? "";
+        for (const line of lines) {
+          const payload = line.replace(/^data:\s*/, "").trim();
+          if (!payload) continue;
+          let ev: { type: string; [k: string]: unknown };
+          try {
+            ev = JSON.parse(payload) as { type: string; [k: string]: unknown };
+          } catch {
+            continue;
+          }
+          if (ev.type === "done") {
+            setCohortResearchMd(String(ev.report ?? ""));
+            continue;
+          }
+          if (ev.type === "fatal") {
+            setCohortResearchError(String(ev.message ?? "fatal"));
+            continue;
+          }
+          setCohortResearchEvents((prev) => [...prev, ev as RoundResearchEvent]);
+        }
+      }
+    } catch (err) {
+      setCohortResearchError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setCohortResearching(false);
+    }
+  }, [cohortResearching, roundId]);
 
   const aggregate = round?.aggregate ?? round?.live_synthesis ?? null;
   const sessionIds = useMemo(
@@ -489,6 +574,37 @@ export default function AggregateHeroPage({
           <div style={{ display: "flex", gap: 6 }}>
             <button
               type="button"
+              onClick={() =>
+                cohortResearchMd
+                  ? setCohortResearchOpen((v) => !v)
+                  : void handleCohortResearch()
+              }
+              disabled={cohortResearching}
+              title={
+                cohortResearchMd
+                  ? "Cohort claims already verified — click to view the report."
+                  : "Run the Managed Agent across all sessions in this round to fact-check claims residents made."
+              }
+              style={{
+                fontFamily: aw.mono,
+                fontSize: 10,
+                padding: "7px 12px",
+                background: cohortResearchMd ? aw.threadSoft : aw.surface,
+                color: cohortResearchMd ? aw.thread : aw.ink,
+                border: `1px solid ${cohortResearchMd ? aw.thread : aw.rule}`,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                cursor: cohortResearching ? "wait" : "pointer",
+              }}
+            >
+              {cohortResearching
+                ? "verifying cohort claims · 60-120s"
+                : cohortResearchMd
+                  ? "cohort claims · view report"
+                  : "verify cohort claims"}
+            </button>
+            <button
+              type="button"
               onClick={() => void handleAggregate()}
               disabled={aggregating}
               style={{
@@ -521,6 +637,181 @@ export default function AggregateHeroPage({
             >
               round detail →
             </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Cohort claim verification overlay — Managed Agent live event log
+          while running, then the final markdown report. Closes back to the
+          aggregate map; the report is cached so re-opens are instant. */}
+      {cohortResearchOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.4)",
+            zIndex: 100,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+          }}
+          onClick={() => setCohortResearchOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(900px, 100%)",
+              maxHeight: "86vh",
+              background: aw.bg,
+              border: `1px solid ${aw.rule}`,
+              boxShadow: "0 8px 40px rgba(0,0,0,0.18)",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "14px 22px",
+                borderBottom: `1px solid ${aw.rule}`,
+                background: aw.threadSoft,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <Mono u s={10} c={aw.thread}>
+                  cohort claim verification · managed agent
+                </Mono>
+                <div style={{ fontSize: 12, color: aw.muted, marginTop: 4 }}>
+                  {cohortResearchMd
+                    ? "Verified across the cohort. Cached — re-opens are free."
+                    : `Running across ${round?.session_ids.length ?? 0} sessions. The agent is searching the web and writing live.`}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCohortResearchOpen(false)}
+                style={{
+                  padding: "6px 12px",
+                  background: aw.surface,
+                  color: aw.ink,
+                  border: `1px solid ${aw.rule}`,
+                  fontFamily: aw.mono,
+                  fontSize: 10,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
+              >
+                close
+              </button>
+            </div>
+            <div
+              style={{
+                padding: "18px 22px",
+                overflowY: "auto",
+                fontFamily: aw.sans,
+                fontSize: 13,
+                color: aw.ink,
+                lineHeight: 1.6,
+              }}
+            >
+              {cohortResearchError && (
+                <div
+                  style={{
+                    marginBottom: 12,
+                    padding: "10px 14px",
+                    background: aw.threadSoft,
+                    border: `1px solid ${aw.thread}`,
+                    fontFamily: aw.mono,
+                    fontSize: 11,
+                    color: aw.thread,
+                  }}
+                >
+                  {cohortResearchError}
+                </div>
+              )}
+              {!cohortResearchMd && (
+                <div
+                  style={{
+                    fontFamily: aw.mono,
+                    fontSize: 11,
+                    color: aw.muted,
+                    background: aw.surface,
+                    border: `1px solid ${aw.rule}`,
+                    padding: "10px 14px",
+                  }}
+                >
+                  <Mono u s={9} c={aw.muted}>
+                    agent events {cohortResearching && "· streaming"}
+                  </Mono>
+                  {cohortResearchEvents.length === 0 ? (
+                    <div style={{ marginTop: 6, fontStyle: "italic", color: aw.muted2 }}>
+                      Opening agent session…
+                    </div>
+                  ) : (
+                    <ul style={{ marginTop: 8, paddingLeft: 0, listStyle: "none" }}>
+                      {cohortResearchEvents.map((ev, i) => (
+                        <li key={i} style={{ marginBottom: 2 }}>
+                          {ev.type === "tool_use" && (
+                            <span>
+                              <span style={{ color: aw.thread }}>{ev.name}</span>{" "}
+                              <span style={{ color: aw.muted2 }}>→</span>{" "}
+                              <span style={{ fontStyle: "italic" }}>
+                                {typeof (ev.input as { query?: unknown })?.query === "string"
+                                  ? (ev.input as { query: string }).query
+                                  : JSON.stringify(ev.input).slice(0, 120)}
+                              </span>
+                            </span>
+                          )}
+                          {ev.type === "tool_result" && (
+                            <span style={{ color: aw.muted }}>
+                              result · {ev.block_count} block{ev.block_count === 1 ? "" : "s"}
+                              {ev.is_error && " (error)"}
+                            </span>
+                          )}
+                          {ev.type === "thinking" && (
+                            <span style={{ color: aw.muted2 }}>thinking</span>
+                          )}
+                          {ev.type === "status" && (
+                            <span style={{ color: aw.muted }}>
+                              status {ev.status}
+                              {ev.stop_reason && ` · ${ev.stop_reason}`}
+                            </span>
+                          )}
+                          {ev.type === "message_text" && (
+                            <span style={{ color: aw.muted }}>
+                              message · {ev.text.length} chars
+                            </span>
+                          )}
+                          {ev.type === "error" && (
+                            <span style={{ color: aw.thread }}>
+                              error · {ev.message}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+              {cohortResearchMd && (
+                <article
+                  style={{
+                    fontSize: 14,
+                    lineHeight: 1.7,
+                    color: aw.ink,
+                    whiteSpace: "pre-wrap",
+                    fontFamily: aw.sans,
+                  }}
+                >
+                  {cohortResearchMd}
+                </article>
+              )}
+            </div>
           </div>
         </div>
       )}

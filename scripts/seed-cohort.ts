@@ -65,6 +65,12 @@ function parseArgs(argv: string[]): Args {
       );
     }
   }
+  // .env files written by `vercel env pull` escape embedded newlines as
+  // literal `\\n` / `\\r`. If a token was pasted into Vercel UI with a
+  // trailing newline, the pulled file contains that escape — and HTTP
+  // headers can't carry newlines anyway. Decode and trim so what we send
+  // matches the server-side normalised value.
+  out.token = out.token.replace(/\\r/g, "\r").replace(/\\n/g, "\n").trim();
   // Strip trailing slashes from target.
   out.target = out.target.replace(/\/+$/, "");
   return out as Args;

@@ -7,7 +7,7 @@
 //   - matching takeaway markdown (transcripts/takeaway-<id>.md), if present
 //   - matching research report (transcripts/research-<id>.md), if present
 //
-// Posts the bundle to <target>/api/_seed-round, gated by the same bypass
+// Posts the bundle to <target>/api/seed-round, gated by the same bypass
 // token that gates rate-limit on the deployed instance: env var
 // RATE_LIMIT_BYPASS_TOKEN (or pass --token=<value> on the CLI).
 //
@@ -161,13 +161,13 @@ async function main() {
   );
 
   if (args.dryRun) {
-    console.log(`(dry run) would POST to ${args.target}/api/_seed-round`);
+    console.log(`(dry run) would POST to ${args.target}/api/seed-round`);
     return;
   }
 
   // Step 3 — POST to the target. Round + sessions in one shot; the endpoint
   // is idempotent (re-runs overwrite). Bypass token in the header.
-  const res = await fetch(`${args.target}/api/_seed-round`, {
+  const res = await fetch(`${args.target}/api/seed-round`, {
     method: "POST",
     headers: {
       "content-type": "application/json",

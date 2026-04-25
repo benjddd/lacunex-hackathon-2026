@@ -251,8 +251,9 @@ export default function RoundDetailPage({
             </h2>
             {round.session_ids.length === 0 && (
               <div className="rounded-lg border border-stone-200 bg-white px-5 py-4 text-sm text-stone-600">
-                No sessions attached yet. From the interview screen, save a session
-                and attach it to this round (forthcoming UI); or use the sim CLI:
+                No sessions attached yet. Share the participant link above —
+                sessions saved from that link are auto-attached to this round.
+                Or seed a cohort from the CLI:
                 <pre className="mt-2 rounded bg-stone-100 px-2 py-1 text-[11px] text-stone-800">npm run sim -- --persona=&lt;id&gt; --turns=6 --round={round.round_id}</pre>
               </div>
             )}

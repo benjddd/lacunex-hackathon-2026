@@ -48,12 +48,23 @@ export default function LiveHostPage({
   const [firstFetchAt] = useState<number>(() => Date.now());
   const lastUpdatedAt = useRef<string | null>(null);
 
-  // Try to resolve the template: check live state's template_id, or
-  // fall back to fetching the saved session.
-  const resolveTemplate = (templateId: string | undefined) => {
+  // Resolve the template from live state's template_id. If the id is missing
+  // or unknown (e.g. dynamically-generated brief — gen-<ts> — only stored in
+  // the originating tab's sessionStorage), fall back to fetching the saved
+  // session and using its template_json. Without this fallback the page
+  // sticks at "resolving template…" forever.
+  const resolveTemplate = async (templateId: string | undefined) => {
     if (templateId && TEMPLATE_MAP[templateId]) {
       setTemplate(TEMPLATE_MAP[templateId]);
       return;
+    }
+    try {
+      const res = await fetch(`/api/sessions/${encodeURIComponent(sessionId)}`);
+      if (!res.ok) return;
+      const doc = (await res.json()) as { template_json?: Template };
+      if (doc.template_json) setTemplate(doc.template_json);
+    } catch {
+      // non-fatal — UI keeps showing "resolving template…" until next poll
     }
   };
 
@@ -80,8 +91,9 @@ export default function LiveHostPage({
         setLiveState(data);
         setNotStarted(false);
         lastUpdatedAt.current = data.updated_at;
-        // Resolve template from live state if possible.
-        if (data.template_id) resolveTemplate(data.template_id);
+        // Resolve template from live state if possible. Falls back to saved
+        // session lookup for dynamically-generated briefs (gen-<ts>).
+        if (data.template_id) void resolveTemplate(data.template_id);
       } catch {
         // non-fatal
       }

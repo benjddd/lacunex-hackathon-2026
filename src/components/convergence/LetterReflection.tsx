@@ -370,17 +370,36 @@ export function LetterReflection({
               </div>
             </>
           ) : (
-            <div
-              style={{
-                paddingTop: 14,
-                fontFamily: aw.serif,
-                fontSize: 14,
-                fontStyle: "italic",
-                color: aw.muted,
-              }}
-            >
-              — {hostName ?? "Lacunex"}
-            </div>
+            <>
+              <div
+                style={{
+                  paddingTop: 14,
+                  fontFamily: aw.serif,
+                  fontSize: 14,
+                  fontStyle: "italic",
+                  color: aw.muted,
+                }}
+              >
+                — {hostName ?? "Lacunex"}
+              </div>
+              <div style={{ textAlign: "center", marginTop: 28 }}>
+                <a
+                  href="/"
+                  style={{
+                    fontFamily: aw.mono,
+                    fontSize: 10,
+                    color: aw.muted,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    textDecoration: "none",
+                    borderBottom: `1px solid ${aw.rule}`,
+                    paddingBottom: 1,
+                  }}
+                >
+                  ← back to lacunex
+                </a>
+              </div>
+            </>
           )}
         </div>
       </div>

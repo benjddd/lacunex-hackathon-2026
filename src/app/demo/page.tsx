@@ -439,7 +439,7 @@ function DemoContent() {
               </div>
               <div className="border-t border-stone-100 pt-4 space-y-1 text-xs text-stone-500">
                 <p><span className="font-medium text-stone-600">End &amp; reflect</span> — generates the participant&apos;s personalised takeaway.</p>
-                <p><Link href="/start" className="text-amber-700 underline">Design a custom brief →</Link></p>
+                <p><Link href="/host" className="text-amber-700 underline">Design a custom brief →</Link></p>
                 <p><Link href="/rounds" className="text-amber-700 underline">See rounds &amp; cohort synthesis →</Link></p>
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import founderTemplate from "@/templates/founder-product-ideation.json";
 import postIncidentTemplate from "@/templates/post-incident-witness.json";
@@ -20,12 +21,53 @@ const AVAILABLE_BRIEFS: Template[] = [
 const BRIEF_DESIGNER = briefDesignerTemplate as unknown as Template;
 
 export default function HostPage() {
+  const router = useRouter();
   const [rounds, setRounds] = useState<Round[] | null>(null);
   const [roundsError, setRoundsError] = useState<string | null>(null);
   const [invitingBrief, setInvitingBrief] = useState<string | null>(null);
   const [invites, setInvites] = useState<Record<string, { url: string; token: string }>>({});
   const [inviteError, setInviteError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+
+  // One-shot generator state. Migrated from /start (consolidated into /host on
+  // Apr 25 — /start was unreachable from the front page and duplicated the
+  // host-side brief-authoring path). Conversational Brief Designer is still
+  // the primary path; this is the keyboard-first alternate.
+  const [showGenerator, setShowGenerator] = useState(false);
+  const [description, setDescription] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [generatedBrief, setGeneratedBrief] = useState<Template | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
+
+  const handleGenerate = async () => {
+    if (!description.trim() || generating) return;
+    setGenerating(true);
+    setGenError(null);
+    setGeneratedBrief(null);
+    try {
+      const res = await fetch("/api/generate-brief", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ description: description.trim() }),
+      });
+      const data = (await res.json()) as { template?: Template; error?: string };
+      if (!res.ok || !data.template) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setGeneratedBrief(data.template);
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleStartGenerated = () => {
+    if (!generatedBrief) return;
+    sessionStorage.setItem(
+      `lacunex:brief:${generatedBrief.template_id}`,
+      JSON.stringify(generatedBrief)
+    );
+    router.push(`/p/${generatedBrief.template_id}`);
+  };
 
   const createInvite = async (templateId: string) => {
     setInvitingBrief(templateId);
@@ -405,6 +447,148 @@ export default function HostPage() {
               </Mono>
             </div>
           )}
+
+          {/* One-shot generator — keyboard-first alternative to the
+              conversational Brief Designer. Collapsed by default to keep the
+              briefs grid as the primary surface. */}
+          <div style={{ marginTop: 26, borderTop: `1px solid ${aw.rule}`, paddingTop: 22 }}>
+            <button
+              type="button"
+              onClick={() => setShowGenerator((v) => !v)}
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                fontFamily: aw.sans,
+                color: aw.ink,
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                width: "100%",
+                gap: 18,
+                textAlign: "left",
+              }}
+            >
+              <div>
+                <Mono u s={9} c={aw.muted}>
+                  quick generator · one-shot
+                </Mono>
+                <div
+                  style={{
+                    fontFamily: aw.serif,
+                    fontSize: 17,
+                    marginTop: 4,
+                    letterSpacing: "-0.005em",
+                  }}
+                >
+                  Skip the conversation — describe your use case and generate a brief.
+                </div>
+              </div>
+              <Mono s={11} c={aw.muted2}>
+                {showGenerator ? "hide" : "open"}
+              </Mono>
+            </button>
+
+            {showGenerator && (
+              <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="One paragraph: who's the host, who's the participant, what are you trying to learn?"
+                  rows={4}
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    background: aw.surface,
+                    border: `1px solid ${aw.rule}`,
+                    fontFamily: aw.sans,
+                    fontSize: 13,
+                    color: aw.ink,
+                    outline: "none",
+                    resize: "vertical",
+                    lineHeight: 1.55,
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => void handleGenerate()}
+                  disabled={generating || !description.trim()}
+                  style={{
+                    alignSelf: "flex-start",
+                    padding: "10px 18px",
+                    background: aw.ink,
+                    color: aw.surface,
+                    border: "none",
+                    fontFamily: aw.mono,
+                    fontSize: 11,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    cursor: generating ? "wait" : "pointer",
+                    opacity: !description.trim() ? 0.4 : 1,
+                  }}
+                >
+                  {generating ? "generating · 15-30s" : "generate brief"}
+                </button>
+                {genError && (
+                  <Mono s={11} c={aw.thread}>
+                    {genError}
+                  </Mono>
+                )}
+                {generatedBrief && (
+                  <div
+                    style={{
+                      background: aw.surface,
+                      border: `1px solid ${aw.rule}`,
+                      padding: "14px 18px",
+                      marginTop: 4,
+                    }}
+                  >
+                    <Mono u s={9} c={aw.thread}>
+                      brief generated
+                    </Mono>
+                    <div
+                      style={{
+                        fontFamily: aw.serif,
+                        fontSize: 18,
+                        letterSpacing: "-0.005em",
+                        marginTop: 4,
+                      }}
+                    >
+                      {generatedBrief.name}
+                    </div>
+                    <p
+                      style={{
+                        fontSize: 12.5,
+                        color: aw.muted,
+                        lineHeight: 1.55,
+                        margin: "6px 0 12px",
+                      }}
+                    >
+                      {generatedBrief.description}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleStartGenerated}
+                      style={{
+                        padding: "9px 14px",
+                        background: aw.thread,
+                        color: aw.surface,
+                        border: "none",
+                        fontFamily: aw.mono,
+                        fontSize: 10,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        cursor: "pointer",
+                      }}
+                    >
+                      try as participant →
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Rounds */}

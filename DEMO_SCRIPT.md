@@ -16,7 +16,7 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, or agent r
 ## Captures needed on Sat
 
 - **Capture A** — Cold open + pivot (animated headline stills + VO, no product UI)
-- **Capture B** — Brief-designer session (Host typing into `/start`; platform interviews Host)
+- **Capture B** — Brief-designer session (Host typing into `/host`; platform interviews Host)
 - **Capture C** — Civic-consultation interview (split-screen: participant chat + host dashboard, then letter takeaway)
 - **Capture D** — Managed Agent claim verification (post-session, host clicks "Verify claims"; live SSE event stream)
 - **Capture F** — Convergence map (`/rounds/<roundId>/aggregate`) loading with the 11-session cohort
@@ -51,7 +51,7 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, or agent r
 
 ## 0:19–0:36 | Brief-designer on camera — Capture B
 
-**Visual:** `/start` page. Click "Design your brief" (violet card). Platform's opening question appears. Host types each response below in turn. Brief card materialises at end.
+**Visual:** `/host` page. Click the "Brief Designer" card ("design your brief →"). Platform's opening question appears. Host types each response below in turn. Brief card materialises at end.
 
 **Scripted Host responses (type live during recording):**
 
@@ -215,7 +215,7 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, or agent r
 
 **Capture B — Brief-designer (screen capture).**
 - Recording: participant view of the brief-designer — clean, no browser chrome
-- Open `/start`, click the violet "Design your brief" card
+- Open `/host`, click the "Brief Designer" card ("design your brief →")
 - Type the three scripted responses with natural pacing (5–8s between each)
 - Wait for brief card to materialise; hold for 2s
 - 2 takes minimum; pick cleanest

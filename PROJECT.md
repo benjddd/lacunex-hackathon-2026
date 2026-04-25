@@ -85,7 +85,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 | D10 | Original scoping docs stay out of repo | They're thinking material, not product. The repo contains only work authored in-session. |
 | D11 | Git initialized locally today | Commits timestamped to establish the in-window build record |
 | D12 | Role naming | **Host** (was "designer"). **Participant** retained (rejects "guest" — would hurt credibility with research / policy / expert-elicitation operators). |
-| D13 | Natural-language template authoring | **REVERSED AND SHIPPED.** Initially cut; rebuilt Day 4 as `/start` page with Opus 4.7 generator. User describes use case in plain text → Opus generates brief schema → structural defaults merged server-side → stored in sessionStorage → participant page loads it. |
+| D13 | Natural-language template authoring | **REVERSED AND SHIPPED.** Initially cut; rebuilt Day 4 as `/start` page with Opus 4.7 generator. **Apr 25:** consolidated into `/host` (the conversational Brief Designer + one-shot generator now live in the host hub; `/start` was unreachable from the front page and duplicated the host-side path). |
 | D14 | GitHub remote | **github.com/Attius-Digital-Art/lacunex** (renamed from `captainsubtext` on Apr 24; GitHub preserves old-URL redirects). Public from Day 1. |
 | D15 | Takeaway artifact sections | what_sharpened, surfaced_assumptions, open_questions, one_experiment, **+ what_you_already_have_that_is_relevant** |
 | D16 | Founder brief reframed to **Founder Investment Evaluation** | Host = Investor, Participant = Founder. Fixes the Host/Participant separation the original framing collapsed (the founder was both roles). Objectives unchanged; persona updated to investor-doing-DD; `role_labels` field added to brief schema and UI reads it. Same `template_id`. |
@@ -138,7 +138,7 @@ Four Claude calls: **meta-noticing, conductor, extraction, takeaway synthesis**.
 Three layers, each solving a distinct host problem:
 
 **Layer 1 — Study design** *(skill + time)*
-The host states what they're investigating; the platform structures the inquiry: objectives, hypotheses, interview arc. Expert research-design capability, instantly, interactively. Partially shipped: `/start` NL authoring generates a brief schema. Full vision: multi-round study path designed collaboratively. Gives research methodology to anyone who lacks it.
+The host states what they're investigating; the platform structures the inquiry: objectives, hypotheses, interview arc. Expert research-design capability, instantly, interactively. Partially shipped: `/host` Brief Designer (conversational + one-shot) generates a brief schema. Full vision: multi-round study path designed collaboratively. Gives research methodology to anyone who lacks it.
 
 **Layer 2 — Interview execution** *(skill)*
 Every conversation is adaptive, non-scripted, professional-grade. Cross-turn reasoning, meta-noticing (contradictions, hedging, implied-not-said), live structured extraction, bilateral takeaway. The platform is the interviewer. Fully shipped.
@@ -262,7 +262,7 @@ They have a question only real people can answer. Getting that answer requires d
 ## 12. Current status — Day 4 / Thu 2026-04-23 (late session)
 
 **Shipped this session (autonomous):**
-- NL brief generator: `POST /api/generate-brief` + `/start` page with collapsible generator panel, preview card, stores to `sessionStorage`, `/p/[templateId]` reads `gen-` prefix and loads from sessionStorage. D13 status: **REVERSED — NL authoring built after all.**
+- NL brief generator: `POST /api/generate-brief` + Brief Designer card + collapsible one-shot generator on `/host` (originally `/start`, consolidated Apr 25), preview card, stores to `sessionStorage`, `/p/[templateId]` reads `gen-` prefix and loads from sessionStorage. D13 status: **REVERSED — NL authoring built after all.**
 - `@vercel/kv` persistence: `src/lib/store-hosted.ts` rewritten to async KV-backed store (Upstash Redis via REST API) with in-memory fallback. All hostedSave/Get/List functions async; all callers updated.
 - Takeaway peek flow: `handleEndSession` no longer auto-opens takeaway; animates "Preparing your reflection…"; "See your reflection →" button appears when ready. Reduces cognitive interruption at session close.
 - Round stats panel in `/rounds/[id]`: sent/started/completed/abandoned counts + progress bar (completion threshold = 6 turns) + response rate + "Closes [date]" if target date set.

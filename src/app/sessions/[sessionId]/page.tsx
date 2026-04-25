@@ -9,6 +9,9 @@ import postIncidentTemplate from "@/templates/post-incident-witness.json";
 import civicTemplate from "@/templates/civic-consultation.json";
 import briefDesignerTemplate from "@/templates/brief-designer.json";
 import { DEFAULT_ROLE_LABELS, type ExtractionState, type Template, type Turn } from "@/lib/types";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 interface SessionDoc {
   session_id: string;
@@ -351,39 +354,74 @@ export default function SessionDetailPage({
   };
 
   return (
-    <div className="min-h-dvh bg-stone-50">
-      <header className="border-b border-stone-200 bg-white px-6 py-3">
-        <div className="flex items-baseline justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              Lacunex · session
-            </h1>
-            <p className="truncate text-xs text-stone-500">
-              {session
-                ? `${template?.name ?? session.template_id} · ${session.turn_count} turns · ${new Date(session.saved_at).toLocaleString()}`
-                : sessionId}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setAuditOpen((v) => !v)}
-              className={`rounded-md border px-3 py-1 text-xs transition ${
-                auditOpen
-                  ? "border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
-                  : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
-              }`}
-              title="Show or hide the conductor's reasoning and meta-notice candidates per turn"
-            >
-              {auditOpen ? "Platform audit · on" : "Show platform audit"}
-            </button>
-            <Link
-              href="/sessions"
-              className="rounded-md border border-stone-300 bg-white px-3 py-1 text-xs text-stone-700 hover:bg-stone-50"
-            >
-              ← All sessions
+    <div style={{ minHeight: "100dvh", background: aw.bg, fontFamily: aw.sans, color: aw.ink }}>
+      <header
+        style={{
+          padding: "14px 28px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 18,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 24, minWidth: 0 }}>
+          <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+            <Wordmark size={20} />
+          </Link>
+          <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
+            <Link href="/sessions" style={{ textDecoration: "none" }}>
+              <Mono s={11} c={aw.muted}>
+                sessions
+              </Mono>
             </Link>
+            <Mono s={11} c={aw.muted2}>/</Mono>
+            <Mono s={11} c={aw.ink} style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {session
+                ? `${template?.name ?? session.template_id} · ${session.turn_count} turns`
+                : sessionId.slice(0, 24)}
+            </Mono>
           </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => setAuditOpen((v) => !v)}
+            style={{
+              padding: "6px 12px",
+              background: auditOpen ? aw.threadSoft : aw.surface,
+              color: auditOpen ? aw.thread : aw.ink,
+              border: `1px solid ${auditOpen ? aw.thread : aw.rule}`,
+              fontFamily: aw.mono,
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+            }}
+            title="Show or hide the conductor's reasoning and meta-notice candidates per turn"
+          >
+            {auditOpen ? "audit · on" : "show audit"}
+          </button>
+          <Link
+            href="/sessions"
+            style={{
+              padding: "6px 12px",
+              background: aw.surface,
+              color: aw.ink,
+              border: `1px solid ${aw.rule}`,
+              fontFamily: aw.mono,
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+            }}
+          >
+            ← all sessions
+          </Link>
         </div>
       </header>
 
@@ -444,14 +482,21 @@ export default function SessionDetailPage({
               )}
 
               {/* Managed Agents: post-session claim verification */}
-              <section className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-6">
+              <section
+                style={{
+                  marginTop: 24,
+                  border: `1px solid ${aw.thread}`,
+                  background: aw.threadSoft,
+                  padding: "20px 22px",
+                }}
+              >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h2 className="text-xs uppercase tracking-widest text-indigo-700">
-                      Claim Verification · Managed Agent
-                    </h2>
-                    <p className="mt-1 text-xs text-stone-500">
-                      A Claude Managed Agent reads this transcript, identifies factual claims, and uses the <code>web_search</code> tool to verify each one. Events stream live from the agent session.
+                    <Mono u s={10} c={aw.thread}>
+                      claim verification · managed agent
+                    </Mono>
+                    <p style={{ marginTop: 6, fontSize: 12.5, color: aw.muted, lineHeight: 1.55 }}>
+                      A Claude Managed Agent reads this transcript, identifies factual claims, and uses the <code style={{ fontFamily: aw.mono, fontSize: 11.5 }}>web_search</code> tool to verify each one. Events stream live from the agent session.
                     </p>
                   </div>
                   {!researchMd && (
@@ -459,9 +504,21 @@ export default function SessionDetailPage({
                       type="button"
                       onClick={() => void handleResearch()}
                       disabled={researching}
-                      className="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                      style={{
+                        flexShrink: 0,
+                        padding: "8px 14px",
+                        background: aw.ink,
+                        color: aw.surface,
+                        border: "none",
+                        fontFamily: aw.mono,
+                        fontSize: 10,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        cursor: researching ? "wait" : "pointer",
+                        opacity: researching ? 0.55 : 1,
+                      }}
                     >
-                      {researching ? "Agent working…" : "Run agent"}
+                      {researching ? "agent working…" : "verify claims"}
                     </button>
                   )}
                 </div>

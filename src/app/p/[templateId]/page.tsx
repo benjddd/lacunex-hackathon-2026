@@ -72,7 +72,8 @@ function ParticipantPageContent({
   const roundId = searchParams.get("round") ?? undefined;
   const inviteToken = searchParams.get("invite") ?? undefined;
 
-  // Support dynamically-generated briefs stored in sessionStorage by /start
+  // Support dynamically-generated briefs stored in sessionStorage by /host
+  // (one-shot generator and Brief Designer terminal handoff).
   const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
   useEffect(() => {
     // Hydrate a dynamically-generated brief from sessionStorage on mount.
@@ -279,6 +280,8 @@ function ParticipantPageContent({
     void fetchTurn([], emptyExtraction(template), template.objectives[0]?.id ?? null);
   }, [template, fetchTurn]);
 
+  const wrapUpHandledRef = useRef(false);
+
   const handleSend = useCallback(
     (text: string) => {
       if (sessionClosed || !template) return;
@@ -382,6 +385,40 @@ function ParticipantPageContent({
       setTakeawayGenerating(false);
     }
   }, [transcript, extraction, activeObjectiveId, template, generatedTemplate, takeawayMarkdown, generatedBrief, roundId]);
+
+  // Brief-designer terminal auto-trigger. When the conductor itself wraps up
+  // the design conversation, the artifact (the brief) needs to be generated
+  // without waiting for a manual click — otherwise the chat closes and there's
+  // no path forward (the "End & reflect" button is hidden once sessionClosed).
+  // For other templates, the manual end-button stays the conscious commit.
+  useEffect(() => {
+    if (
+      sessionClosed &&
+      template?.template_id === "brief-designer" &&
+      !generatedBrief &&
+      !takeawayGenerating &&
+      !takeawayError &&
+      !wrapUpHandledRef.current
+    ) {
+      wrapUpHandledRef.current = true;
+      void handleEndSession();
+    }
+  }, [sessionClosed, template, generatedBrief, takeawayGenerating, takeawayError, handleEndSession]);
+
+  // Auto-reveal the brief artifact for brief-designer once it's generated.
+  // Per DEMO_SCRIPT.md Capture B: "brief card materialises at end" — no
+  // intermediate click. Only applies to brief-designer; reflective takeaways
+  // for participants stay manual.
+  useEffect(() => {
+    if (
+      sessionClosed &&
+      template?.template_id === "brief-designer" &&
+      generatedBrief &&
+      !takeawayOpen
+    ) {
+      setTakeawayOpen(true);
+    }
+  }, [sessionClosed, template, generatedBrief, takeawayOpen]);
 
   if (!template) {
     return (
@@ -553,7 +590,7 @@ function ParticipantPageContent({
 // Brief-designer terminal surface. The conversation produced an interview
 // brief — show it, list the objectives the host can expect, offer a single
 // CTA to run it (sessionStorage handoff matches the path the one-shot
-// /start generator uses).
+// generator on /host uses).
 function BriefAuthored({ brief }: { brief: Template }) {
   const router = useRouter();
 

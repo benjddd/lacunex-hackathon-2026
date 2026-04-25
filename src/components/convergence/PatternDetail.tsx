@@ -78,7 +78,7 @@ export function PatternDetail({
         }}
       >
         <Mono u s={9} c={aw.muted}>
-          signal strength · {Math.round(score * 100)}
+          signal · {pattern.strength}
         </Mono>
         <div
           style={{

@@ -38,6 +38,13 @@ export const metadata: Metadata = {
   title: "Lacunex",
   description:
     "Goal-directed, adaptive interviews. Host sets goals; platform runs the conversation live and produces insight for both sides.",
+  // Pin the SVG anchor-glyph as the favicon. Without this, Next/Vercel can
+  // serve a default favicon.ico (orange triangle) alongside ours and the
+  // browser picks the larger ICO over our SVG.
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

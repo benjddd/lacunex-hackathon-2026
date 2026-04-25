@@ -137,8 +137,7 @@ src/
   app/
     page.tsx                         # / — role chooser (Host / Participant-with-invite / Demo)
     demo/page.tsx                    # /demo — split-screen combined view (auto-starts a session)
-    start/page.tsx                   # /start — multi-brief selector + conversational Brief Designer (the platform interviews the Host to author their brief; recursive dog-food of the four-call architecture)
-    host/page.tsx                    # /host — host hub (briefs, invite links, sessions, rounds)
+    host/page.tsx                    # /host — host hub (briefs, invite links, conversational Brief Designer + one-shot generator, sessions, rounds; the Brief Designer dog-foods the four-call architecture by interviewing the Host to author their brief)
     host/live/[sessionId]/page.tsx   # /host/live/:id — live dashboard; polls /api/sessions/:id/live every 4s so a second device watches fill in real time
     p/[templateId]/page.tsx          # /p/:id — participant interview (mic input, live takeaway preview drawer)
     i/[token]/page.tsx               # /i/:token — resolves an invite; redirects to the bound brief

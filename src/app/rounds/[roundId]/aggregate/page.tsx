@@ -8,6 +8,7 @@ import { PatternList } from "@/components/convergence/PatternList";
 import { PatternDetail } from "@/components/convergence/PatternDetail";
 import { RoundStats } from "@/components/convergence/RoundStats";
 import { Mono } from "@/components/convergence/Mono";
+import { Wordmark } from "@/components/convergence/LogoGlyph";
 import { aw } from "@/components/convergence/tokens";
 import { pickRepresentativeSession } from "@/components/convergence/layout";
 
@@ -124,40 +125,34 @@ export default function AggregateHeroPage({
   return (
     <div
       style={{
-        minHeight: "100dvh",
+        height: "100dvh",
         background: aw.bg,
         fontFamily: aw.sans,
         color: aw.ink,
         display: "grid",
-        gridTemplateRows: "auto auto 1fr auto",
+        gridTemplateRows: "auto auto minmax(0, 1fr) auto",
+        overflow: "hidden",
       }}
     >
-      {/* Top chrome — wordmark + breadcrumb */}
+      {/* Top chrome — wordmark + breadcrumb. Sticky at the top of the page. */}
       <div
         style={{
-          padding: "14px 36px",
+          padding: "12px 36px",
           borderBottom: `1px solid ${aw.rule}`,
           background: aw.surface,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <Link
-            href="/"
-            style={{
-              fontFamily: aw.sans,
-              fontWeight: 500,
-              fontSize: 18,
-              letterSpacing: "-0.02em",
-              color: aw.ink,
-              textDecoration: "none",
-            }}
-          >
-            lacunex
+          <Link href="/" style={{ textDecoration: "none" }} aria-label="Lacunex home">
+            <Wordmark size={20} />
           </Link>
-          <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
             <Link href="/rounds" style={{ textDecoration: "none" }}>
               <Mono s={11} c={aw.muted}>
                 rounds
@@ -168,7 +163,7 @@ export default function AggregateHeroPage({
             </Mono>
             <Link href={`/rounds/${roundId}`} style={{ textDecoration: "none" }}>
               <Mono s={11} c={aw.muted}>
-                {trim(roundId, 16)}
+                {roundShortLabel(roundId)}
               </Mono>
             </Link>
             <Mono s={11} c={aw.muted2}>
@@ -255,14 +250,15 @@ export default function AggregateHeroPage({
         </div>
       )}
 
-      {/* BODY — left rail · centre map · right rail */}
+      {/* BODY — left rail · centre map · right rail. min-height:0 on the
+          row keeps tall content from blowing out the grid. */}
       {aggregate && selectedPattern ? (
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "320px 1fr 380px",
             overflow: "hidden",
-            minHeight: 600,
+            minHeight: 0,
           }}
         >
           <PatternList
@@ -535,6 +531,22 @@ export default function AggregateHeroPage({
 function trim(s: string, n: number): string {
   if (!s || s.length <= n) return s;
   return s.slice(0, n - 1).trimEnd() + "…";
+}
+
+// Round ids are timestamp slugs like "2026-04-24T21-21-52-268Z". For the
+// breadcrumb we want a glanceable short label — fall back to the first
+// 8 chars (date) if the parse fails.
+function roundShortLabel(roundId: string): string {
+  // Slug format: YYYY-MM-DDTHH-MM-SS-mmmZ. Reconstruct an ISO and format.
+  const m = /^(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})/.exec(roundId);
+  if (!m) return roundId.slice(0, 16);
+  const [, ymd, hh, mm] = m;
+  const d = new Date(`${ymd}T${hh}:${mm}:00Z`);
+  if (Number.isNaN(d.getTime())) return ymd;
+  return d.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+  });
 }
 
 function firstSentence(s: string): string {

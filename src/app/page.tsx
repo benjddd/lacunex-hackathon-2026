@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { aw } from "@/components/convergence/tokens";
+import { Wordmark, LogoGlyph } from "@/components/convergence/LogoGlyph";
+import { Mono } from "@/components/convergence/Mono";
 
 // Kept in sync with src/lib/invites.ts (server-side). Duplicated here so the
 // client bundle doesn't pull in node:fs / node:crypto.
@@ -21,7 +24,6 @@ export default function LandingPage() {
       setError("Paste the invite code or link you were given.");
       return;
     }
-    // Accept either a raw 16-char token or a full /i/<token> URL.
     const match = trimmed.match(/\/i\/([1-9A-HJ-NP-Za-km-z]{16})/);
     const candidate = match ? match[1] : trimmed;
     if (!isValidToken(candidate)) {
@@ -32,72 +34,176 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-stone-50">
-      <header className="border-b border-stone-200 bg-white px-6 py-3">
-        <div className="mx-auto flex max-w-5xl items-baseline justify-between">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
-              Lacunex
-            </h1>
-            <p className="text-xs text-stone-500">
-              Cross-turn reasoning, rendered live.
-            </p>
-          </div>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: aw.bg,
+        fontFamily: aw.sans,
+        color: aw.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* Header — quieter than the product surfaces. No breadcrumb, no
+          status; just brand and a way out. */}
+      <header
+        style={{
+          padding: "16px 36px",
+          background: aw.surface,
+          borderBottom: `1px solid ${aw.rule}`,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1080,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Wordmark size={22} />
           <Link
             href="https://github.com/Attius-Digital-Art/lacunex"
-            className="text-xs text-stone-500 hover:text-stone-700"
             target="_blank"
             rel="noreferrer"
+            style={{ textDecoration: "none" }}
           >
-            GitHub ↗
+            <Mono s={11} c={aw.muted}>
+              github ↗
+            </Mono>
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-12">
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight text-stone-900">
-            Which are you here for?
-          </h2>
-          <p className="mt-2 text-sm text-stone-600">
-            Lacunex is a platform for goal-directed adaptive interviews.
-            Pick the path that fits.
+      {/* Hero — calmer typography, more space than a product surface, so the
+          visitor knows this is the front door, not the workspace. */}
+      <main
+        style={{
+          flex: 1,
+          padding: "56px 36px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ maxWidth: 760, width: "100%", textAlign: "center" }}>
+          <Mono u s={10} c={aw.thread}>
+            cross-turn reasoning, rendered live
+          </Mono>
+          <h1
+            style={{
+              fontFamily: aw.serif,
+              fontSize: 48,
+              fontWeight: 400,
+              letterSpacing: "-0.015em",
+              lineHeight: 1.05,
+              color: aw.ink,
+              margin: "16px 0 12px",
+            }}
+          >
+            Goal-directed interviews. Both sides leave with something.
+          </h1>
+          <p
+            style={{
+              fontSize: 15,
+              color: aw.muted,
+              lineHeight: 1.65,
+              maxWidth: 580,
+              margin: "0 auto",
+            }}
+          >
+            A Host sets the goals. The platform runs the conversation live, finds the
+            patterns across turns, and hands the participant a reflection worth keeping.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div
+          style={{
+            marginTop: 56,
+            width: "100%",
+            maxWidth: 1040,
+            display: "grid",
+            gap: 18,
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          }}
+        >
           {/* Host */}
           <Link
             href="/host"
-            className="group rounded-xl border border-stone-200 bg-white p-5 transition hover:border-amber-400 hover:shadow-sm"
+            style={{
+              padding: "26px 26px 24px",
+              background: aw.surface,
+              border: `1px solid ${aw.rule}`,
+              textDecoration: "none",
+              color: aw.ink,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              transition: "border-color 120ms ease",
+            }}
+            className="lacunex-role-card"
           >
-            <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-700 text-sm font-semibold">
-              H
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <LogoGlyph size={22} variant="default" />
+              <Mono u s={9} c={aw.muted}>
+                host
+              </Mono>
             </div>
-            <h3 className="text-sm font-semibold text-stone-900">
-              I&apos;m running interviews
-            </h3>
-            <p className="mt-1 text-xs leading-relaxed text-stone-600">
-              Host hub — pick a brief, generate participant invite links, view
-              rounds and cohort synthesis.
+            <div
+              style={{
+                fontFamily: aw.serif,
+                fontSize: 22,
+                fontWeight: 400,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.15,
+              }}
+            >
+              I&apos;m running interviews.
+            </div>
+            <p style={{ fontSize: 13, color: aw.muted, lineHeight: 1.55, margin: 0 }}>
+              Pick a brief, generate participant invite links, view rounds, open the
+              cohort convergence map.
             </p>
-            <p className="mt-3 text-xs font-medium text-amber-700 group-hover:text-amber-900">
-              Open host hub →
-            </p>
+            <Mono s={10} c={aw.thread} style={{ marginTop: 4 }}>
+              <span style={{ borderBottom: `1px solid ${aw.thread}`, paddingBottom: 1 }}>
+                open host hub →
+              </span>
+            </Mono>
           </Link>
 
           {/* Participant */}
-          <div className="rounded-xl border border-stone-200 bg-white p-5">
-            <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 text-sm font-semibold">
-              P
+          <div
+            style={{
+              padding: "26px 26px 24px",
+              background: aw.surface,
+              border: `1px solid ${aw.rule}`,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <LogoGlyph size={22} variant="micro" />
+              <Mono u s={9} c={aw.muted}>
+                participant
+              </Mono>
             </div>
-            <h3 className="text-sm font-semibold text-stone-900">
-              I have an invite
-            </h3>
-            <p className="mt-1 text-xs leading-relaxed text-stone-600">
+            <div
+              style={{
+                fontFamily: aw.serif,
+                fontSize: 22,
+                fontWeight: 400,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.15,
+              }}
+            >
+              I have an invite.
+            </div>
+            <p style={{ fontSize: 13, color: aw.muted, lineHeight: 1.55, margin: 0 }}>
               Paste the invite link or code your host sent you.
             </p>
-            <form onSubmit={handleJoin} className="mt-3 space-y-2">
+            <form onSubmit={handleJoin} style={{ marginTop: 6 }}>
               <input
                 type="text"
                 value={token}
@@ -106,44 +212,104 @@ export default function LandingPage() {
                   setError(null);
                 }}
                 placeholder="invite code or link"
-                className="w-full rounded-md border border-stone-300 px-2 py-1.5 text-xs font-mono focus:border-emerald-500 focus:outline-none"
+                style={{
+                  width: "100%",
+                  padding: "9px 12px",
+                  border: `1px solid ${aw.rule}`,
+                  background: aw.bg,
+                  fontFamily: aw.mono,
+                  fontSize: 11,
+                  color: aw.ink,
+                  outline: "none",
+                  letterSpacing: "0.04em",
+                }}
               />
               <button
                 type="submit"
-                className="w-full rounded-md bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-800"
+                style={{
+                  marginTop: 8,
+                  width: "100%",
+                  padding: "10px 14px",
+                  background: aw.ink,
+                  color: aw.surface,
+                  border: "none",
+                  fontFamily: aw.mono,
+                  fontSize: 11,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
               >
-                Join interview
+                join interview
               </button>
-              {error && <p className="text-[11px] text-red-700">{error}</p>}
+              {error && (
+                <div style={{ marginTop: 6 }}>
+                  <Mono s={10} c={aw.thread}>
+                    {error}
+                  </Mono>
+                </div>
+              )}
             </form>
           </div>
 
           {/* Demo */}
           <Link
             href="/demo"
-            className="group rounded-xl border border-stone-200 bg-white p-5 transition hover:border-slate-400 hover:shadow-sm"
+            style={{
+              padding: "26px 26px 24px",
+              background: aw.surface,
+              border: `1px solid ${aw.rule}`,
+              textDecoration: "none",
+              color: aw.ink,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              transition: "border-color 120ms ease",
+            }}
+            className="lacunex-role-card"
           >
-            <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-700 text-sm font-semibold">
-              D
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <LogoGlyph size={22} variant="outline" />
+              <Mono u s={9} c={aw.muted}>
+                demo
+              </Mono>
             </div>
-            <h3 className="text-sm font-semibold text-stone-900">
-              Just looking
-            </h3>
-            <p className="mt-1 text-xs leading-relaxed text-stone-600">
-              See both sides in one window — participant chat on the left,
-              host dashboard filling live on the right.
+            <div
+              style={{
+                fontFamily: aw.serif,
+                fontSize: 22,
+                fontWeight: 400,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.15,
+              }}
+            >
+              Just looking.
+            </div>
+            <p style={{ fontSize: 13, color: aw.muted, lineHeight: 1.55, margin: 0 }}>
+              Both sides in one window — participant chat on the left, host dashboard
+              filling live on the right.
             </p>
-            <p className="mt-3 text-xs font-medium text-slate-700 group-hover:text-slate-900">
-              Open demo view →
-            </p>
+            <Mono s={10} c={aw.thread} style={{ marginTop: 4 }}>
+              <span style={{ borderBottom: `1px solid ${aw.thread}`, paddingBottom: 1 }}>
+                open demo view →
+              </span>
+            </Mono>
           </Link>
         </div>
 
-        <div className="mt-10 text-center text-[11px] text-stone-500">
-          Built for the Anthropic &quot;Built with Opus 4.7&quot; hackathon
-          (April 2026). Open source — MIT.
+        <div style={{ marginTop: 64, textAlign: "center" }}>
+          <Mono s={10} c={aw.muted2}>
+            Built for the Anthropic &quot;Built with Opus 4.7&quot; hackathon · April 2026
+            · Open source · MIT
+          </Mono>
         </div>
       </main>
+
+      <style>{`
+        .lacunex-role-card:hover {
+          border-color: ${aw.thread} !important;
+        }
+      `}</style>
     </div>
   );
 }

@@ -7,15 +7,19 @@
 //   - matching takeaway markdown (transcripts/takeaway-<id>.md), if present
 //   - matching research report (transcripts/research-<id>.md), if present
 //
-// Posts the bundle to <target>/api/_seed-round, gated by the bypass token
-// stored in env LACUNEX_BYPASS_TOKEN (same token as RATE_LIMIT_BYPASS_TOKEN
-// on the deployed instance).
+// Posts the bundle to <target>/api/_seed-round, gated by the same bypass
+// token that gates rate-limit on the deployed instance: env var
+// RATE_LIMIT_BYPASS_TOKEN (or pass --token=<value> on the CLI).
 //
 // Usage:
-//   npx tsx scripts/seed-cohort.ts \
-//     --round=2026-04-24T21-21-52-268Z \
-//     --target=https://lacunex.com \
-//     --token=$LACUNEX_BYPASS_TOKEN
+//   # primary: read token from env (matches the prod env var name)
+//   RATE_LIMIT_BYPASS_TOKEN=<value> \
+//     npx tsx scripts/seed-cohort.ts \
+//       --round=2026-04-24T21-21-52-268Z \
+//       --target=https://lacunex.com
+//
+//   # alternate: pass the token explicitly
+//   npx tsx scripts/seed-cohort.ts --round=<id> --target=<url> --token=<value>
 //
 // The dev server on http://localhost:3000 must be running so this script
 // can pull the round payload from /api/rounds/<id> (which loads the round
@@ -50,9 +54,16 @@ function parseArgs(argv: string[]): Args {
   if (!out.roundId) throw new Error("missing --round=<id>");
   if (!out.target) throw new Error("missing --target=<base url>");
   if (!out.token) {
-    out.token = process.env.LACUNEX_BYPASS_TOKEN ?? "";
-    if (!out.token)
-      throw new Error("missing --token=<bypass> (or set LACUNEX_BYPASS_TOKEN)");
+    // Match the env var name actually set on the deployed instance.
+    out.token =
+      process.env.RATE_LIMIT_BYPASS_TOKEN ??
+      process.env.LACUNEX_BYPASS_TOKEN ??
+      "";
+    if (!out.token) {
+      throw new Error(
+        "missing --token=<bypass> (or set RATE_LIMIT_BYPASS_TOKEN env var)"
+      );
+    }
   }
   // Strip trailing slashes from target.
   out.target = out.target.replace(/\/+$/, "");

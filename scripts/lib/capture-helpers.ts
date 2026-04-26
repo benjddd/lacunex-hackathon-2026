@@ -18,55 +18,96 @@ import * as fs from "node:fs";
 
 const FAKE_CURSOR_SCRIPT = `
 (() => {
-  // Hide Next.js dev-mode UI (extra belt-and-braces; primary fix is
-  // devIndicators:false in next.config.ts). CSS rule alone is fine because
-  // the host elements are in light DOM even when their interiors use shadow.
+  // addInitScript runs at document_start, before HTML parsing creates
+  // <html>, <head>, or <body>. So every DOM-touching call here must wait
+  // for the relevant ancestor to exist, or it throws and the whole IIFE
+  // dies — which previously caused our "1 issue" page error AND prevented
+  // the dev-UI-hide stylesheet from ever being injected.
+
+  // Hide Next.js dev-mode UI (belt-and-braces; primary fix is
+  // devIndicators:false in next.config.ts). The host elements are in
+  // light DOM, so a single CSS rule on the host hides the whole portal.
+  let styleInstalled = false;
   const installStyle = () => {
-    const styleId = '__pw_hide_next_dev_ui';
-    if (document.getElementById(styleId)) return;
+    if (styleInstalled) return true;
+    const root = document.head || document.documentElement;
+    if (!root) return false; // try again later
+    if (document.getElementById('__pw_hide_next_dev_ui')) { styleInstalled = true; return true; }
     const s = document.createElement('style');
-    s.id = styleId;
+    s.id = '__pw_hide_next_dev_ui';
     s.textContent = \`
       nextjs-portal,
       [data-nextjs-toast],
+      [data-nextjs-toast-wrapper],
       [data-next-mark],
       [data-next-mark-loading],
       [data-nextjs-dev-tools-button],
+      [data-nextjs-dialog-overlay],
+      [data-nextjs-error-overlay],
+      [data-issues-collapse],
+      [data-issues-popover],
       #__next-build-watcher,
-      #__next-prerender-indicator { display: none !important; visibility: hidden !important; }
+      #__next-prerender-indicator { display: none !important; visibility: hidden !important; pointer-events: none !important; }
     \`;
-    (document.head || document.documentElement).appendChild(s);
+    root.appendChild(s);
+    styleInstalled = true;
+    return true;
   };
 
   // Render a visible cursor inside the page so Playwright's mouse moves
   // are captured in the recorded webm (Playwright doesn't render the OS
-  // cursor onto the page). Mounting must wait for <body> to exist —
-  // addInitScript runs before HTML parsing finishes, so naively calling
-  // document.body.appendChild silently fails. We retry until body exists.
-  let cursorEl;
+  // cursor onto the page). Uses a conventional arrow shape so viewers read
+  // it as "cursor" instantly — a circle reads as "click target" or "spot
+  // highlight" instead. Inline SVG keeps it crisp at any zoom.
+  //
+  // The arrow is positioned so its tip is at (lastX, lastY): translate
+  // (-2px, -2px) accounts for the small pad around the arrow path.
+  let cursorEl = null;
   let lastX = 0, lastY = 0;
+  const CURSOR_SVG = \`
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.55));">
+      <path d="M 5 3 L 5 22 L 10 17 L 13.5 24 L 16 22.6 L 12.5 16 L 19 16 Z"
+            fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+    </svg>\`;
   const installCursor = () => {
-    if (document.getElementById('__pw_fake_cursor')) return;
-    if (!document.body) { setTimeout(installCursor, 16); return; }
+    if (cursorEl) return true;
+    if (!document.body) return false; // try again later
+    const existing = document.getElementById('__pw_fake_cursor');
+    if (existing) { cursorEl = existing; return true; }
     const c = document.createElement('div');
     c.id = '__pw_fake_cursor';
+    c.innerHTML = CURSOR_SVG;
     Object.assign(c.style, {
       position: 'fixed',
       left: lastX + 'px',
       top: lastY + 'px',
-      width: '20px',
-      height: '20px',
-      borderRadius: '50%',
-      background: 'rgba(20,20,20,0.85)',
-      border: '2px solid white',
-      boxShadow: '0 0 8px rgba(0,0,0,0.45)',
+      width: '28px',
+      height: '28px',
       pointerEvents: 'none',
       zIndex: '2147483647',
-      transform: 'translate(-50%, -50%)',
-      transition: 'left 90ms ease-out, top 90ms ease-out, background 120ms',
+      // Tip of the arrow path is at (5,3) in the 28-unit viewBox.
+      // Offset the element so its (5,3) point lands at the cursor coord.
+      transform: 'translate(-5px, -3px)',
+      transition: 'left 90ms ease-out, top 90ms ease-out',
     });
     document.body.appendChild(c);
     cursorEl = c;
+    return true;
+  };
+
+  // Single retry loop: tries every animation frame until both succeed,
+  // then stops. Tolerates document_start (body still null), late
+  // hydration, and SPA navigations that tear down/rebuild the body.
+  const tryInstall = () => {
+    let done = true;
+    if (!installStyle())  done = false;
+    if (!installCursor()) done = false;
+    if (!done) {
+      // requestAnimationFrame is the cheapest "next tick" that survives
+      // missing body — fall back to setTimeout if rAF isn't available yet
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(tryInstall);
+      else setTimeout(tryInstall, 16);
+    }
   };
 
   // Capture mouse position from window-level events even before the cursor
@@ -79,19 +120,24 @@ const FAKE_CURSOR_SCRIPT = `
     }
   };
   const onDown = () => { if (cursorEl) cursorEl.style.background = 'rgba(220,80,40,0.95)'; };
-  const onUp   = () => { if (cursorEl) cursorEl.style.background = 'rgba(20,20,20,0.85)'; };
+  const onUp   = () => { if (cursorEl) cursorEl.style.background = 'rgba(20,20,20,0.88)'; };
 
   // Install handlers on window so they catch every event (capture phase) on
   // both light and shadow DOM through composedPath bubbling.
+  // window must exist (it always does in a browser context) — this can't fail.
   window.addEventListener('mousemove', onMove, true);
   window.addEventListener('mousedown', onDown, true);
   window.addEventListener('mouseup',   onUp,   true);
 
-  installStyle();
-  installCursor();
+  tryInstall();
 
-  // Re-install if a SPA navigation tears down the body
-  const reinstall = () => { installStyle(); installCursor(); };
+  // Re-run after navigation events in case the body was rebuilt. We
+  // reset cursorEl/styleInstalled so the install funcs re-create.
+  const reinstall = () => {
+    if (cursorEl && !cursorEl.isConnected) cursorEl = null;
+    if (!document.getElementById('__pw_hide_next_dev_ui')) styleInstalled = false;
+    tryInstall();
+  };
   document.addEventListener('readystatechange', reinstall);
   document.addEventListener('DOMContentLoaded', reinstall);
 })();

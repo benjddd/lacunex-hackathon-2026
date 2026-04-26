@@ -34,7 +34,7 @@ The system runs four Claude calls per conversation turn, each with a different j
 
 ---
 
-## Day 1: Foundation (Apr 21)
+## Day 1: Foundation (Apr 22)
 
 **The brief format.** The central design decision of the first day: make everything the conductor knows about the interview *live in a JSON template*, not in a system prompt. A brief defines: objectives (with sub-questions, probing strategies, success criteria, extraction schemas), a persona (voice, stance, forbidden patterns), a session shape (target duration, opening, closing), and a meta-noticing layer (notice types, suppression rules, deploy rate cap).
 
@@ -236,9 +236,31 @@ The cohort run on Day 5 ended with a question: the platform did the work, but di
 
 ---
 
+## Day 7: The reframe + recording-day repairs (Apr 26)
+
+The biggest move on submission day was a reframe, not a feature. Reading the meta-noticing prompts cold the morning of recording, the framing was wrong — too prosecutorial. The notices read as if the platform were *catching the participant lying*. That isn't what's happening, and it isn't what the takeaway should sound like at session close. Meta-noticing isn't a lie-detector; it's a thinking-aid. Rewrote the conductor + meta-noticing prompt language end-to-end. The new operating instruction, embedded directly in the conductor system prompt:
+
+> *"Cross-turn rigor is a thinking aid, not a lie-detector. When you surface a tension, a recurring shape, or an implicit premise, you are pointing at something WITH the participant so they can see it alongside you, not presenting evidence AGAINST them."*
+
+Re-ran the sim cohort under the reframed prompts and a new winning session emerged: a congestion-charge supporter who noticed that her "small adjustments" included moving a medical appointment, uncertainty about getting an elderly relative to hospital, and reshaping a friendship — three things she hadn't named alongside each other before the conductor anchored back. That session became the demo's spine.
+
+**Video spine swap.** The script switched from a news-headline cold open (Cloudflare + UK Covid Inquiry) to a convergence-map opener — *the platform finds 12 patterns when the brief asked about 5* — followed by the personal frame. Positive ("here's what we found across 11 conversations the brief never asked about") rather than postmortem. The dropped headlines briefly migrated into the submission form's Field 4, then back out again at the form-alignment pass: the video doesn't anchor on them and the form shouldn't either.
+
+**Recording-day repairs.** Small things that had gone unnoticed surfaced when the captures were re-shot:
+- The Playwright capture pipeline was leaking Next.js's dev-overlay (`<next-route-announcer>`) into demo recordings; suppressed via a frame-disable flag and a synthetic arrow-cursor overlay in `scripts/lib/capture-helpers.ts`.
+- The brief-designer capture (Beat 9) was re-shot mid-conversation rather than at the host hub — the recursive surprise (the platform interviewing the host who designs the next interview) only lands when the conductor's follow-up question is on screen.
+- Cross-tab persistence on generated briefs was the only failing journey in the pre-submit E2E sweep — `/p/gen-{id}` opened in a fresh browser context showed "Unknown brief" because the brief lived only in the originating tab's `sessionStorage`. KV persistence with a 24h TTL closed the gap; the participant page falls back to a server fetch on `sessionStorage` miss.
+- Open Graph metadata + Twitter cards were absent on every route except `/`; social previews showed an empty card. Fixed across the surface; landed an architecture-flex caption on the landing page.
+
+**Submission form alignment.** Three passes through the day. Every cohort number locked across the three docs a judge will see (README, MAKING_OF, the form): 11 sessions, 303 turns, 54 deployed `◆` from 243 considered, 12 patterns, 6 routing recommendations. F4 rewritten to drop the news-headlines hook the v2 video had already replaced. F5 retrimmed to the 200–400 word spec with an explicit eight-audience list. F8 picked up the Haiku/Sonnet/Opus failure-mode comparison that until then had lived only in this doc.
+
+Hours before submit, the journal caught up with the code.
+
+---
+
 ## File counts, domain depth, and committed artifacts
 
-**Codebase:** ~12,600 TS/TSX lines across 60 files, 90+ commits over 5 days of active building.
+**Codebase:** ~13,300 TS/TSX lines across 66 files, 105+ commits over six days of active building.
 
 **Domain knowledge files** (`docs/domain/`):
 - `memory-science-for-interviewing.md` — 6 Loftus axioms translated into interview-operational rules
@@ -258,4 +280,4 @@ The comparison that matters isn't files or LOC — it's whether the system does 
 
 ---
 
-*Build started Apr 22, 2026. Deadline Apr 27, 2026 03:00 IST.*
+*Build window: Apr 22–27, 2026. Submission deadline: Apr 27, 2026 03:00 IST.*

@@ -19,14 +19,14 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 | **A** — Cold open | Three quote cards (Cloudflare, UK Covid Inquiry, Hackney) animated stills + VO | post-production |
 | **B** — Template pick + interview opens | `/host` → "Civic Consultation" card → click "demo · both sides" → split-screen at `/demo?brief=civic-consultation` | OBS screen capture |
 | **C** — Live conductor + extraction (split-screen) | Participant chat (right) + host dashboard (left); columns rising | OBS, two windows |
-| **D** — Self-shoot face for PEAK 1 | 5s of face reading screen, micro-"huh" reaction | phone rear camera, books-stack tripod |
+| ~~**D** — Self-shoot face for PEAK 1~~ | DROPPED — PEAK 1 holds on ◆ panel + silence, no face | — |
 | **E** — Anchor return + column mutation | ↩ chip on host turn 8, dashboard column mutates in place | OBS screen capture |
 | **F** — Letter takeaway | Chat dissolves to letter view; `what surfaced` pull-quote | OBS screen capture |
 | **G** — Convergence map | `/rounds/.../aggregate` — force-directed map, cluster halos fade in, hover-highlight pattern | OBS screen capture |
 | **H** — Brief-designer reveal | Cut back to `/host`, hover across template grid | OBS screen capture |
 | **I** — Held takeaway sentence + URL card | Static design cards | post-production |
 
-**Recording order Saturday:** D first (self-shoot — separate pose, separate setup), then B → C → E → F → G → H in one or two browser sessions. A and I are post-production only.
+**Recording order:** B → C → E → F → G → H in one or two browser sessions. A and I are post-production only.
 
 ---
 
@@ -85,23 +85,23 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 ---
 
-## 0:53–1:14 | PEAK 1 — ◆ meta-notice + held two-shot — Captures C + D (21s)
+## 0:53–1:14 | PEAK 1 — ◆ meta-notice held silent — Capture C (21s)
 
-**This is the climax. Music drops to silence for 8 seconds across the badge frame.**
+**This is the climax. Music drops to silence for 8 seconds across the badge frame. No face. The text and the silence are the moment.**
 
 **Visual sequence:**
 1. (0:53–0:56) ◆ badge appears on host turn 4. Click badge.
-2. (0:56–1:04) **Two-shot held silent** — split: participant face from Capture D on the left (5s loop, slowed to 8s with subtle slow-motion); on the right, the ◆ notice panel with the earlier-turn quote pulled out:
+2. (0:56–1:04) **Held silent on the ◆ notice panel** — full-frame or generously-sized, the panel renders with the meta-notice text and turn anchors visible:
    > ◆ META-NOTICE · contradiction
    > anchors: turn 1 · turn 3
    >
    > *"The participant initially presents the mode switch as a straightforward preference for predictability, but on closer telling it's a 30-minute net time penalty they only accepted because of the anticipated charge. The 'easier' framing appears to be post-hoc rationalisation."*
 
-   **Music: muted. No VO. Hold.**
+   **Music: muted. No VO. Hold for the full 8 seconds.** The judge reads. The silence is the move.
 3. (1:04–1:14) Music returns at –24 dB. VO resumes.
 
 **Voiceover (1:04–1:14):**
-> "Cross-turn reasoning. The platform noticed that 'the bus is easier and more predictable' from turn 1 doesn't hold up against 'I wouldn't have switched if the charge weren't coming' from turn 3 — and a thirty-minute net time penalty. A careful reviewer might catch this on a second read. The platform caught it in time to probe."
+> "Cross-turn reasoning. The platform held the 'easier and more predictable' framing from turn 1 alongside 'I wouldn't have switched if the charge weren't coming' from turn 3 — and a thirty-minute time penalty — and surfaced the gap between them in time to probe. A careful reviewer might join those threads on a second read. The platform held them together while the conversation was still happening."
 
 ---
 
@@ -117,7 +117,9 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 **Participant reply (turn 7) lands on screen:**
 > *"spontaneous trips have become planned trips, and planned trips feel like more effort, so they happen less"*
 
-**Voiceover:**
+**Hold the participant reply alone for 1.5 seconds — no VO, music underneath.** Let the line breathe. This is the human moment of the video.
+
+**Voiceover (begins after the 1.5s hold):**
 > "Anchor return. The conductor brought back the Sarah-coffee thread from earlier, in the same conversation. The resident's framing updates the column — not a new row, the same row, corrected."
 
 ---
@@ -163,7 +165,7 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** clean white card. Centred. Single sentence rendered in Instrument Serif, 36pt:
 
-> *"The survey is asking me to declare myself; this conversation is asking me to think."*
+> *"I came in thinking I'd convince someone the charge was a bad idea. It's been more about me trying to work out what I actually think."*
 
 **Audio: music bed only. NO voiceover. Music begins fade-out at 2:26.**
 
@@ -173,6 +175,8 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** clean card.
 
+> Goal-directed interviews. Both sides leave with something.
+>
 > **lacunex.com**
 >
 > Built in five days · Opus 4.7 · MIT-licensed
@@ -197,16 +201,6 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
    - Convergence map at `/rounds/2026-04-24T21-21-52-268Z/aggregate` shows cluster halos + labels
 
 ## Capture order (in sequence)
-
-**FIRST: Capture D — Self-shoot face.**
-- Phone (rear camera) on a books-stack tripod, eye height
-- 80–110cm distance, 30–45° window light from front
-- A4 paper on desk for fill
-- Sticky note over lens area of eye-line — DO NOT look at lens, only at laptop screen
-- 12–15 takes in bursts of 3, review between bursts
-- The 5 seconds: neutral reading face → micro-pause → eyebrows up → 2cm head tilt back → quietest possible "huh" → hold
-- Audio: not used. Mute clip in edit.
-- Use take 8–11.
 
 **Capture A — Cold open (post-production, voiceover + design cards).**
 - VO recorded separately (line-in or good headset; or Descript)
@@ -285,8 +279,8 @@ www.scottbuckley.com.au
 # Pre-submit checklist
 
 - [ ] Total runtime ≤ 2:30 (verify in media player, not memory)
-- [ ] Self-shoot clip muted in edit
-- [ ] PEAK 1 silence drop verified (8s, –200ms/+200ms fades)
+- [ ] PEAK 1 silence drop verified (8s, –200ms/+200ms fades) — held on ◆ panel, no face
+- [ ] PEAK 2 1.5s breathing hold on participant reply line verified (no VO, music continues)
 - [ ] All on-screen quotes match verbatim — winning session, takeaway, primary-source news
 - [ ] Cohort numbers match: 11 sessions, 303 turns, 54 ◆ deployed, 243 considered, 12 patterns, 6 recommendations
 - [ ] Cold-open quote attributions correct: Cloudflare 18 Nov 2025, UK Covid-19 Inquiry Module 1 Jul 2024, Hackney Nov 2024

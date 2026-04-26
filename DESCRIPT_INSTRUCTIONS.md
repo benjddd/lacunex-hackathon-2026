@@ -12,14 +12,15 @@ One-shot instruction set for assembling the 2:40 cut from the v2 script. Target:
 |---|---|---|
 | Drop clips on a timeline, set in/out points | ✅ reliable | Use the app or REST API |
 | Freeze frame, exact duration | ✅ reliable | Properties panel |
-| Text layers — font/size/colour/position | ✅ reliable | Author each card as a Descript scene |
-| Captions burned in from VO transcript | ✅ reliable | Underlord prompt |
+| Text layers — font/size/colour/position | ✅ reliable | **Use the pre-rendered PNGs in `transcripts/captures/_descript/` (built via the project's dynamic-image routes — pixel-perfect, no Descript typography fight)** |
+| Captions burned in from VO transcript | ✅ reliable | **Manual transcript path** — Sequence → Captions → Add captions. Costs ~3 media minutes from the 1791-min pool, **no AI credits.** Skip the Underlord caption prompt (would burn 100 credits for the same result). |
+| VO synthesis | ✅ reliable | **Overdub voice clone (Ben's VO)** — paste each beat's text from the script, generate, listen, save. ~3 media minutes total; no AI credits. Faster than mic recording, no plosives. |
 | Cross-dissolve transitions, exact duration | ⚠ partial | Descript thinks in seconds, not frames — convert (12f@30fps = 0.4s) |
-| Ducking (% audio attenuation) | ⚠ partial | Underlord supports % only — not dB / attack / release. Approximate. |
-| **Speed ramp (5× → 1× over 0.4s)** | ❌ **manual** | **Pre-bake with ffmpeg** before importing |
+| Ducking (% audio attenuation) | ⚠ partial | Descript supports % — approximate –12 dB target with 35% attenuation |
+| **Speed ramp (5× → 1× over 0.4s)** | ❌ **manual** | **Pre-bake with ffmpeg** before importing (smooth-decel curve via stair-step segments) |
 | **Region tints (8% colour overlay over a pane half)** | ❌ **manual** | **Pre-bake into the source clip with ffmpeg** |
 | Custom split-screen layout | ⚠ partial | Use Descript's multi-cam template, OR pre-bake the layout in ffmpeg |
-| Underlord agent for free-form edits | ⚠ partial | Reliable for filler-removal, captions, basic zooms; flaky for everything else. **Treat it as a junior editor that lies about success** |
+| Underlord agent for free-form edits | ⚠ partial | **Skip entirely.** Manual paths cover everything we need at zero AI-credit cost. |
 
 ---
 
@@ -247,25 +248,14 @@ Hold the full 12s. No animation needed beyond a fade-in over the cross-dissolve 
 
 ---
 
-# Phase E — Underlord pass
+# Phase E — (skipped — no Underlord)
 
-Open the Underlord agent (sidebar in Descript). Run **only these two prompts, one at a time**, in order. Underlord is unreliable for anything more specific than this, so don't try.
+Underlord is not used in this build. Both jobs we previously considered (caption generation, auto-zoom) are off the table:
 
-## Prompt 1 — Generate captions
+- **Captions** are shipped as a separate `.srt` file alongside the YouTube upload — see Phase G. Pre-authored at [transcripts/captures/_descript/lacunex-demo-v2.en.srt](transcripts/captures/_descript/lacunex-demo-v2.en.srt). Zero Descript work; viewers toggle CC.
+- **Auto-zoom** on Beats 4–7 is skipped — the demo body has enough motion already, and Underlord ignores time-window restrictions in 2025–26 community reports.
 
-> *"Generate captions from the voiceover layer. Style: 36–44pt white text, black 70%-opacity background, anchored bottom-third. Burn in, do not export as separate SRT."*
-
-Verify the captions read correctly — Underlord transcribes from VO so any mishearing has to be hand-corrected in the Captions panel.
-
-## Prompt 2 — Auto-zoom on Beats 4–7 (optional)
-
-Skip this if the demo body already has motion enough.
-
-> *"On the segment from 0:53 to 1:58, where there's a static split-screen, add subtle zoom-in motion to the participant chat pane during long stretches without animation. Keep zoom strength low (max 1.05×). Do not zoom during the cross-turn ◆ moment between 1:15 and 1:35."*
-
-If Underlord doesn't honour the time restriction, undo and skip.
-
-**Don't ask Underlord for**: the speed ramp (already pre-baked), text-scene authoring (Phase D), the silence drop (Phase F), the architecture card (Phase D), captions outside the burn-in style (Phase F adjusts).
+Net cost: **0 AI credits** spent on this phase (preserves all 399 in your account for unforeseen work).
 
 ---
 
@@ -353,13 +343,13 @@ Music bed begins fading at 2:38; completes silence by 2:40. One-frame hold of bl
 
 # Phase G — Captions + export
 
-## Captions
+## Captions — uploaded as a separate SRT, not burned in
 
-Captions were generated in Phase E. Verify:
+Pre-authored: [transcripts/captures/_descript/lacunex-demo-v2.en.srt](transcripts/captures/_descript/lacunex-demo-v2.en.srt). 46 cues covering every VO line. The 5.6s silence drop in Beat 6 is preserved as a gap between cues so the ◆ panel reads without text on top of it.
 
-- Burned-in (not exported as SRT alongside).
-- Style: 36–44pt white, black 70%-opacity background, bottom-third anchor.
-- All captions match VO verbatim (Underlord transcribes; misheard words happen). Spot-check the proper nouns: **Lacunex**, **Opus 4.7**, **Anthropic**, **Schluntz & Zhang**, **Orchestrator-Workers**.
+Upload the SRT alongside the MP4 in YouTube Studio (see "Upload" below). Viewers can toggle [CC] on/off — sound-on judges won't see them; sound-off viewers can enable. No burn-in needed.
+
+If the final cut's runtime drifts more than ~0.5s from the script's spec at any beat boundary, re-time the SRT in any subtitle editor (or a text editor — the file is plain text, easy to nudge). Most likely shift points: the silence drop (Beat 6) and the 0.5s pause (Beat 3).
 
 ## Export
 
@@ -372,7 +362,7 @@ Descript → **Publish** → **Export as MP4**:
 | Codec | H.264 |
 | Quality | High |
 | Audio | 48 kHz, stereo, AAC 192 kbps |
-| Captions | **Burned in** |
+| Captions | **None — separate SRT uploaded to YouTube** |
 | Output filename | `lacunex-demo-v2.mp4` |
 
 Target file size: under 100 MB. If over, re-export at quality "Medium" and re-check.
@@ -401,7 +391,9 @@ Music: 'Borealis' by Scott Buckley — released under CC-BY 4.0.
 www.scottbuckley.com.au
 ```
 
-Wait 10–20 min for HD processing. Open the live URL on phone (with sound off) and laptop (incognito, with sound on). Final URL goes in Submission Field 7.
+**Subtitles upload (after the video processes):** YouTube Studio → Subtitles → Add language → **English** → **Upload file** → pick `transcripts/captures/_descript/lacunex-demo-v2.en.srt` → Choose "with timing" → Save. Verify the [CC] button is available on the watch page; click it to confirm cues land at expected timecodes.
+
+Wait 10–20 min for HD processing. Open the live URL on phone (with sound off, **CC enabled**) and laptop (incognito, with sound on). Final URL goes in Submission Field 7.
 
 ---
 

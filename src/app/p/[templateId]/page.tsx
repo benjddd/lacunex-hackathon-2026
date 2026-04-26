@@ -76,18 +76,37 @@ function ParticipantPageContent({
   // (one-shot generator and Brief Designer terminal handoff).
   const [generatedTemplate, setGeneratedTemplate] = useState<Template | null>(null);
   useEffect(() => {
-    // Hydrate a dynamically-generated brief from sessionStorage on mount.
-    // sessionStorage is a platform API outside React; reading it in an
-    // effect is the correct place. React 19's set-state-in-effect rule
-    // still flags the setState — safe here.
+    // Hydrate a dynamically-generated brief.
+    // First try sessionStorage (originating tab); fall back to the server
+    // (KV-backed `/api/generated-briefs/[id]`) so cross-tab, cross-device,
+    // and reloaded-tab access still works.
     if (!TEMPLATE_MAP[templateId] && templateId.startsWith("gen-")) {
+      let cancelled = false;
       const raw = sessionStorage.getItem(`lacunex:brief:${templateId}`);
       if (raw) {
         try {
+          const parsed = JSON.parse(raw) as Template;
           // eslint-disable-next-line react-hooks/set-state-in-effect
-          setGeneratedTemplate(JSON.parse(raw) as Template);
-        } catch { /* ignore */ }
+          setGeneratedTemplate(parsed);
+          return;
+        } catch { /* fall through to server fetch */ }
       }
+      void (async () => {
+        try {
+          const res = await fetch(`/api/generated-briefs/${encodeURIComponent(templateId)}`);
+          if (!res.ok) return;
+          const data = (await res.json()) as { template?: Template };
+          if (cancelled || !data.template) return;
+          // Mirror to sessionStorage so subsequent renders skip the fetch.
+          try {
+            sessionStorage.setItem(`lacunex:brief:${templateId}`, JSON.stringify(data.template));
+          } catch { /* quota exceeded; ignore */ }
+          setGeneratedTemplate(data.template);
+        } catch {
+          /* leave template unset — page renders "Unknown brief" */
+        }
+      })();
+      return () => { cancelled = true; };
     }
   }, [templateId]);
 

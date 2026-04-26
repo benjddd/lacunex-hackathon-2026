@@ -176,6 +176,36 @@ export async function hostedGetInvite(token: string): Promise<InviteRecord | nul
   return inviteMem.get(token) ?? null;
 }
 
+// ---- Generated brief store (24h TTL) ----
+// Lets a `/p/gen-{id}` URL survive a tab close. Without this, generated
+// briefs only live in the originating tab's sessionStorage and cross-tab
+// access shows "Unknown brief".
+//
+// In-memory map uses globalThis so the store survives Next.js dev-mode
+// route-handler isolate reuse (each handler request can land on a fresh
+// module instance otherwise; module-level Maps would be empty for the
+// follow-up GET). Production uses KV and doesn't need this.
+
+import type { Template } from "./types";
+
+const briefStoreSymbol = Symbol.for("lacunex.generatedBriefMem");
+type BriefMap = Map<string, Template>;
+const g = globalThis as unknown as Record<symbol, BriefMap | undefined>;
+const generatedBriefMem: BriefMap = g[briefStoreSymbol] ?? (g[briefStoreSymbol] = new Map());
+
+export async function hostedSaveGeneratedBrief(brief: Template): Promise<void> {
+  if (hasKV) {
+    await kvSetEx(`brief:${brief.template_id}`, brief, 86400);
+  } else {
+    generatedBriefMem.set(brief.template_id, brief);
+  }
+}
+
+export async function hostedGetGeneratedBrief(templateId: string): Promise<Template | null> {
+  if (hasKV) return kvGet<Template>(`brief:${templateId}`);
+  return generatedBriefMem.get(templateId) ?? null;
+}
+
 // ---- Live session store (2h TTL) ----
 
 const liveSessionMem = new Map<string, unknown>();

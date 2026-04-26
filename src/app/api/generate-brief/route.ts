@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { MODELS } from "@/lib/models";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { hostedSaveGeneratedBrief } from "@/lib/store-hosted";
 import type { Template } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -162,6 +163,15 @@ export async function POST(req: Request) {
       tone: "Reflective, second person, warm but dry. Something the participant would want to keep.",
     },
   };
+
+  // Persist server-side so cross-tab/cross-device access to /p/{template_id}
+  // works without sessionStorage. 24h TTL is plenty for the hackathon demo
+  // window. Non-fatal if KV is down — sessionStorage path still works.
+  try {
+    await hostedSaveGeneratedBrief(template);
+  } catch (err) {
+    console.error("[generate-brief] hostedSaveGeneratedBrief failed:", err);
+  }
 
   return NextResponse.json({ template });
 }

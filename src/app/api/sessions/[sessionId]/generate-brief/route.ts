@@ -11,7 +11,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
-import { hostedGetSession } from "@/lib/store-hosted";
+import { hostedGetSession, hostedSaveGeneratedBrief } from "@/lib/store-hosted";
 import { checkRateLimit } from "@/lib/rate-limit";
 import type { Template, Turn } from "@/lib/types";
 
@@ -308,6 +308,14 @@ export async function POST(req: Request, { params }: Params) {
 
     // Step 2: generate a full Template JSON from the description
     const template = await generateBriefFromDescription(description);
+
+    // Persist server-side (24h TTL) so /p/{template_id} works across tabs
+    // and devices, not only inside the originating sessionStorage.
+    try {
+      await hostedSaveGeneratedBrief(template);
+    } catch (err) {
+      console.error("[sessions/generate-brief] hostedSaveGeneratedBrief failed:", err);
+    }
 
     return NextResponse.json({ template });
   } catch (err) {

@@ -129,10 +129,10 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** participant clicks **"See your reflection →"**. Surface transitions: chat is replaced by a letter-style reflection (no modal). Centred 620px column, Instrument Serif headline "Thank you for the conversation." Scroll to **"What surfaced between the lines"** section. Hold.
 
-**On-screen pull-quote (VERBATIM from generated takeaway — to be regenerated against `session-2026-04-26T06-29-13-996Z` before recording; placeholder text below derived from the session's strongest recognition turns):**
+**On-screen pull-quote (VERBATIM from generated takeaway at [transcripts/takeaway-2026-04-26T06-29-13-996Z.md](transcripts/takeaway-2026-04-26T06-29-13-996Z.md)):**
 > **What surfaced between the lines**
 >
-> *"You came in believing the scheme was the right thing in principle, and then — once you listed them — you noticed you'd already moved a physio appointment, were uncertain about your mum-in-law's hospital trip, and had reshaped how you see your friend Sarah. By the middle of the conversation, you were saying out loud that you'd reorganised your week around something that isn't even active yet."*
+> *"you've already reorganised a meaningful part of your week around something that isn't active yet, and called it 'just adjustments' until you heard yourself list them."*
 
 **Voiceover:**
 > "The resident leaves with what this conversation surfaced that he hadn't named himself. Not a summary of what he said. Something he knows now that he didn't when he walked in."

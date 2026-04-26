@@ -216,9 +216,29 @@ The cohort doc isn't the demo. It's the evidence the demo's "hours, not months" 
 
 ---
 
+## Day 6: Anchor-web visual identity, brief-designer hardened, cohort-level claim verification (Apr 25)
+
+The cohort run on Day 5 ended with a question: the platform did the work, but did it look like it knew what it was. Day 6 was the day the surface caught up with the substance.
+
+**Anchor-web — the visual direction.** Up through Day 5, every page used utilitarian Tailwind defaults. Functional, but uniform — the platform looked like a dashboard whether you were a host designing a brief, a participant reading their reflection, or a council viewing a cohort aggregate. Three users, three states of mind, identical chrome. The "anchor-web" token system replaced this with an off-white field, ink-black text, italic serif accents on display headings, and a single ochre accent that only appears on cross-turn moments (the `◆` badge, the `↩` chip, the convergence map's "stated support, lived workaround" cluster). The visual logic is the same as the conductor's: most of the screen stays calm so the moments that matter can land.
+
+**Letter takeaway as surface transition, not modal.** The participant takeaway used to render in a modal that overlaid the chat. The new flow replaces the chat surface entirely with a centred 620px column, Instrument Serif headline ("Thank you for the conversation."), and a quiet scroll into "What surfaced between the lines." This is a deliberate distance from the conversational pane: the takeaway is not a popup belonging to the same surface, it's a different artifact addressed to a different reader (you, three days from now, not you in the conversation). The transition is a few hundred milliseconds; the effect is leaving the room.
+
+**Convergence map as the hero of `/rounds/[id]/aggregate`.** The aggregate page used to be a vertical list of patterns with supporting session IDs in monospace. Useful, but not legible as scale. The new hero is a force-directed map of the 11 sessions: nodes settle into cluster halos labelled in italic serif, the strongest patterns light up the largest halos, single outliers float at the edges. Hovering a pattern on the left rail highlights its supporting sessions in the map. This is the only place in the product where the cross-cohort pattern becomes a single image — and the only frame where the "aggregate growing while interviews ran" claim is visible in one glance.
+
+**Brief-designer hardened to ship-ready.** Two days earlier the brief-designer was a working flow that had only been driven by the developer and Claude. Day 6 added five distinct host personas — `civic_policy_lead`, `founder_diligence`, `clinical_qi`, `educator_curriculum`, `union_organiser` — each scripted as a different cognitive style of host, and ran the brief-designer against all five with Playwright. Found and fixed: a JSON-repair edge where the generator's first response sometimes wrapped a valid brief in markdown fences that broke downstream parsing; a preview-leak where the participant view briefly flashed the previous template's opening question while the new brief was loading; a state-clearing race in `/p/gen-*` when the same browser tab generated two briefs in succession. The route `/start` was consolidated into `/host` — single entry point for everyone who'll ever land on the product.
+
+**Cohort-level claim verification.** Day 5 shipped one Managed Agent (the per-session claim verifier). Day 6 extended that agent to operate at cohort scale: instead of fact-checking one transcript's claims, it can now run across all sessions in a round and identify shared factual claims (the "Stockholm 22%" statistic that surfaced in 4 of 11 sessions; the "£50 daily charge" recollection that 7 sessions repeated, all wrong in the same direction). Three Playwright scenarios validate the cohort-level path end-to-end on hosted Vercel: single-session research, cohort-level research with shared-claim consolidation, and the SSE event stream rendering live in the round detail UI. The agent is the same `runClaimVerifierAgent()` primitive; what changed is how the harness composes input transcripts.
+
+**Production cohort persistence.** The 11-session cohort lived locally on disk through Day 5. Day 6 added a seed endpoint (`/api/admin/seed-cohort`) plus a script (`scripts/seed-cohort.ts`) that pushes a local round + its sessions into Vercel KV in a single atomic write, gated by the existing `RATE_LIMIT_BYPASS_TOKEN`. Three iterations on the bypass-token comparison (whitespace normalisation, then `\n` decoding for `.env` literal escapes, then a private rename of `_seed-round` → `seed-round` because Next.js treats underscore-prefixed app dirs as private and was 404-ing the route). The cohort that the convergence map renders is now the same data on hosted Vercel as on local dev — the demo can be replayed end-to-end on the production URL, no synthetic stubs.
+
+**Journey-audit fixes.** Cold-read the entire host-and-participant flow as if landing for the first time. Surfaced and fixed: the participant's takeaway view didn't link back to the platform front page (dead-end), the live host dashboard at `/host/live/[sessionId]` would crash if the session's template was deleted (now falls back to the generic schema), and the `/rounds/[id]` copy referred to "research questions" in places where the brief used the term "objectives" (single source of truth restored). Small things, but the kind that judges and first-time hosts notice in the first thirty seconds.
+
+---
+
 ## File counts, domain depth, and committed artifacts
 
-**Codebase:** ~5,100 TS/TSX lines across 50+ files, 15 commits over 3 days of active building.
+**Codebase:** ~12,600 TS/TSX lines across 60 files, 90+ commits over 5 days of active building.
 
 **Domain knowledge files** (`docs/domain/`):
 - `memory-science-for-interviewing.md` — 6 Loftus axioms translated into interview-operational rules

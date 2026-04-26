@@ -262,7 +262,12 @@ export function ChatPane({
             showHostMeta={showHostMeta}
           />
         ))}
-        {isLoading && <HostThinkingIndicator hostLabel={roleLabels.host} />}
+        {isLoading && (
+          <HostThinkingIndicator
+            hostLabel={roleLabels.host}
+            isOpening={transcript.length === 0}
+          />
+        )}
       </div>
 
       <form
@@ -454,18 +459,27 @@ function MessageBubble({
 // 5–10 seconds while Opus generates; a single small dot read as "stall".
 // This animates clearly enough to show the platform is working, and the
 // copy progresses every couple of seconds so participants don't feel stuck.
-function HostThinkingIndicator({ hostLabel }: { hostLabel: string }) {
+function HostThinkingIndicator({
+  hostLabel,
+  isOpening = false,
+}: {
+  hostLabel: string;
+  isOpening?: boolean;
+}) {
   const [phaseIdx, setPhaseIdx] = useState(0);
-  const phases = [
-    `${hostLabel} is reading what you said…`,
-    `${hostLabel} is thinking across the conversation…`,
-    `${hostLabel} is writing your next question…`,
-  ];
+  const phases = isOpening
+    ? [`${hostLabel} is opening the session…`]
+    : [
+        `${hostLabel} is reading what you said…`,
+        `${hostLabel} is thinking across the conversation…`,
+        `${hostLabel} is writing your next question…`,
+      ];
   useEffect(() => {
     // Cycling the phase via timers is a deliberate setState-in-effect: the
     // copy progresses to keep the participant oriented during a long wait.
     /* eslint-disable react-hooks/set-state-in-effect */
     setPhaseIdx(0);
+    if (isOpening) return;
     const a = setTimeout(() => setPhaseIdx(1), 2200);
     const b = setTimeout(() => setPhaseIdx(2), 4800);
     /* eslint-enable react-hooks/set-state-in-effect */
@@ -473,7 +487,7 @@ function HostThinkingIndicator({ hostLabel }: { hostLabel: string }) {
       clearTimeout(a);
       clearTimeout(b);
     };
-  }, [hostLabel]);
+  }, [hostLabel, isOpening]);
   return (
     <div className="flex items-center gap-3 rounded-md bg-stone-100 px-4 py-3 text-stone-600">
       <span aria-hidden className="inline-flex items-center gap-1">

@@ -4,6 +4,8 @@
 
 Goal-directed, adaptive interviews at scale. A Host (subject-matter expert) sets interview objectives; the platform runs every conversation live — generating each question from the full session state, producing structured insight *during* the session rather than in an overnight report, and, at session close, handing the participant a reflective takeaway worth keeping.
 
+Built on **three of the five workflow patterns** named in Anthropic's [*Building Effective Agents*](https://www.anthropic.com/engineering/building-effective-agents) — **Orchestrator-Workers**, **Parallelization**, and **Routing** — running together on every turn (see [Architecture](#architecture)).
+
 Built for the Anthropic **"Built with Opus 4.7"** hackathon (April 2026).
 
 → **[MAKING_OF.md](MAKING_OF.md)** — architecture decisions, day-by-day build log, calibrated claims, what Opus 4.7 enables that smaller models don't.
@@ -68,6 +70,8 @@ Participant speaks
 ```
 
 Three calls run every turn — Meta-Noticing in parallel with Extraction, then the Conductor with candidate notices + updated state. A notice can only be deployed if it cites ≥2 distinct turn indices (enforced in code — not just in the prompt). The Conductor enforces a rate cap (one deploy per three turns) and suppression rules.
+
+Mapped against Anthropic's *Building Effective Agents* taxonomy, this is three patterns layered on a single turn: **Orchestrator-Workers** — the Conductor is a strategic orchestrator delegating observation (Meta-Noticing) and structured fill (Extraction) to specialised workers; **Parallelization** — Meta-Noticing and Extraction execute simultaneously, then both feed the Conductor; **Routing** — the Conductor classifies session state and routes to one of five typed move-types (`probe` / `switch` / `deploy_notice` / `anchor_return` / `wrap_up`), each with distinct downstream behaviour. Three patterns, one turn, every turn.
 
 At session close, a fourth call — **Takeaway Synthesis** (Opus 4.7) — produces the participant's reflective artifact. A lighter **Takeaway Preview** (Sonnet 4.6) also regenerates every three participant turns, so the reflection the participant can peek at mid-session grows with the conversation.
 

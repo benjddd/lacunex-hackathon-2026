@@ -34,7 +34,9 @@ They act too late — the synthesis happens the day after the conversation close
 
 They go too shallow — they catch what was said, not what was meant. The hedge ("probably"), the drift ("we *think* customers want…"), the contradiction three turns later — these are the actual data. They disappear in the transcript.
 
-Lacunex fixes all three. The conductor adapts turn-by-turn to what the participant just said. The meta-noticing layer identifies contradictions, hedging, and implied-not-stated beliefs in real time — and the conductor can act on them, within the same conversation, before the window closes. The host's structured extraction fills live during the interview, not after.
+Lacunex fixes all three. The conductor adapts turn-by-turn to what the participant just said. The meta-noticing layer identifies contradictions, hedging, and implied-not-stated beliefs in real time — and the conductor can act on them, within the same conversation, before the window closes. The host's structured extraction fills live during the interview, not after. Both sides leave with something: the host with structured signal, the participant with a reflective takeaway that names what surfaced and what they already had that was relevant.
+
+This problem cuts two ways. Large organisations *can* investigate and choose not to — the friction and cost of running thirty good interviews keeps decisions on intuition. Small councils, science teams, NGOs, and indie projects *would* investigate and can't — the budget for a research moderator isn't there, so the conversation never happens. Lacunex closes both gaps from a different direction: the cost of one structured listen drops enough to make it routine, and the structured signal across a hundred listens becomes legible without a synthesis team.
 
 The thesis is not "a better way to read a transcript." It is: by the time you're reading the transcript, you've already missed the chance to react.
 
@@ -45,7 +47,11 @@ The thesis is not "a better way to read a transcript." It is: by the time you're
 
 **Lacunex runs goal-directed adaptive interviews with live structured reasoning across turns — eliminating the ~2 hours of post-session transcription, coding, and synthesis that qualitative research literature documents per 15-minute interview.**
 
+Built by a systems analyst who has spent years running stakeholder interviews where the right follow-up question came to mind two days later — when the conversation was cold, the participant was gone, and the spec had already moved on. That gap is everywhere: large organisations with budget hire researchers; everyone else ships anyway. Lacunex closes that gap.
+
 The concrete shape of the saving: a consumer-insights team running 30 founder-investor conversations saves ~60 researcher-hours and gets a comparable structured signal across all 30 — because the brief, not the moderator, is the constant. A civic consultation reaching 100 residents becomes a cohort picture, not 100 idiosyncratic transcripts. A post-incident investigation catches hedges, drift between turn 3 and turn 9, and implied-not-said beliefs *in the moment* — observations that would be invisible in transcript review the next day.
+
+At ~$1–2 per session of structured listening (calibrated, not estimated — see Field 8), a 100-resident consultation costs ~$150 end-to-end with cross-cohort synthesis. The kind of structured listening that today lives inside large research budgets becomes reachable for small councils, science teams, NGOs, and indie projects.
 
 The problem: the most valuable insight in any research process lives between the lines — in what the participant hedged, contradicted from three turns ago, or couldn't quite say. Surveys capture surface-level responses. Even AI tools that analyze transcripts arrive after the conversation closes. The conversation itself is where the insight is at risk.
 
@@ -75,26 +81,42 @@ https://github.com/Attius-Digital-Art/lacunex
 ---
 
 ## Field 7 — Demo Video
-**[FILL IN — record before Sunday; YouTube or Loom URL]**
+**[FILL IN — paste YouTube unlisted URL after upload]**
 
-Demo storyboard is in INTERNAL.md §2. Key beats:
-1. Host sets a goal in plain language (0:00–0:15)
-2. Live interview with dashboard filling (0:15–0:45)
-3. Meta-notice surfaces a contradiction → participant reacts (0:45–1:30)
-4. Contradiction caught across turns (1:30–2:15)
-5. Bilateral artifacts on screen together (2:15–2:40)
-6. Broader-use hint + Managed Agents mention + tagline (2:40–3:00)
+Production v2 — locked storyboard at [DEMO_SCRIPT_v2.md](DEMO_SCRIPT_v2.md). Eleven beats, 2:45 soft cap, voice-only over stills + screen captures. Key beats:
+
+1. **Cohort opener** (0:00–0:25) — convergence map populated; the platform's cross-cohort aggregate surfaces 12 patterns the brief never asked for ("self-censorship to avoid being miscategorised as anti-progress", "preemptive adaptation before policy is live", "the irony of rerouting"). Judges see a force-directed map first; meet a system that *already found* what they'd assume an analyst would still need to look for.
+2. **Personal frame** (0:25–0:40) — voice over a still; the builder's lived gap. Two real failure modes: beginners who interview-as-part-of-the-job lack the *skill*; professionals who have it lack the *time/scale*. Lacunex closes both.
+3. **Use-case range** (0:40–0:50) — three quick stills with chyrons: civic consultation, clinical pre-treatment values, expert knowledge before retirement.
+4. **Sliding split-screen reveal** (0:50–1:00) — animated split lands with persistent corner labels (`PARTICIPANT` / `HOST DASHBOARD · LIVE`) and warm/cool tints, so viewers always know which side is which. VO names what they're watching: a civic consultation about a proposed congestion charge.
+5. **Sped-up chat** (1:00–1:15) — `×5` indicator visible; six turns in fifteen seconds; decelerates to 1× and freeze-frames at the focal participant turn.
+6. **Cross-turn ◆ + silence drop** (1:15–1:35) — rhetorical question ("How long would a careful reader take to notice that what she just called 'small adjustments' includes moving a medical appointment?") · 2s pause · ◆ panel renders · 5.6 s of music silence · resolution VO at –24 dB.
+7. **Letter takeaway** (1:35–1:55) — participant clicks "See your reflection →"; surface morphs from chat to letter view; the verbatim *what surfaced between the lines* pull-quote held; VO names "both sides leave with something."
+8. **Architecture flex** (1:55–2:15) — black caption card. Three patterns named — Orchestrator-Workers, Parallelization, Routing — with citation: *"Building Effective Agents" · Schluntz & Zhang · Anthropic Engineering · Dec 2024*.
+9. **Surprise A — meta-brief / recursive dog-food** (2:15–2:23) — Brief Designer mid-conversation; the platform interviews the host who designs the next interview. *"Same four calls. All the way down."*
+10. **Surprise B — made-up-child quote** (2:23–2:35) — Instrument Serif card with the verbatim cohort-aggregate quote *"The child with asthma is abstract — I made her up to make my point sound bigger than it is"* + small honest disclosure beneath: *from a simulated cohort run · on the real platform.*
+11. **Close** (2:35–2:45) — *Lacunex. Built in five days. Open source. lacunex.com — for anyone who needed to listen at scale and didn't have time.*
+
+v1 storyboard preserved unchanged at [DEMO_SCRIPT.md](DEMO_SCRIPT.md) as a fallback only.
 
 ---
 
 ## Field 8 — Thoughts and feedback on building with Opus 4.7
 *(What worked, what surprised you, what you'd want to see changed.)*
 
+**Architecture posture — three of the five patterns from *Building Effective Agents*, running together every turn.** The Conductor is the **Orchestrator-Workers** orchestrator, delegating observation (Meta-Noticing) and structured fill (Extraction) to specialised workers. Meta-Noticing and Extraction execute as **Parallelization** on every participant turn, then both feed the Conductor synchronously. The Conductor itself is **Routing** — it classifies session state and routes to one of five typed move-types (`probe`, `switch`, `deploy_notice`, `anchor_return`, `wrap_up`), each with distinct downstream behaviour. The patterns aren't separate features bolted on; they layer on a single turn. Outside the per-turn loop, three more specialised calls (Takeaway Synthesis, Cross-Cohort Aggregate, Brief Designer) plus one genuine Managed Agent (Claim Verifier) extend the same architectural posture.
+
 **What worked exceptionally well: Opus 4.7 maintains genuine cross-turn memory and applies it.**
 
 The Conductor prompt asks Claude to decide not just "what to ask next" but *"given what was said at turn 4, does what was just said at turn 9 represent growth, contradiction, or avoidance?"* Opus 4.7 consistently answered this correctly — it didn't collapse to recency bias or surface-pattern matching. We put hard validators in the orchestration layer (e.g., reject outputs with two questions in one turn; reject meta-notices that don't cite ≥2 distinct transcript anchors). Across our 9-fixture replay suite (163 annotated turns) plus the 11-session congestion-charge cohort (303 turns), structural-validator retry rates stayed in the low-single-digit percent range.
 
-**What surprised us:** The meta-noticing layer — an observation-only call that evaluates cross-turn patterns and must cite ≥2 transcript anchors — produced genuinely non-obvious notices that a simpler model would flatten. Across the 11-session cohort, **54 deployed observations** broke down by type as: implied_not_said (27), contradiction (10), outside_consideration (9), emotional_shift (6), hedging_pattern (2). The most striking single notice fired when a participant said "my granddaughter's asthma is worse in the rush hour" two turns after declaring "this is just another tax on working people" — Opus correctly identified the hedge between stated objection and underlying value, and the conductor anchor-returned to it. That's the kind of move we built the architecture for, and Opus reached it.
+**Opus 4.7 as bug-finder for its own prompts.** The hard constraints in our prompts (no two questions per turn; every meta-notice must cite ≥2 distinct turn indices; meta-notices must not fire on a single turn in isolation) were tightened by asking Opus to *generate the weakest output that would technically satisfy the prompt*. Opus produced specific failure cases — a meta-notice citing the same anchor twice, a question phrased as a statement+question pair, a probe that mechanically triggered anchor_return without purposive cause. Each example exposed a prompt seam, which we closed. The development loop ("here's the rule — find the violation") is the same cognitive operation the meta-noticing layer performs at runtime ("here are claims across turns — find the ones that don't cohere"). The product and its development reflect the same reasoning pattern.
+
+**Domain-general transferability.** The Post-Incident Witness brief was authored once around six axioms from Loftus's reconstructive-memory research. We then ran it cold against four very different witness personas without changing a line of brief or prompt: a software SRE on a payments near-miss, a 30-year ICU nurse on a patient near-miss, an evasive PM withholding information, and an investigation into possible professional misconduct. The same conductor distinguished routine memory from event memory in the clinical case, named the withholding pattern explicitly in the PM case, and tracked the loss of certainty across 11 turns in the integrity case. Domain knowledge sits in the brief; reasoning is Opus 4.7. The four-call architecture is domain-general.
+
+**What surprised us — beyond the per-turn calls.** The meta-noticing layer — an observation-only call that evaluates cross-turn patterns and must cite ≥2 transcript anchors — produced genuinely non-obvious notices that a simpler model would flatten. Across the 11-session cohort, **54 deployed observations** broke down by type as: implied_not_said (27), contradiction (10), outside_consideration (9), emotional_shift (6), hedging_pattern (2). The most striking single notice fired when a participant said "my granddaughter's asthma is worse in the rush hour" two turns after declaring "this is just another tax on working people" — Opus correctly identified the hedge between stated objection and underlying value, and the conductor anchor-returned to it.
+
+The bigger surprise was at cohort scale. The Civic Consultation brief asks about lived experience, priorities, trust, barriers, adjacent concerns — five named objectives. The cross-cohort aggregate over 11 sessions surfaced **12 patterns**, several of which weren't asked for anywhere in the brief: *"preemptive adaptation before policy is live"* (5 sessions changing routines around a scheme not yet in force), *"dependents as the unvoiced pressure point"* (7 sessions pivoting on a mother-in-law, grandchild, or elderly neighbour the participant was mediating for), *"self-censorship to avoid being miscategorised as anti-progress"* (5 sessions hedging legitimate feedback because raising it felt politically disloyal), *"the irony of rerouting"* (residents creating the congestion the scheme claims to solve, by going around it). One participant admitted on tape: *"The child with asthma is abstract — I made her up to make my point sound bigger than it is"* — meta-honesty the cohort aggregate surfaces verbatim with anchor. These patterns weren't in the brief. The aggregate found them by reading 11 transcripts side-by-side as one corpus.
 
 **What we'd want:** Streaming tool use with partial JSON so the extraction call can update the dashboard incrementally rather than waiting for a full response. The current UX has a short pause while extraction runs; streaming schema-structured output would close that gap.
 
@@ -126,12 +148,20 @@ Route: `POST /api/sessions/[id]/research`; event pipeline lives in [`src/lib/man
 
 ## Submission checklist before hitting submit
 
-- [x] Problem Statement (Field 4) — rewritten, free-text textarea confirmed
-- [x] Project Description (Field 5) — drafted
-- [x] Managed Agents (Field 9) — one Managed Agent (claim verifier) wired via `beta.agents` + `beta.environments` + `beta.sessions`, events streamed to UI via SSE; cohort synthesis described as a feature, not relabelled as an agent
-- [ ] Demo video — record with OBS + Playwright session; upload to YouTube/Loom; paste URL in Field 7
+- [x] Problem Statement (Field 4) — rewritten, two-tier impact framing added (big orgs *won't*, small orgs *can't*)
+- [x] Project Description (Field 5) — personal-builder opener + $1–2/session cost-to-impact connector
+- [x] Field 8 — three Anthropic patterns named explicitly + Opus-as-bug-finder anecdote + cohort emergent-patterns surprise
+- [x] Field 9 — one Managed Agent (claim verifier) wired via `beta.agents` + `beta.environments` + `beta.sessions`, events streamed to UI via SSE; cohort synthesis described as a feature, not relabelled as an agent
+- [x] DEMO_SCRIPT_v2.md authored with 11-beat storyboard; v1 preserved as fallback
+- [x] Captures re-recorded with arrow cursor + clean dev UI (capture-helpers.ts root-cause bug fixed)
+- [x] Open Graph metadata + Twitter card on all routes (was CRITICAL gap from live audit)
+- [x] Custom OG image generated at /opengraph-image (1200×630 anchor-web branded card)
+- [x] Architecture flex visible on lacunex.com landing page (was HIGH gap from live audit)
+- [x] GitHub topics include `claude-opus-4-7`, `agentic`, `interview-platform`
+- [x] Stale merged branches deleted (`convergence-map`, `prompt/thinking-aid-frame`)
+- [ ] Demo video — record from v2 script; upload to YouTube unlisted; paste URL in Field 7
 - [ ] Verify GitHub repo is public, README is judge-readable
 - [ ] Trim Field 5 if over form character limit
 - [x] Add MAKING_OF.md reference in README so judges can find the build journal
 - [ ] Re-read Field 8 for internal terminology; check INTERNAL.md §8 for what's safe public
-- [x] Vercel KV: provisioned (Upstash via Vercel marketplace), `KV_REST_API_URL` + `KV_REST_API_TOKEN` set in prod env; rate-limit + live-state + round/session/takeaway/research stores all backed by KV in production
+- [x] Vercel KV: provisioned, all stores backed by KV in production

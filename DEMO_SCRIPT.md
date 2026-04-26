@@ -3,7 +3,7 @@
 For the hackathon submission video. **Target: 2:30 strict.** Ceiling 2:42 if a beat lands long; do not exceed.
 
 Source material (gitignored — local recording artefacts):
-- Winning sim session: `session-2026-04-26T04-43-27-086Z` (persona `congestion_supporter_hidden_cost`, re-sim 2026-04-26 — has persisted ◆×2 + ↩×1 metadata)
+- Winning sim session: `session-2026-04-26T06-29-13-996Z` (persona `congestion_supporter_hidden_cost`, run against the reframed thinking-aid prompts — produces ◆×2 deploys with new soft-framed observations; no explicit anchor_return move emitted, but host[12]'s second ◆ has `anchor_turn=5` so it functions as cross-turn callback)
 - Cohort round: `round-2026-04-24T21-21-52-268Z` — 11 sessions · 303 turns · **54 ◆ deployed / 243 considered** · 12 patterns · 6 routing recommendations
 - Takeaway markdown for the winning session
 - Cross-cohort evidence (committed): [docs/cohort/congestion-charge-2026-04-24.md](docs/cohort/congestion-charge-2026-04-24.md)
@@ -19,14 +19,14 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 | **A** — Cold open | Three quote cards (Cloudflare, UK Covid Inquiry, Hackney) animated stills + VO | post-production |
 | **B** — Template pick + interview opens | `/host` → "Civic Consultation" card → click "demo · both sides" → split-screen at `/demo?brief=civic-consultation` | OBS screen capture |
 | **C** — Live conductor + extraction (split-screen) | Participant chat (right) + host dashboard (left); columns rising | OBS, two windows |
-| **D** — Self-shoot face for PEAK 1 | 5s of face reading screen, micro-"huh" reaction | phone rear camera, books-stack tripod |
+| ~~**D** — Self-shoot face for PEAK 1~~ | DROPPED — PEAK 1 holds on ◆ panel + silence, no face | — |
 | **E** — Anchor return + column mutation | ↩ chip on host turn 8, dashboard column mutates in place | OBS screen capture |
 | **F** — Letter takeaway | Chat dissolves to letter view; `what surfaced` pull-quote | OBS screen capture |
 | **G** — Convergence map | `/rounds/.../aggregate` — force-directed map, cluster halos fade in, hover-highlight pattern | OBS screen capture |
 | **H** — Brief-designer reveal | Cut back to `/host`, hover across template grid | OBS screen capture |
 | **I** — Held takeaway sentence + URL card | Static design cards | post-production |
 
-**Recording order Saturday:** D first (self-shoot — separate pose, separate setup), then B → C → E → F → G → H in one or two browser sessions. A and I are post-production only.
+**Recording order:** B → C → E → F → G → H in one or two browser sessions. A and I are post-production only.
 
 ---
 
@@ -69,56 +69,59 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** sustained split-screen. Right pane: participant chat with adaptive follow-ups landing. Left pane: extraction columns `lived_experience`, `priorities_and_trade_offs`, `trust_and_process`, `barriers_and_access`, `adjacent_concerns` rising in completeness.
 
-**Participant types (mirror sim turns 1, 3, 5):**
+**Participant types (mirror sim turns 1, 3, 5 — VERBATIM from the new winning sim):**
 
 **Turn 1:**
-> I think it's broadly the right direction, honestly — we need to do something about the air quality and how car-dependent everything's become.
+> I think it's the right direction, honestly — we need to do something about air quality and how dependent everyone's become on their cars. Last weekday into the centre would've been three weeks ago. I went in to pick up some things from the high street, and I drove, but I parked in one of the outer car parks rather than trying to find something closer. I knew the charge was coming, so I was already thinking about avoiding the peak times. I used to just drive straight in. Now I'm doing these little workarounds without really thinking about them.
 
 **Turn 3:**
-> Well, my mum-in-law has hospital appointments near the old market square — she can't manage the bus. Last Tuesday, five minutes out, I found myself checking my phone at a red light to see whether the charge had started yet. It hadn't. But I noticed the stress.
+> Right, so it's a few things that have built up. I moved my physio appointment — I was seeing someone on Wednesdays in the centre, but I've switched to a practice out near the ring road because the timing just felt uncertain with the charge looming. Then there's my mum-in-law's hospital appointments on Tuesdays; she needs driving there, and it's in the centre. I used to grab coffee with a friend, Sarah, in town maybe once a month — now it's become more of a "let's plan this properly" situation. I don't think of these as big sacrifices. They're just… adjustments. But when you list them out like that, I suppose I've already reorganised quite a bit of my week around something that isn't even active yet.
 
-**Turn 5:**
-> I moved my Wednesday physio to a practice further out. There's a pharmacy I've used for years right in the middle of the zone — I went to the Boots near the ring road instead.
+**Turn 5 (after PEAK 1 lands):**
+> That's a fair question, and honestly it's a bit uncomfortable when you put it that way. I've been not quite registering the weight of it because each individual thing felt manageable on its own. But you're right — I've made three or four significant changes to my actual routine based on an idea of what might happen.
 
 **Voiceover (over the live conductor's adaptive follow-ups):**
 > "Every question is the platform's live decision — probe, switch, surface a notice, anchor back, or wrap. Five move-types, chosen turn by turn. Extraction fills as it runs — not after the session. During."
 
 ---
 
-## 0:53–1:14 | PEAK 1 — ◆ meta-notice + held two-shot — Captures C + D (21s)
+## 0:53–1:14 | PEAK 1 — ◆ meta-notice held silent — Capture C (21s)
 
-**This is the climax. Music drops to silence for 8 seconds across the badge frame.**
+**This is the climax. Music drops to silence for 8 seconds across the badge frame. No face. The text and the silence are the moment.**
 
 **Visual sequence:**
 1. (0:53–0:56) ◆ badge appears on host turn 4. Click badge.
-2. (0:56–1:04) **Two-shot held silent** — split: participant face from Capture D on the left (5s loop, slowed to 8s with subtle slow-motion); on the right, the ◆ notice panel with the earlier-turn quote pulled out:
+2. (0:56–1:04) **Held silent on the ◆ notice panel** — full-frame or generously-sized, the panel renders with the meta-notice text and turn anchors visible (VERBATIM from the new winning sim):
    > ◆ META-NOTICE · contradiction
    > anchors: turn 1 · turn 3
    >
-   > *"The participant initially presents the mode switch as a straightforward preference for predictability, but on closer telling it's a 30-minute net time penalty they only accepted because of the anticipated charge. The 'easier' framing appears to be post-hoc rationalisation."*
+   > *"The participant is holding two things at once: that these are small adjustments they barely notice, and that — once listed — they include moving a medical appointment, uncertainty about getting a relative to hospital, and reshaping a friendship. Both are genuinely present; they haven't been named alongside each other yet."*
 
-   **Music: muted. No VO. Hold.**
+   **Music: muted. No VO. Hold for the full 8 seconds.** The judge reads. The silence is the move.
 3. (1:04–1:14) Music returns at –24 dB. VO resumes.
 
 **Voiceover (1:04–1:14):**
-> "Cross-turn reasoning. The platform noticed that 'the bus is easier and more predictable' from turn 1 doesn't hold up against 'I wouldn't have switched if the charge weren't coming' from turn 3 — and a thirty-minute net time penalty. A careful reviewer might catch this on a second read. The platform caught it in time to probe."
+> "Cross-turn reasoning. The platform held two real things alongside each other — that these don't feel like big sacrifices, and that they include moving medical care and reshaping a friendship — and surfaced the pair in time for the resident to look at it. A careful reviewer might join those threads on a second read. The platform held them together while the conversation was still happening."
 
 ---
 
-## 1:14–1:34 | PEAK 2 — ↩ anchor return + column mutation — Capture E (20s)
+## 1:14–1:34 | PEAK 2 — second ◆ + cross-turn callback — Capture E (20s)
 
-**Visual:** ↩ amber chip appears on host turn 6 pointing back to turn 3. Dashboard extraction column for `lived_experience` visibly mutates as the new admission lands: the row that recorded "meets Sarah for coffee in the centre most weeks" updates to "spontaneous trips become planned, planned trips happen less — twice last month vs four or five before."
+**Visual:** A second ◆ badge appears on host turn 12, with the notice panel showing `anchor_turn = 5` (the conductor is explicitly returning to a Stockholm thread that surfaced earlier). If the UI renders an ↩ chip when `anchor_turn` is set, capture it; if not, the cross-turn linkage is shown by the panel header.
 
-**On-screen overlay (VERBATIM from sim transcript turn 6):**
-> ↩ ANCHOR RETURN → turn 3
+**On-screen overlay (VERBATIM from new winning sim, host turn 12):**
+> ◆ META-NOTICE · implied_not_said
+> anchors: turn 5 · turn 11
 >
-> *"Coming back to something you mentioned a couple of turns ago — meeting Sarah for coffee in the centre most weeks, and how that's become 'a thing' you have to plan now. What's actually changed about those visits?"*
+> *"An unstated premise running through the participant's support is that the Stockholm comparison is load-bearing — they've cited the same 'twenty percent' figure twice with hedges ('something like that', 'I suspect they had those supports in place'), and it seems to be doing some of the work of justifying their position, though they haven't named it that way."*
 
-**Participant reply (turn 7) lands on screen:**
-> *"spontaneous trips have become planned trips, and planned trips feel like more effort, so they happen less"*
+**Participant reply (turn 13) lands on screen:**
+> *"I've been using it almost like… permission to not think too carefully about the local specifics."*
 
-**Voiceover:**
-> "Anchor return. The conductor brought back the Sarah-coffee thread from earlier, in the same conversation. The resident's framing updates the column — not a new row, the same row, corrected."
+**Hold the participant reply alone for 1.5 seconds — no VO, music underneath.** Let the line breathe. This is the human moment of the video.
+
+**Voiceover (begins after the 1.5s hold):**
+> "Second observation, same conversation — the platform held the Stockholm reference alongside the participant's own hedges and surfaced the load-bearing role it had been quietly playing. Not a new row in the dashboard, the same row, with the unstated premise now named."
 
 ---
 
@@ -126,10 +129,10 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** participant clicks **"See your reflection →"**. Surface transitions: chat is replaced by a letter-style reflection (no modal). Centred 620px column, Instrument Serif headline "Thank you for the conversation." Scroll to **"What surfaced between the lines"** section. Hold.
 
-**On-screen pull-quote (VERBATIM from generated takeaway):**
+**On-screen pull-quote (VERBATIM from generated takeaway — to be regenerated against `session-2026-04-26T06-29-13-996Z` before recording; placeholder text below derived from the session's strongest recognition turns):**
 > **What surfaced between the lines**
 >
-> *"You described the bus as 'easier' and 'more predictable' — and then, when pressed, said the honest version is that it isn't easier, it's just what you've decided to do because you believe the charge is coming. You used the phrase 'mental gymnastics' yourself."*
+> *"You came in believing the scheme was the right thing in principle, and then — once you listed them — you noticed you'd already moved a physio appointment, were uncertain about your mum-in-law's hospital trip, and had reshaped how you see your friend Sarah. By the middle of the conversation, you were saying out loud that you'd reorganised your week around something that isn't even active yet."*
 
 **Voiceover:**
 > "The resident leaves with what this conversation surfaced that he hadn't named himself. Not a summary of what he said. Something he knows now that he didn't when he walked in."
@@ -163,7 +166,7 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** clean white card. Centred. Single sentence rendered in Instrument Serif, 36pt:
 
-> *"The survey is asking me to declare myself; this conversation is asking me to think."*
+> *"I moved my physio appointment based on a feeling, not facts."*
 
 **Audio: music bed only. NO voiceover. Music begins fade-out at 2:26.**
 
@@ -173,6 +176,8 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** clean card.
 
+> Goal-directed interviews. Both sides leave with something.
+>
 > **lacunex.com**
 >
 > Built in five days · Opus 4.7 · MIT-licensed
@@ -197,16 +202,6 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
    - Convergence map at `/rounds/2026-04-24T21-21-52-268Z/aggregate` shows cluster halos + labels
 
 ## Capture order (in sequence)
-
-**FIRST: Capture D — Self-shoot face.**
-- Phone (rear camera) on a books-stack tripod, eye height
-- 80–110cm distance, 30–45° window light from front
-- A4 paper on desk for fill
-- Sticky note over lens area of eye-line — DO NOT look at lens, only at laptop screen
-- 12–15 takes in bursts of 3, review between bursts
-- The 5 seconds: neutral reading face → micro-pause → eyebrows up → 2cm head tilt back → quietest possible "huh" → hold
-- Audio: not used. Mute clip in edit.
-- Use take 8–11.
 
 **Capture A — Cold open (post-production, voiceover + design cards).**
 - VO recorded separately (line-in or good headset; or Descript)
@@ -285,8 +280,8 @@ www.scottbuckley.com.au
 # Pre-submit checklist
 
 - [ ] Total runtime ≤ 2:30 (verify in media player, not memory)
-- [ ] Self-shoot clip muted in edit
-- [ ] PEAK 1 silence drop verified (8s, –200ms/+200ms fades)
+- [ ] PEAK 1 silence drop verified (8s, –200ms/+200ms fades) — held on ◆ panel, no face
+- [ ] PEAK 2 1.5s breathing hold on participant reply line verified (no VO, music continues)
 - [ ] All on-screen quotes match verbatim — winning session, takeaway, primary-source news
 - [ ] Cohort numbers match: 11 sessions, 303 turns, 54 ◆ deployed, 243 considered, 12 patterns, 6 recommendations
 - [ ] Cold-open quote attributions correct: Cloudflare 18 Nov 2025, UK Covid-19 Inquiry Module 1 Jul 2024, Hackney Nov 2024

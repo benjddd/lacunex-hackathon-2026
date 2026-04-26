@@ -166,7 +166,7 @@ All on-screen quotes are VERBATIM from the winning session, takeaway, primary-so
 
 **Visual:** clean white card. Centred. Single sentence rendered in Instrument Serif, 36pt:
 
-> *"I moved my physio appointment based on a feeling, not facts."*
+> *"I've been using it almost like… permission to not think too carefully about the local specifics."*
 
 **Audio: music bed only. NO voiceover. Music begins fade-out at 2:26.**
 

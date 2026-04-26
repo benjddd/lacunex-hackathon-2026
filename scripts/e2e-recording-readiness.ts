@@ -20,7 +20,7 @@ const BASE = "http://localhost:3000";
 // session_id has no "session-" prefix — that's only on the on-disk filename.
 // New winning sim from 2026-04-26 re-sim: has both ◆ (×2) and ↩ (×1)
 // with persisted metadata (post-D47 harness fix).
-const WINNING_SESSION = "2026-04-26T04-43-27-086Z";
+const WINNING_SESSION = "2026-04-26T06-29-13-996Z";
 // A cohort session with persisted meta-notice metadata — used as a positive
 // control to prove the audit-panel chip rendering works end-to-end.
 const COHORT_SESSION_WITH_META = "2026-04-24T21-43-39-298Z";

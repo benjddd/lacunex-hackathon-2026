@@ -22,7 +22,7 @@ Read this first every session.
 
 ## Stack (locked)
 
-- Next.js 15 (App Router) + TypeScript + Tailwind, single repo, deployed to Vercel.
+- Next.js 16 (App Router) + TypeScript + Tailwind, single repo, deployed to Vercel.
 - Anthropic SDK with prompt caching on system + template + examples.
 - No database for POC — session state lives in memory per browser tab.
 
@@ -32,7 +32,7 @@ Read this first every session.
 |---|---|
 | Meta-noticing | `claude-opus-4-7` |
 | Conductor | `claude-opus-4-7` |
-| Extraction | `claude-haiku-4-5` |
+| Extraction | `claude-haiku-4-5-20251001` |
 | Takeaway | `claude-opus-4-7` |
 
 Isolate model IDs in one config module so swapping is one edit.

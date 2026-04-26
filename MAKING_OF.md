@@ -54,7 +54,7 @@ This decision has compounding value: it makes the system multi-domain without co
 
 The meta-noticing prompt was written to produce *provable* claims. Each candidate notice has `transcript_anchors: [turn_n, turn_m]` — explicit pointers into the transcript that justify the claim. A notice that can't point to evidence doesn't fire. This is the "kill rule" discipline: if the observation doesn't have anchors, it's the model hallucinating a pattern, not observing one.
 
-We rate-cap deployment: a session can deploy at most one notice per two turns, and the same notice type can't fire twice in five turns. This suppresses noise in long sessions and prevents the system from becoming a meta-notice machine at the expense of substantive probing.
+We rate-cap deployment: a session can deploy at most one notice per three turns, and the same notice type can't fire twice in five turns. This suppresses noise in long sessions and prevents the system from becoming a meta-notice machine at the expense of substantive probing.
 
 **Anchor return (N3).** The conductor gains a `move_type=anchor_return` option with an `anchor_turn` field. When the conductor chooses this, the dashboard renders a "↩ re-opened turn N" chip on the resulting host bubble. This makes cross-turn reasoning *visible on camera* during a demo — you can see the conductor reaching back across the conversation, not just asking the next question in sequence. We added this specifically because it's the kind of thing that's hard to fake with a pre-scripted demo and easy to see live.
 
@@ -258,4 +258,4 @@ The comparison that matters isn't files or LOC — it's whether the system does 
 
 ---
 
-*Build started Apr 21, 2026. Deadline Apr 27, 2026 03:00 IST.*
+*Build started Apr 22, 2026. Deadline Apr 27, 2026 03:00 IST.*

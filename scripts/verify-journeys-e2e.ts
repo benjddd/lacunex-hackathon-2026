@@ -402,9 +402,12 @@ async function crossTabCheck(page: Page): Promise<string> {
   );
 
   // Capture the generated brief's eventual URL by clicking try-as-participant
-  // and noting where we end up.
-  await page.locator("button", { hasText: /try as participant/i }).first().click();
-  await page.waitForURL(/\/p\/gen-/, { timeout: 10000 });
+  // and noting where we end up. The button can sit below the fold once the
+  // rounds list grows; scroll + click is more reliable than a bare click.
+  const tryBtn = page.locator("button", { hasText: /try as participant/i }).first();
+  await tryBtn.scrollIntoViewIfNeeded();
+  await tryBtn.click();
+  await page.waitForURL(/\/p\/gen-/, { timeout: 20000 });
   const generatedUrl = page.url();
 
   // Open the same URL in a *fresh context* (no sessionStorage shared).

@@ -297,10 +297,68 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <div style={{ marginTop: 64, textAlign: "center" }}>
+        {/* Architecture flex — judges who haven't read the README still see
+            the three Anthropic patterns called out by name on the front door. */}
+        <div
+          style={{
+            marginTop: 56,
+            maxWidth: 720,
+            width: "100%",
+            padding: "20px 24px",
+            border: `1px solid ${aw.rule}`,
+            background: aw.surface,
+            textAlign: "center",
+          }}
+        >
+          <Mono u s={9} c={aw.muted}>
+            three patterns, one loop
+          </Mono>
+          <div
+            style={{
+              fontFamily: aw.mono,
+              fontSize: 13,
+              color: aw.ink,
+              marginTop: 8,
+              letterSpacing: "0.02em",
+            }}
+          >
+            Orchestrator-Workers · Parallelization · Routing
+          </div>
+          <div
+            style={{
+              fontFamily: aw.serif,
+              fontSize: 13,
+              fontStyle: "italic",
+              color: aw.muted,
+              marginTop: 8,
+              lineHeight: 1.5,
+            }}
+          >
+            three of the five workflow patterns from{" "}
+            <a
+              href="https://www.anthropic.com/engineering/building-effective-agents"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: aw.muted, borderBottom: `1px solid ${aw.muted2}`, textDecoration: "none" }}
+            >
+              Anthropic&apos;s &ldquo;Building Effective Agents&rdquo;
+            </a>
+            , running together every turn
+          </div>
+        </div>
+
+        <div style={{ marginTop: 48, textAlign: "center" }}>
           <Mono s={10} c={aw.muted2}>
             Built for the Anthropic &quot;Built with Opus 4.7&quot; hackathon · April 2026
-            · Open source · MIT
+            · Open source · MIT ·{" "}
+            <a
+              href="https://github.com/Attius-Digital-Art/lacunex"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: aw.muted2, textDecoration: "underline" }}
+            >
+              github
+            </a>
           </Mono>
         </div>
       </main>

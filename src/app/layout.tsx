@@ -34,10 +34,61 @@ const jetBrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
+// Open Graph / Twitter / canonical metadata. metadataBase makes every
+// relative URL (icons, OG image, etc.) resolve against the production
+// origin so previews work when the URL is shared in Slack/Discord.
+const SITE_URL = "https://lacunex.com";
+const OG_TITLE = "Lacunex — adaptive interviews, at scale";
+const OG_DESCRIPTION =
+  "Cross-turn reasoning, rendered live. A Host sets goals; the platform runs every interview live, fills a structured dashboard during the conversation, and hands the participant a reflection worth keeping. Built on three of the five workflow patterns from Anthropic's Building Effective Agents — Orchestrator-Workers, Parallelization, Routing — running together every turn.";
+
 export const metadata: Metadata = {
-  title: "Lacunex",
-  description:
-    "Goal-directed, adaptive interviews. Host sets goals; platform runs the conversation live and produces insight for both sides.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Lacunex",
+    template: "%s · Lacunex",
+  },
+  description: OG_DESCRIPTION,
+  applicationName: "Lacunex",
+  keywords: [
+    "Anthropic",
+    "Claude",
+    "Opus 4.7",
+    "agentic",
+    "interview platform",
+    "qualitative research",
+    "user research",
+    "civic consultation",
+    "post-incident witness",
+  ],
+  alternates: {
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "Lacunex",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: [
+      {
+        // Next.js auto-resolves /opengraph-image to the file-based opengraph-image.tsx
+        // route handler we ship at app/opengraph-image.tsx. metadataBase above
+        // ensures the absolute URL is built correctly.
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Lacunex — three patterns, every turn",
+      },
+    ],
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: ["/opengraph-image"],
+  },
   // Pin the SVG anchor-glyph as the favicon. Note: a `src/app/favicon.ico`
   // file would override this via Next's file-system convention regardless of
   // what's set here — keep that slot empty so the SVG wins.

@@ -14,7 +14,7 @@ import {
   captureSetup,
   finaliseRecording,
   injectFakeCursor,
-} from "./lib/capture-helpers.ts";
+} from "./lib/capture-helpers";
 
 const BASE = "http://localhost:3000";
 
@@ -28,42 +28,32 @@ async function main() {
   await injectFakeCursor(context);
   const page = await context.newPage();
 
-  // Land on /host
+  // Tuned for ~13s total runtime (DEMO_SCRIPT 0:20–0:33 = 13s).
   await page.goto(`${BASE}/host`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("text=Civic Consultation", { timeout: 10_000 });
-  await page.waitForTimeout(1_200); // beat for the page to settle on camera
+  await page.waitForTimeout(500); // brief beat for page to settle (~0.5s)
 
-  // Cursor sweep across the three brief cards, ending on Civic Consultation
-  await page.mouse.move(400, 360, { steps: 12 });
-  await page.waitForTimeout(350);
-  await page.mouse.move(900, 360, { steps: 18 });
-  await page.waitForTimeout(350);
-  await page.mouse.move(1350, 360, { steps: 18 }); // hover Civic Consultation card region
+  // Single cursor sweep landing on Civic Consultation card (~1.5s)
+  await page.mouse.move(600, 360, { steps: 8 });
+  await page.waitForTimeout(150);
+  await page.mouse.move(1350, 360, { steps: 14 });
+  await page.waitForTimeout(400);
+
+  // Hover Civic Consultation card heading (~0.8s)
+  const civicCard = page.locator('text="Civic Consultation"').first();
+  await civicCard.hover();
+  await page.waitForTimeout(600);
+
+  // 1s flash on the "invite link" button — narrative truth (production path
+  // generates an /i/<token> URL); do NOT click.
+  const inviteBtn = page.locator('button:has-text("invite link")').first();
+  await inviteBtn.hover();
   await page.waitForTimeout(900);
 
-  // Hover Civic Consultation card heading specifically (forces hover styles)
-  const civicCard = page
-    .locator('text="Civic Consultation"')
-    .first();
-  await civicCard.hover();
-  await page.waitForTimeout(700);
-
-  // 1-second flash on the "invite link" button — narrative truth that the
-  // production path is the invite-token URL. Hover only, do NOT click — we
-  // don't want to actually generate an invite mid-capture.
-  const inviteBtn = page
-    .locator('button:has-text("invite link")')
-    .first();
-  await inviteBtn.hover();
-  await page.waitForTimeout(1_000);
-
-  // Now click "demo · both sides" on the Civic Consultation card to enter
-  // the split-screen recording surface.
-  const demoLink = page
-    .locator('a:has-text("demo · both sides")')
-    .nth(2); // founder, post-incident, civic — civic is the 3rd
+  // Click "demo · both sides" → /demo split-screen
+  const demoLink = page.locator('a:has-text("demo · both sides")').nth(2);
   await demoLink.hover();
-  await page.waitForTimeout(450);
+  await page.waitForTimeout(250);
   await demoLink.click();
 
   // Wait for /demo to render with the conductor's turn 0 host bubble
@@ -73,7 +63,7 @@ async function main() {
     null,
     { timeout: 60_000 }
   );
-  await page.waitForTimeout(2_500); // hold on the rendered turn 0
+  await page.waitForTimeout(1_500); // hold on the rendered turn 0
 
   const out = await finaliseRecording(page, context, setup);
   await browser.close();

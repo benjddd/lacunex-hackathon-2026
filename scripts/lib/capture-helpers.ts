@@ -18,32 +18,82 @@ import * as fs from "node:fs";
 
 const FAKE_CURSOR_SCRIPT = `
 (() => {
-  if (document.getElementById('__pw_fake_cursor')) return;
-  const c = document.createElement('div');
-  c.id = '__pw_fake_cursor';
-  Object.assign(c.style, {
-    position: 'fixed',
-    left: '0px',
-    top: '0px',
-    width: '18px',
-    height: '18px',
-    borderRadius: '50%',
-    background: 'rgba(20,20,20,0.85)',
-    border: '2px solid white',
-    boxShadow: '0 0 6px rgba(0,0,0,0.4)',
-    pointerEvents: 'none',
-    zIndex: '2147483647',
-    transform: 'translate(-50%, -50%)',
-    transition: 'left 80ms ease-out, top 80ms ease-out, background 120ms',
-  });
-  document.body.appendChild(c);
-  const move = (e) => {
-    c.style.left = e.clientX + 'px';
-    c.style.top  = e.clientY + 'px';
+  // Hide Next.js dev-mode UI (extra belt-and-braces; primary fix is
+  // devIndicators:false in next.config.ts). CSS rule alone is fine because
+  // the host elements are in light DOM even when their interiors use shadow.
+  const installStyle = () => {
+    const styleId = '__pw_hide_next_dev_ui';
+    if (document.getElementById(styleId)) return;
+    const s = document.createElement('style');
+    s.id = styleId;
+    s.textContent = \`
+      nextjs-portal,
+      [data-nextjs-toast],
+      [data-next-mark],
+      [data-next-mark-loading],
+      [data-nextjs-dev-tools-button],
+      #__next-build-watcher,
+      #__next-prerender-indicator { display: none !important; visibility: hidden !important; }
+    \`;
+    (document.head || document.documentElement).appendChild(s);
   };
-  document.addEventListener('mousemove', move, true);
-  document.addEventListener('mousedown', () => { c.style.background = 'rgba(220,80,40,0.95)'; }, true);
-  document.addEventListener('mouseup',   () => { c.style.background = 'rgba(20,20,20,0.85)'; }, true);
+
+  // Render a visible cursor inside the page so Playwright's mouse moves
+  // are captured in the recorded webm (Playwright doesn't render the OS
+  // cursor onto the page). Mounting must wait for <body> to exist —
+  // addInitScript runs before HTML parsing finishes, so naively calling
+  // document.body.appendChild silently fails. We retry until body exists.
+  let cursorEl;
+  let lastX = 0, lastY = 0;
+  const installCursor = () => {
+    if (document.getElementById('__pw_fake_cursor')) return;
+    if (!document.body) { setTimeout(installCursor, 16); return; }
+    const c = document.createElement('div');
+    c.id = '__pw_fake_cursor';
+    Object.assign(c.style, {
+      position: 'fixed',
+      left: lastX + 'px',
+      top: lastY + 'px',
+      width: '20px',
+      height: '20px',
+      borderRadius: '50%',
+      background: 'rgba(20,20,20,0.85)',
+      border: '2px solid white',
+      boxShadow: '0 0 8px rgba(0,0,0,0.45)',
+      pointerEvents: 'none',
+      zIndex: '2147483647',
+      transform: 'translate(-50%, -50%)',
+      transition: 'left 90ms ease-out, top 90ms ease-out, background 120ms',
+    });
+    document.body.appendChild(c);
+    cursorEl = c;
+  };
+
+  // Capture mouse position from window-level events even before the cursor
+  // div is mounted, so when it does mount it already knows where the cursor is.
+  const onMove = (e) => {
+    lastX = e.clientX; lastY = e.clientY;
+    if (cursorEl) {
+      cursorEl.style.left = lastX + 'px';
+      cursorEl.style.top  = lastY + 'px';
+    }
+  };
+  const onDown = () => { if (cursorEl) cursorEl.style.background = 'rgba(220,80,40,0.95)'; };
+  const onUp   = () => { if (cursorEl) cursorEl.style.background = 'rgba(20,20,20,0.85)'; };
+
+  // Install handlers on window so they catch every event (capture phase) on
+  // both light and shadow DOM through composedPath bubbling.
+  window.addEventListener('mousemove', onMove, true);
+  window.addEventListener('mousedown', onDown, true);
+  window.addEventListener('mouseup',   onUp,   true);
+
+  installStyle();
+  installCursor();
+
+  // Re-install if a SPA navigation tears down the body
+  const reinstall = () => { installStyle(); installCursor(); };
+  document.addEventListener('readystatechange', reinstall);
+  document.addEventListener('DOMContentLoaded', reinstall);
 })();
 `;
 

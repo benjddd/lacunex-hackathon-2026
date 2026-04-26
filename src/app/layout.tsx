@@ -38,9 +38,9 @@ export const metadata: Metadata = {
   title: "Lacunex",
   description:
     "Goal-directed, adaptive interviews. Host sets goals; platform runs the conversation live and produces insight for both sides.",
-  // Pin the SVG anchor-glyph as the favicon. Without this, Next/Vercel can
-  // serve a default favicon.ico (orange triangle) alongside ours and the
-  // browser picks the larger ICO over our SVG.
+  // Pin the SVG anchor-glyph as the favicon. Note: a `src/app/favicon.ico`
+  // file would override this via Next's file-system convention regardless of
+  // what's set here — keep that slot empty so the SVG wins.
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     shortcut: "/icon.svg",

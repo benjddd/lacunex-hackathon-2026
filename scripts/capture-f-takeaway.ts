@@ -21,10 +21,10 @@ import {
   injectFakeCursor,
   smoothScrollToY,
   typeLikeAHuman,
-} from "./lib/capture-helpers.ts";
+} from "./lib/capture-helpers";
 
 const BASE = "http://localhost:3000";
-const WINNING_SESSION = "2026-04-26T04-43-27-086Z";
+const WINNING_SESSION = "2026-04-26T06-29-13-996Z";
 
 const mode = process.argv.includes("--mode=live") ? "live" : "static";
 
@@ -41,12 +41,12 @@ async function recordStatic(page: Page) {
   );
   await page.waitForTimeout(1_500);
 
-  // Smooth-scroll to the headline ("Thank you for the conversation." or the
-  // letter intro), pause, then to "What surfaced between the lines"
+  // Tuned for ~20s total (DEMO_SCRIPT 1:34–1:54 = 20s).
+  // Smooth-scroll to the headline, pause, then to "What surfaced…"
   const intro = page.locator('text=/Thank you for|Lacunex — your reflection/i').first();
   if (await intro.isVisible().catch(() => false)) {
     await intro.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(2_000);
+    await page.waitForTimeout(3_500); // beat on the headline
   }
   const surfaced = page.getByText(/What surfaced between the lines/i).first();
   const box = await surfaced.boundingBox();
@@ -54,7 +54,7 @@ async function recordStatic(page: Page) {
     const targetY = (await page.evaluate(() => window.scrollY)) + box.y - 200;
     await smoothScrollToY(page, Math.max(0, targetY));
   }
-  await page.waitForTimeout(4_500); // long hold on the section heading + body
+  await page.waitForTimeout(8_500); // hold on the section heading + body
 }
 
 async function recordLive(page: Page) {

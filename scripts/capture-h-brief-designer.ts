@@ -12,7 +12,7 @@ import {
   captureSetup,
   finaliseRecording,
   injectFakeCursor,
-} from "./lib/capture-helpers.ts";
+} from "./lib/capture-helpers";
 
 const BASE = "http://localhost:3000";
 
@@ -26,38 +26,25 @@ async function main() {
   await injectFakeCursor(context);
   const page = await context.newPage();
 
+  // Tuned for ~10s total (DEMO_SCRIPT 2:14–2:24 = 10s).
   await page.goto(`${BASE}/host`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("text=Brief Designer", { timeout: 10_000 });
-  await page.waitForTimeout(1_500);
+  await page.waitForTimeout(800);
 
-  // Sweep across the bundled briefs first
-  await page.mouse.move(450, 400, { steps: 14 });
-  await page.waitForTimeout(450);
-
-  // Hover Founder Investment Evaluation
-  const founder = page.locator('text="Founder Investment Evaluation"').first();
-  if (await founder.isVisible().catch(() => false)) {
-    await founder.hover();
-    await page.waitForTimeout(700);
-  }
-  // Hover Post-Incident Witness Interview
-  const postIncident = page.locator('text="Post-Incident Witness Interview"').first();
-  if (await postIncident.isVisible().catch(() => false)) {
-    await postIncident.hover();
-    await page.waitForTimeout(700);
-  }
-  // Hover Civic Consultation (briefly highlight per DEMO_SCRIPT)
+  // Quick sweep + hover on Civic Consultation (the bridge from previous beat)
+  await page.mouse.move(450, 400, { steps: 10 });
+  await page.waitForTimeout(200);
   const civic = page.locator('text="Civic Consultation"').first();
   if (await civic.isVisible().catch(() => false)) {
     await civic.hover();
-    await page.waitForTimeout(900);
+    await page.waitForTimeout(700);
   }
 
-  // Land on the Brief Designer card and hold
+  // Land on the Brief Designer card and hold (the punchline)
   const briefDesigner = page.locator('text="Brief Designer"').first();
   await briefDesigner.scrollIntoViewIfNeeded();
   await briefDesigner.hover();
-  await page.waitForTimeout(2_400); // hold per DEMO_SCRIPT (1s + tail for editor)
+  await page.waitForTimeout(4_500); // long hold on the card
 
   const out = await finaliseRecording(page, context, setup);
   await browser.close();

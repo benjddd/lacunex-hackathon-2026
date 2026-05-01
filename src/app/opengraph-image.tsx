@@ -11,7 +11,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Lacunex — three patterns, every turn";
+export const alt = "Lacunex — hackathon archive, April 2026";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -146,9 +146,9 @@ export default async function OpenGraphImage() {
             fontFamily: "monospace",
           }}
         >
-          <div style={{ display: "flex" }}>lacunex.com</div>
+          <div style={{ display: "flex" }}>hackathon archive</div>
           <div style={{ display: "flex" }}>
-            Built with Opus 4.7 · April 2026 · MIT
+            Built with Opus 4.7 · April 2026 · MIT · 1 of 288 judged
           </div>
         </div>
       </div>

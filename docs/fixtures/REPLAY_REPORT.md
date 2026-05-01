@@ -1,6 +1,6 @@
 # Fixtures replay report
 
-_Generated 2026-04-24T16:56:56.130Z_
+_Generated 2026-05-01T18:43:22.628Z_
 
 Ground-truth annotated transcripts committed to `docs/fixtures/` are
 replayed against the same cross-turn invariants the live meta-noticing

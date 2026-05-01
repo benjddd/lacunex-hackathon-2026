@@ -7,6 +7,7 @@ import {
   runClaimVerifierAgent,
   type ManagedAgentUIEvent,
 } from "@/lib/managed-agents";
+import { demoGate } from "@/lib/demo-gate";
 import type { Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -91,6 +92,9 @@ function sseLine(event: OutEvent): string {
 //   done            — terminal; includes the final report + session metadata
 //   fatal           — terminal; request failed before completion
 export async function POST(req: Request, { params }: Params) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "expensive");
   if (!rl.ok && rl.response) return rl.response;
 

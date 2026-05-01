@@ -34,22 +34,25 @@ const jetBrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
-// Open Graph / Twitter / canonical metadata. metadataBase makes every
-// relative URL (icons, OG image, etc.) resolve against the production
-// origin so previews work when the URL is shared in Slack/Discord.
-const SITE_URL = "https://lacunex.com";
-const OG_TITLE = "Lacunex — adaptive interviews, at scale";
+// Open Graph / Twitter / canonical metadata. metadataBase resolves relative
+// URLs (icons, OG image) against the deploy origin so share previews work.
+// VERCEL_URL is set in the Vercel build environment and is the right value
+// for both the prod deploy (vercel.app subdomain) and any preview deploy.
+const SITE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+const OG_TITLE = "Lacunex — hackathon archive (Apr 2026)";
 const OG_DESCRIPTION =
-  "Cross-turn reasoning, rendered live. A Host sets goals; the platform runs every interview live, fills a structured dashboard during the conversation, and hands the participant a reflection worth keeping. Built on three of the five workflow patterns from Anthropic's Building Effective Agents — Orchestrator-Workers, Parallelization, Routing — running together every turn.";
+  "Built for the Anthropic 'Built with Opus 4.7' hackathon, April 2026. ~20,000 people applied; this entry is one of the 288 judged. Adaptive interviews — Host sets goals, the platform runs the conversation live and produces structured insight during it. The deployed demo is paused while the project regroups for v2.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Lacunex",
-    template: "%s · Lacunex",
+    default: "Lacunex (hackathon archive)",
+    template: "%s · Lacunex (hackathon)",
   },
   description: OG_DESCRIPTION,
-  applicationName: "Lacunex",
+  applicationName: "Lacunex (hackathon archive)",
   keywords: [
     "Anthropic",
     "Claude",
@@ -57,9 +60,7 @@ export const metadata: Metadata = {
     "agentic",
     "interview platform",
     "qualitative research",
-    "user research",
-    "civic consultation",
-    "post-incident witness",
+    "hackathon",
   ],
   alternates: {
     canonical: SITE_URL,
@@ -67,7 +68,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    siteName: "Lacunex",
+    siteName: "Lacunex (hackathon archive)",
     title: OG_TITLE,
     description: OG_DESCRIPTION,
     images: [
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Lacunex — three patterns, every turn",
+        alt: "Lacunex — hackathon archive, April 2026",
       },
     ],
     locale: "en_US",
@@ -98,6 +99,11 @@ export const metadata: Metadata = {
   },
 };
 
+// Read on the server so the banner SSRs without a flicker. The same env var
+// (DEMO_DISABLED) makes every cost-bearing API route return 503 — see
+// src/lib/demo-gate.ts.
+const DEMO_DISABLED = process.env.DEMO_DISABLED === "true";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -109,6 +115,25 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${interTight.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        {DEMO_DISABLED && (
+          <div
+            role="status"
+            style={{
+              background: "#FEF3C7",
+              borderBottom: "1px solid #FCD34D",
+              color: "#78350F",
+              fontFamily:
+                "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+              fontSize: 11,
+              letterSpacing: "0.04em",
+              padding: "6px 16px",
+              textAlign: "center",
+            }}
+          >
+            Hackathon archive (April 2026) — live demo is paused while we
+            regroup for v2. The repo and making-of are still readable.
+          </div>
+        )}
         {children}
         <Analytics />
       </body>

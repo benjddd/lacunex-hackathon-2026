@@ -10,6 +10,7 @@ import {
 } from "@/lib/rounds";
 import { getTemplate } from "@/lib/templates";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { demoGate } from "@/lib/demo-gate";
 import type { AggregateInputSession } from "@/lib/prompts/aggregate";
 import type { ExtractionState, Turn } from "@/lib/types";
 
@@ -30,6 +31,9 @@ interface SessionDoc {
 // cross-participant aggregate. Loads each session from disk, calls Opus 4.7,
 // writes the result back into the round record, returns the updated round.
 export async function POST(req: Request, { params }: Params) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "expensive");
   if (!rl.ok && rl.response) return rl.response;
 

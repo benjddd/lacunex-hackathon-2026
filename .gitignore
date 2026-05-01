@@ -54,6 +54,58 @@ SUBMISSION_DRAFT.md
 scratch/
 notes-private/
 
+# Post-hackathon regroup workspace — strategy notes, free-tier migration,
+# Descript one-shot prep. None of this belongs in the public artifact.
+_regroup/
+_descript-oneshot/
+
+# Hackathon-time apparatus that doesn't showcase the product itself.
+# These were the scaffolding for the demo video, the timeline gates, and
+# the recording-readiness sweeps. Kept locally for archaeology; not part
+# of the public artifact.
+CALENDAR.md
+DEMO_SCRIPT.md
+DEMO_SCRIPT_v2.md
+DESCRIPT_HANDOVER.md
+DESCRIPT_INSTRUCTIONS.md
+
+# Demo-recording / capture / video-prep scripts.
+scripts/capture-*.ts
+scripts/capture-*.mjs
+scripts/extract-*-frames.mjs
+scripts/v2-audio-and-frame-audit.mjs
+scripts/probe-durations.mjs
+scripts/freeze-state.ts
+scripts/clean-after-freeze.ts
+scripts/verify-capture-visuals.ts
+scripts/fetch-share-mp4.mjs
+scripts/lib/capture-helpers.ts
+
+# E2E sweeps that targeted the demo cohort / pre-recording readiness,
+# not the product itself. The genuine product e2es (e2e-brief-designer,
+# verify-journeys-e2e) stay tracked.
+scripts/e2e-recording-readiness.ts
+scripts/e2e-capture-a.ts
+scripts/e2e-sso-check.ts
+scripts/e2e-front-page.ts
+scripts/e2e-civic-turn0.ts
+scripts/e2e-dry-run.ts
+scripts/e2e-aggregate.ts
+
+# Descript REST API scripts (asset prep for the v2 demo cut).
+scripts/descript-*.ts
+scripts/descript-*.mjs
+scripts/descript-*.sh
+
+# Prod debugging / cohort-seeding apparatus — not the product.
+scripts/crawl-prod.ts
+scripts/probe-aggregate-errors.ts
+scripts/probe-pattern-buttons.ts
+scripts/probe-prod-aggregate.ts
+scripts/generate-takeaways.ts
+scripts/generate-single-takeaway.ts
+scripts/seed-cohort.ts
+
 # Claude Code session state
 .claude/
 

@@ -291,3 +291,19 @@ They have a question only real people can answer. Getting that answer requires d
 - Deadline: **Sun 2026-04-26 20:00 EST = Mon 2026-04-27 03:00 IST**
 - Sat: demo video recording
 - Sun: final edit + submit
+
+---
+
+## 13. Post-hackathon — repo as artifact (2026-04-29)
+
+**Hackathon over.** Submitted Sun Apr 26; judging concluded. Final scale: roughly **20,000 applied; this entry is one of the 288 judged.**
+
+**Repo posture going forward:** this directory is the time-stamped hackathon artifact. The package name is now `lacunex-hackathon-2026`; the brand "Lacunex" moves with the founder to a separate, proprietary v2 project. This repo stays MIT, public, and read-only in spirit — it preserves the architecture, prompts, fixtures, and decision archaeology that won it a place in the judged round.
+
+**Live demo:** **paused.** A `DEMO_DISABLED=true` env var is honored by every cost-bearing route (`/api/turn`, `/api/takeaway`, `/api/generate-brief`, `/api/sessions/[id]/{generate-brief,research}`, `/api/rounds/[id]/{aggregate,synthesize,research}`, `/api/simulate-participant`, `/api/transcribe`) — they return 503 before any paid call lands. See [src/lib/demo-gate.ts](src/lib/demo-gate.ts). The UI still renders so the artifact is browsable; the participant-side experience just doesn't run.
+
+**Free-tier migration:** Vercel (Pro → Hobby), custom domain (release or repoint), Anthropic key (clear after lockdown deploys), Groq, Descript, Managed Agents — all paid surfaces wound down. Migration checklist tracked outside this repo in `_regroup/FREE_TIER_MIGRATION.md` (gitignored).
+
+**What the new project carries forward:** the four-call architecture, the prompts, the model-config pattern, the bilateral-takeaway insight. What it does *not* carry: the hackathon-specific UX, the demo branding, the in-window time-pressure compromises. v2 is a clean proprietary line with auth, persistence, multi-tenancy, and pricing — see the new repo's `MVP_PLAN.md`.
+
+**Out of scope from here:** further iteration, bug fixes, or feature work in this repo. PRs accepted for typo / link fixes only.

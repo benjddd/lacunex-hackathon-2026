@@ -3,6 +3,7 @@ import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
 import { getPersona } from "@/lib/personas";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { demoGate } from "@/lib/demo-gate";
 import type { Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -18,6 +19,9 @@ interface SimulateRequest {
 // Claude message history the HOST lines are role="assistant" and the
 // PARTICIPANT lines are role="user". No structured output — plain text reply.
 export async function POST(req: Request) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "moderate");
   if (!rl.ok && rl.response) return rl.response;
 

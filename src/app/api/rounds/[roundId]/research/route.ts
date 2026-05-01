@@ -12,6 +12,7 @@ import {
   runClaimVerifierAgent,
   type ManagedAgentUIEvent,
 } from "@/lib/managed-agents";
+import { demoGate } from "@/lib/demo-gate";
 import type { Round, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -117,6 +118,9 @@ function buildCohortTranscript(
 // round concatenated, with session-attribution markers. The result is cached
 // at `round_research:<roundId>` so a subsequent click returns instantly.
 export async function POST(req: Request, { params }: Params) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "expensive");
   if (!rl.ok && rl.response) return rl.response;
 

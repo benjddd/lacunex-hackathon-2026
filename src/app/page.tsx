@@ -64,7 +64,7 @@ export default function LandingPage() {
         >
           <Wordmark size={22} />
           <Link
-            href="https://github.com/Attius-Digital-Art/lacunex"
+            href="https://github.com/Attius-Digital-Art/lacunex-hackathon-2026"
             target="_blank"
             rel="noreferrer"
             style={{ textDecoration: "none" }}
@@ -349,10 +349,9 @@ export default function LandingPage() {
 
         <div style={{ marginTop: 48, textAlign: "center" }}>
           <Mono s={10} c={aw.muted2}>
-            Built for the Anthropic &quot;Built with Opus 4.7&quot; hackathon · April 2026
-            · Open source · MIT ·{" "}
+            Built for the Anthropic &quot;Built with Opus 4.7&quot; hackathon · April 2026 · ~20,000 applied · 1 of 288 judged · MIT ·{" "}
             <a
-              href="https://github.com/Attius-Digital-Art/lacunex"
+              href="https://github.com/Attius-Digital-Art/lacunex-hackathon-2026"
               target="_blank"
               rel="noreferrer"
               style={{ color: aw.muted2, textDecoration: "underline" }}

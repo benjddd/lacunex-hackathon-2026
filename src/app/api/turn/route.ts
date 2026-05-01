@@ -10,6 +10,7 @@ import { emptyExtraction, type ExtractionState, type Turn } from "@/lib/types";
 import { hostedSaveLiveSession } from "@/lib/store-hosted";
 import { checkRateLimit, isBypassRequest } from "@/lib/rate-limit";
 import { consumeInviteTurn, isValidToken, resolveInvite } from "@/lib/invites";
+import { demoGate } from "@/lib/demo-gate";
 
 export const runtime = "nodejs";
 export const maxDuration = 90;
@@ -35,6 +36,9 @@ interface TurnRequest {
 }
 
 export async function POST(req: Request) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "turn");
   if (!rl.ok && rl.response) return rl.response;
 

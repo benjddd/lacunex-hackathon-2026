@@ -354,7 +354,9 @@ function DemoContent() {
       <header className="flex shrink-0 items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
         <div className="flex items-center gap-4 min-w-0">
           <div className="shrink-0">
-            <h1 className="text-lg font-semibold tracking-tight text-stone-900">Lacunex</h1>
+            <h1 className="text-lg font-semibold tracking-tight text-stone-900">
+              Lacunex <span className="text-xs font-normal text-stone-500">(hackathon)</span>
+            </h1>
             <p className="text-xs text-stone-500">
               {activeTemplate.role_labels?.host ?? DEFAULT_ROLE_LABELS.host} ·{" "}
               {activeTemplate.role_labels?.participant ?? DEFAULT_ROLE_LABELS.participant}

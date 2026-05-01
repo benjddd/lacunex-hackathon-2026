@@ -5,6 +5,7 @@ import { callTakeaway } from "@/lib/claude-calls";
 import { getTemplate } from "@/lib/templates";
 import { hostedSaveTakeaway } from "@/lib/store-hosted";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { demoGate } from "@/lib/demo-gate";
 import type { ExtractionState, Template, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -43,6 +44,9 @@ async function persistTakeaway(
 }
 
 export async function POST(req: Request) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "takeaway");
   if (!rl.ok && rl.response) return rl.response;
 

@@ -13,6 +13,7 @@ import { getAnthropic } from "@/lib/anthropic";
 import { MODELS } from "@/lib/models";
 import { hostedGetSession, hostedSaveGeneratedBrief } from "@/lib/store-hosted";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { demoGate } from "@/lib/demo-gate";
 import type { Template, Turn } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -276,6 +277,9 @@ async function generateBriefFromDescription(description: string): Promise<Templa
 // ---- Route handler ----
 
 export async function POST(req: Request, { params }: Params) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "moderate");
   if (!rl.ok && rl.response) return rl.response;
 

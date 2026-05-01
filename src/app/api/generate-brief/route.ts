@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { MODELS } from "@/lib/models";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { hostedSaveGeneratedBrief } from "@/lib/store-hosted";
+import { demoGate } from "@/lib/demo-gate";
 import type { Template } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -46,6 +47,9 @@ interface GenerateRequest {
 }
 
 export async function POST(req: Request) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "moderate");
   if (!rl.ok && rl.response) return rl.response;
 

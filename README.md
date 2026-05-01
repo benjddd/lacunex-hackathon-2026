@@ -1,12 +1,16 @@
-# Lacunex
+# Lacunex (hackathon archive · April 2026)
+
+> **Hackathon artifact.** This is the time-stamped entry submitted to the Anthropic *"Built with Opus 4.7"* hackathon — built end-to-end during the Apr 21–26 2026 hack window. Roughly **20,000 people applied; this entry is one of the 288 projects that made it into the judged round.**
+>
+> The live demo at `lacunex.com` is paused while the project regroups for v2 — paid-tier services have been wound down. The repo, the [making-of](MAKING_OF.md), and the test fixtures all remain readable. **Active development continues in a separate proprietary project** under the *Lacunex* name; this repo stays as the hackathon snapshot.
+
+---
 
 > **Cross-turn reasoning, rendered live. Both sides leave with something.**
 
 Goal-directed, adaptive interviews at scale. A Host (subject-matter expert) sets interview objectives; the platform runs every conversation live — generating each question from the full session state, producing structured insight *during* the session rather than in an overnight report, and, at session close, handing the participant a reflective takeaway worth keeping.
 
 Built on **three of the five workflow patterns** named in Anthropic's [*Building Effective Agents*](https://www.anthropic.com/engineering/building-effective-agents) — **Orchestrator-Workers**, **Parallelization**, and **Routing** — running together on every turn (see [Architecture](#architecture)).
-
-Built for the Anthropic **"Built with Opus 4.7"** hackathon (April 2026).
 
 → **[MAKING_OF.md](MAKING_OF.md)** — architecture decisions, day-by-day build log, calibrated claims, what Opus 4.7 enables that smaller models don't.
 
@@ -128,6 +132,8 @@ cp .env.example .env.local
 # KV_REST_API_URL + KV_REST_API_TOKEN (Upstash Redis for hosted persistence + rate limits;
 # in-memory fallback for local dev), and RATE_LIMIT_BYPASS_TOKEN (shared secret for
 # team testing without tripping per-IP limits).
+# To run with the demo lockdown (returns 503 from every Claude-touching route, no API
+# spend), set DEMO_DISABLED=true. This is what the deployed archive runs with.
 
 # 3. Run
 npm run dev
@@ -219,19 +225,17 @@ docs/
 scripts/
   simulate-session.ts            # Drive a synthetic interview against localhost:3000
   eval-noticing.ts               # Evaluate meta-noticing quality against saved sessions
-  replay-fixtures.ts             # Validate committed fixtures against D26 kill rule
+  replay-fixtures.ts             # Validate committed fixtures against the meta-noticing kill rule
   validate-templates.ts          # Smoke-check committed briefs have required shape
   spike-managed-agents.ts        # First-touch probe of the Managed Agents beta API
   spike-managed-agents-e2e.ts    # Idempotent provisioning for the claim-verifier Agent + Environment
-  archive-managed-agent.ts       # Post-hackathon teardown for the claim-verifier Agent + Environment
-  seed-cohort.ts                 # Push a locally-simulated cohort to the prod KV for demo
-  freeze-state.ts                # Snapshot KV state for a reproducible demo recording
-  clean-after-freeze.ts          # Re-apply a frozen state if dev work drifted between takes
+  archive-managed-agent.ts       # Teardown helper for the claim-verifier Agent + Environment
   e2e-brief-designer.ts          # Playwright end-to-end smoke for the conversational brief designer
+  verify-journeys-e2e.ts         # Walks every claimed user journey through the live UI
 MAKING_OF.md               # Build journal — architecture, day-by-day, Opus-as-partner
-CALENDAR.md                # Hackathon gates (IST)
-PROJECT.md                 # Live project tracker
+PROJECT.md                 # Decision log and project tracker
 CLAUDE.md                  # Context for AI assistants in this repo
+TESTING_STRATEGY.md        # Journey-by-journey reproducibility strategy (companion to verify-journeys-e2e)
 ```
 
 ---

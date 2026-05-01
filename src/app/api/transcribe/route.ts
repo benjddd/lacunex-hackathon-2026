@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { demoGate } from "@/lib/demo-gate";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -13,6 +14,9 @@ const GROQ_URL = "https://api.groq.com/openai/v1/audio/transcriptions";
 const GROQ_MODEL = "whisper-large-v3";
 
 export async function POST(req: Request) {
+  const gated = demoGate();
+  if (gated) return gated;
+
   const rl = await checkRateLimit(req, "moderate");
   if (!rl.ok && rl.response) return rl.response;
 

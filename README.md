@@ -1,8 +1,8 @@
 # Lacunex (hackathon archive · April 2026)
 
-> **Hackathon artifact.** This is the time-stamped entry submitted to the Anthropic *"Built with Opus 4.7"* hackathon — built end-to-end during the Apr 21–26 2026 hack window. Roughly **20,000 people applied; this entry is one of the 288 projects that made it into the judged round.**
+> **Non-commercial hackathon entry.** Built end-to-end during Anthropic's *"Built with Opus 4.7"* hackathon (Cerebral Valley, 21–26 April 2026). About 20,000 people applied, 500 were selected to take part, and 288 projects were submitted and judged. This is one of them.
 >
-> The live demo at `lacunex.com` is paused while the project regroups for v2 — paid-tier services have been wound down. The repo, the [making-of](MAKING_OF.md), and the test fixtures all remain readable. **Active development continues in a separate proprietary project** under the *Lacunex* name; this repo stays as the hackathon snapshot.
+> Lacunex is not a product or a service, and nothing here is for sale. The hosted demo is switched off. The code, the [making-of](MAKING_OF.md) and the test fixtures stay here as submitted, under the MIT licence.
 
 ---
 

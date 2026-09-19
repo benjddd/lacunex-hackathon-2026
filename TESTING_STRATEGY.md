@@ -34,7 +34,7 @@ npx tsx scripts/verify-journeys-e2e.ts   # in another
 Flags:
 - `ONLY=A,B` — run a subset
 - `HEADLESS=0` — see the browser drive itself (debugging only)
-- `BASE_URL=https://lacunex.com` — point at the deployed Vercel site instead of `localhost:3000`
+- `BASE_URL=https://<your-deployment>` — point at a deployed copy instead of `localhost:3000`
 
 On failure the harness writes screenshots + HTML to `tmp/verify-failure-{slug}/` for postmortem.
 

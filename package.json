@@ -2,7 +2,7 @@
   "name": "lacunex-hackathon-2026",
   "version": "0.1.0",
   "private": true,
-  "description": "Anthropic 'Built with Opus 4.7' hackathon entry (Apr 2026) — adaptive interview platform. Hackathon archive; active development continues in a separate proprietary project.",
+  "description": "Anthropic 'Built with Opus 4.7' hackathon entry (Apr 2026) — adaptive interview platform. Non-commercial; kept as submitted.",
   "license": "MIT",
   "scripts": {
     "dev": "next dev",

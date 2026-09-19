@@ -54,8 +54,7 @@ SUBMISSION_DRAFT.md
 scratch/
 notes-private/
 
-# Post-hackathon regroup workspace — strategy notes, free-tier migration,
-# Descript one-shot prep. None of this belongs in the public artifact.
+# Local working folders (notes, one-off video prep). Not part of the public repo.
 _regroup/
 _descript-oneshot/
 

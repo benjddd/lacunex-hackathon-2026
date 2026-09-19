@@ -43,7 +43,7 @@ const SITE_URL = process.env.VERCEL_URL
   : "http://localhost:3000";
 const OG_TITLE = "Lacunex — hackathon archive (Apr 2026)";
 const OG_DESCRIPTION =
-  "Built for the Anthropic 'Built with Opus 4.7' hackathon, April 2026. ~20,000 people applied; this entry is one of the 288 judged. Adaptive interviews — Host sets goals, the platform runs the conversation live and produces structured insight during it. The deployed demo is paused while the project regroups for v2.";
+  "Built for the Anthropic 'Built with Opus 4.7' hackathon, April 2026. About 20,000 people applied; 288 projects were submitted and judged, this one among them. Adaptive interviews — Host sets goals, the platform runs the conversation live and produces structured insight during it. Non-commercial; the hosted demo is switched off.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -130,8 +130,8 @@ export default function RootLayout({
               textAlign: "center",
             }}
           >
-            Hackathon archive (April 2026) — live demo is paused while we
-            regroup for v2. The repo and making-of are still readable.
+            Hackathon archive (April 2026). Non-commercial; the live demo is
+            switched off. The repo and making-of are still readable.
           </div>
         )}
         {children}

@@ -10,7 +10,7 @@ export function demoGate(): Response | null {
       {
         error: "demo_disabled",
         userMessage:
-          "This demo is paused — the hackathon is over and we're regrouping for v2. The repo and Making-of are still readable; the live conversation will return when the new product is ready.",
+          "This demo is switched off — the hackathon is over. The repo and Making-of are still readable.",
       },
       { status: 503 }
     );
